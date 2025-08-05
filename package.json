@@ -1,0 +1,28 @@
+{
+  "name": "crypto-ai-agent",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Holymir/crypto-ai-agent.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Holymir/crypto-ai-agent/issues"
+  },
+  "homepage": "https://github.com/Holymir/crypto-ai-agent#readme",
+  "dependencies": {
+    "axios": "^1.11.0",
+    "dotenv": "^17.2.1",
+    "openai": "^5.11.0",
+    "rss-parser": "^3.13.0"
+  }
+}
