@@ -1,4 +1,6 @@
 const OpenAI = require('openai');
+require('dotenv').config()
+
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY
 });
@@ -17,7 +19,7 @@ module.exports = async function analyzeSentiment(text) {
       messages: [
         {
           role: 'system',
-          content: 'Ти си трейдър, който оценява новини като "Bullish", "Bearish" или "Neutral". Отговаряй само с една дума.'
+          content: prompt
         },
         {
           role: 'user',
