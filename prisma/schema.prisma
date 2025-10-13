@@ -1,0 +1,53 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum Sentiment {
+  BULLISH
+  BEARISH
+  NEUTRAL
+  ERROR
+}
+
+model Article {
+  id          String    @id @default(uuid())
+  title       String    @unique
+  content     String
+  source      String
+  sentiment   Sentiment @default(NEUTRAL)
+  url         String?
+  publishedAt DateTime  @default(now())
+  analyzedAt  DateTime  @default(now())
+  createdAt   DateTime  @default(now())
+
+  @@index([sentiment])
+  @@index([publishedAt])
+  @@index([source])
+  @@map("articles")
+}
+
+model SentimentStats {
+  id           String   @id @default(uuid())
+  date         DateTime @unique
+  bullishCount Int      @default(0)
+  bearishCount Int      @default(0)
+  neutralCount Int      @default(0)
+  errorCount   Int      @default(0)
+  totalCount   Int      @default(0)
+  updatedAt    DateTime @updatedAt
+
+  @@index([date])
+  @@map("sentiment_stats")
+}

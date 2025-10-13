@@ -1,3 +1,16 @@
 .env
 node_modules/
 package-lock.json
+scheduler/processedNews.json
+
+# Prisma
+/generated/prisma
+dev.db
+dev.db-journal
+prisma/*.db
+prisma/*.db-journal
+
+# Production build
+/backend/dist
+/frontend/dist
+/frontend/build
