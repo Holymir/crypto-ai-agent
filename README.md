@@ -1,6 +1,6 @@
-# 🤖 Crypto AI Agent
+# 🤖 CryptoSentinel AI
 
-Real-time cryptocurrency news sentiment analysis powered by AI. Automatically fetches news from major crypto sources (CoinDesk, CoinTelegraph), analyzes sentiment using OpenAI GPT-3.5, and visualizes trends through an interactive dashboard.
+An advanced cryptocurrency intelligence platform that delivers real-time market insights through AI-powered sentiment analysis. Automatically aggregates and processes news from major crypto sources (CoinDesk, CoinTelegraph), leveraging OpenAI GPT-3.5 for deep sentiment analysis, and presents actionable insights through an intuitive interactive dashboard.
 
 ![Tech Stack](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)
 ![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)

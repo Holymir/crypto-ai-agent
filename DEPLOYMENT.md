@@ -1,7 +1,7 @@
-# Deployment Guide - Crypto AI Agent
+# Deployment Guide - CryptoSentinel AI
 
 ## Overview
-This guide explains how to deploy your full-stack crypto sentiment analysis application to production. We'll cover multiple deployment options with step-by-step instructions.
+This guide explains how to deploy your advanced crypto intelligence platform to production. We'll cover multiple deployment options with step-by-step instructions.
 
 ---
 

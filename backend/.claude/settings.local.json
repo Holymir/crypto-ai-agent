@@ -4,7 +4,11 @@
       "Read(//c/Users/ventsislav.tsochev/Documents/blockchain/crypto-ai-agent/**)",
       "Bash(rm:*)",
       "Bash(rmdir:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(npm install:*)",
+      "Bash(npm run build)"
     ],
     "deny": [],
     "ask": []

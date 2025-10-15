@@ -4,7 +4,7 @@ const { startCronJob } = require('./cron/newsAnalyzer');
 const PORT = process.env.PORT || 3001;
 
 app.listen(PORT, () => {
-  console.log(`\n🚀 Crypto AI Agent Server Started`);
+  console.log(`\n🚀 CryptoSentinel AI Server Started`);
   console.log(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`);
   console.log(`📡 API Server: http://localhost:${PORT}`);
   console.log(`\n📊 Available Endpoints:`);
