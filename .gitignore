@@ -14,3 +14,9 @@ prisma/*.db-journal
 /backend/dist
 /frontend/dist
 /frontend/build
+
+# Private development files
+ROADMAP-PRIVATE.md
+TODO-PRIVATE.md
+NOTES-PRIVATE.md
+.claude/
