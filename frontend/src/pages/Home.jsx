@@ -5,6 +5,7 @@ import { useSentimentStats, useSentimentTrend, useLatestArticles, useArticles } 
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import { ErrorMessage } from '../components/ErrorMessage';
 import { SentimentBadge } from '../components/SentimentBadge';
+import { ArticleCard } from '../components/ArticleCard';
 
 const COLORS = {
   BULLISH: '#22c55e',
@@ -288,49 +289,7 @@ export const Home = () => {
             </div>
           ) : (
             articles.map((article, index) => (
-              <div
-                key={article.id}
-                className="bg-gradient-to-r from-white/90 to-blue-50/50 backdrop-blur-md rounded-2xl p-4 sm:p-6 shadow-xl border-2 border-blue-200 hover:border-blue-400 hover:shadow-2xl transition-all hover:-translate-y-1 animate-fade-in"
-                style={{ animationDelay: `${index * 50}ms` }}
-              >
-                <div className="flex items-start gap-3 sm:gap-4">
-                  <div className="flex-1 min-w-0">
-                    <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-3">
-                      <SentimentBadge sentiment={article.sentiment} />
-                      <span className="px-3 py-1 bg-gradient-to-r from-cyan-500 to-blue-600 text-white rounded-full text-xs sm:text-sm font-semibold shadow-md">
-                        {article.source}
-                      </span>
-                      <span className="text-xs sm:text-sm text-gray-600 font-medium">
-                        {new Date(article.publishedAt).toLocaleDateString('en-US', {
-                          month: 'short',
-                          day: 'numeric',
-                          hour: '2-digit',
-                          minute: '2-digit'
-                        })}
-                      </span>
-                    </div>
-                    <h3 className="text-base sm:text-lg md:text-xl font-bold text-gray-900 mb-2 hover:text-purple-600 transition-colors line-clamp-2">
-                      {article.title}
-                    </h3>
-                    {article.content && article.content !== 'Historical article - content not available' && (
-                      <p className="text-sm sm:text-base text-gray-600 line-clamp-2 mb-3">
-                        {article.content}
-                      </p>
-                    )}
-                    {article.url && (
-                      <a
-                        href={article.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg font-semibold text-xs sm:text-sm hover:from-purple-600 hover:to-pink-600 transition-all shadow-md hover:shadow-lg group"
-                      >
-                        Read full article
-                        <span className="group-hover:translate-x-1 transition-transform">→</span>
-                      </a>
-                    )}
-                  </div>
-                </div>
-              </div>
+              <ArticleCard key={article.id} article={article} index={index} />
             ))
           )}
         </div>
