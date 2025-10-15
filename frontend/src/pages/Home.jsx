@@ -7,6 +7,7 @@ import { ErrorMessage } from '../components/ErrorMessage';
 import { SentimentBadge } from '../components/SentimentBadge';
 import { ArticleCard } from '../components/ArticleCard';
 import { StatsOverviewSkeleton, ChartSkeleton, ArticlesListSkeleton } from '../components/Skeleton';
+import { DarkModeToggle } from '../components/DarkModeToggle';
 
 const COLORS = {
   BULLISH: '#22c55e',
@@ -69,7 +70,7 @@ export const Home = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-100 via-purple-50 to-pink-100">
+    <div className="min-h-screen bg-gradient-to-br from-indigo-100 via-purple-50 to-pink-100 dark:from-dark-bg dark:via-neutral-900 dark:to-dark-bg transition-colors duration-300">
       {/* Hero Section with Stats */}
       <div className="relative overflow-hidden">
         {/* Background Pattern */}
@@ -83,20 +84,26 @@ export const Home = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 relative">
           {/* Header */}
           <div className="text-center mb-8 sm:mb-12">
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-4">
-              <div className="p-3 bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 rounded-2xl shadow-xl transform hover:scale-110 transition-transform">
-                <Activity className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex-1"></div>
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-3 flex-1">
+                <div className="p-3 bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 rounded-2xl shadow-xl transform hover:scale-110 transition-transform">
+                  <Activity className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
+                </div>
+                <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+                  Crypto AI Agent
+                </h1>
               </div>
-              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
-                Crypto AI Agent
-              </h1>
+              <div className="flex-1 flex justify-end">
+                <DarkModeToggle />
+              </div>
             </div>
-            <p className="text-base sm:text-lg md:text-xl text-gray-700 max-w-2xl mx-auto px-4">
+            <p className="text-base sm:text-lg md:text-xl text-gray-700 dark:text-dark-muted max-w-2xl mx-auto px-4">
               AI-powered real-time sentiment analysis for cryptocurrency news
             </p>
             <div className="flex items-center justify-center gap-2 mt-4">
               <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-amber-500 animate-pulse" />
-              <span className="text-xs sm:text-sm text-gray-600 font-medium">Powered by OpenAI GPT-3.5</span>
+              <span className="text-xs sm:text-sm text-gray-600 dark:text-dark-muted font-medium">Powered by OpenAI GPT-3.5</span>
             </div>
           </div>
 
@@ -156,7 +163,7 @@ export const Home = () => {
           ) : (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 mb-8 sm:mb-12">
             {/* Sentiment Distribution */}
-            <div className="bg-white/90 backdrop-blur-md rounded-2xl p-4 sm:p-6 md:p-8 shadow-2xl border-2 border-purple-200 hover:border-purple-400 transition-all">
+            <div className="bg-white/90 dark:bg-dark-card/90 backdrop-blur-md rounded-2xl p-4 sm:p-6 md:p-8 shadow-2xl border-2 border-purple-200 dark:border-dark-border hover:border-purple-400 dark:hover:border-purple-600 transition-all">
               <div className="flex items-center gap-2 mb-4 sm:mb-6">
                 <div className="p-2 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg">
                   <Zap className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
@@ -186,7 +193,7 @@ export const Home = () => {
             </div>
 
             {/* Trend Chart */}
-            <div className="bg-white/90 backdrop-blur-md rounded-2xl p-4 sm:p-6 md:p-8 shadow-2xl border-2 border-blue-200 hover:border-blue-400 transition-all">
+            <div className="bg-white/90 dark:bg-dark-card/90 backdrop-blur-md rounded-2xl p-4 sm:p-6 md:p-8 shadow-2xl border-2 border-blue-200 dark:border-dark-border hover:border-blue-400 dark:hover:border-blue-600 transition-all">
               <div className="flex items-center gap-2 mb-4 sm:mb-6">
                 <div className="p-2 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-lg">
                   <Activity className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
@@ -222,7 +229,7 @@ export const Home = () => {
       {/* Articles Section */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
         {/* Search and Filters */}
-        <div className="bg-gradient-to-r from-white/90 to-purple-50/90 backdrop-blur-md rounded-2xl p-4 sm:p-6 shadow-2xl border-2 border-purple-200 mb-6 sm:mb-8">
+        <div className="bg-gradient-to-r from-white/90 to-purple-50/90 dark:from-dark-card/90 dark:to-neutral-800/90 backdrop-blur-md rounded-2xl p-4 sm:p-6 shadow-2xl border-2 border-purple-200 dark:border-dark-border mb-6 sm:mb-8">
           <div className="flex flex-col gap-4">
             {/* Search */}
             <div className="relative">
@@ -230,7 +237,7 @@ export const Home = () => {
               <input
                 type="text"
                 placeholder="Search articles..."
-                className="w-full pl-12 pr-4 py-3 sm:py-4 border-2 border-purple-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all text-sm sm:text-base bg-white"
+                className="w-full pl-12 pr-4 py-3 sm:py-4 border-2 border-purple-200 dark:border-dark-border rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all text-sm sm:text-base bg-white dark:bg-dark-card dark:text-dark-text"
                 value={searchTerm}
                 onChange={handleSearchChange}
               />
@@ -278,16 +285,16 @@ export const Home = () => {
         {/* Articles Grid */}
         <div className="space-y-3 sm:space-y-4">
           {articlesError ? (
-            <div className="bg-gradient-to-r from-red-50 to-rose-50 backdrop-blur-md rounded-2xl p-8 sm:p-12 shadow-2xl border-2 border-red-200 text-center">
-              <p className="text-red-600 text-base sm:text-lg font-medium">Error loading articles: {articlesError.message}</p>
-              <p className="text-sm text-red-500 mt-2">Check console for details</p>
+            <div className="bg-gradient-to-r from-red-50 to-rose-50 dark:from-red-900/30 dark:to-rose-900/30 backdrop-blur-md rounded-2xl p-8 sm:p-12 shadow-2xl border-2 border-red-200 dark:border-red-800 text-center">
+              <p className="text-red-600 dark:text-red-400 text-base sm:text-lg font-medium">Error loading articles: {articlesError.message}</p>
+              <p className="text-sm text-red-500 dark:text-red-500 mt-2">Check console for details</p>
             </div>
           ) : articlesLoading ? (
             <ArticlesListSkeleton count={10} />
           ) : articles.length === 0 ? (
-            <div className="bg-gradient-to-r from-white/90 to-purple-50/90 backdrop-blur-md rounded-2xl p-8 sm:p-12 shadow-2xl border-2 border-purple-200 text-center">
-              <p className="text-gray-600 text-base sm:text-lg font-medium">No articles found matching your filters.</p>
-              <p className="text-sm text-gray-500 mt-2">Total articles available: {articlesData?.pagination?.total || 0}</p>
+            <div className="bg-gradient-to-r from-white/90 to-purple-50/90 dark:from-dark-card/90 dark:to-neutral-800/90 backdrop-blur-md rounded-2xl p-8 sm:p-12 shadow-2xl border-2 border-purple-200 dark:border-dark-border text-center">
+              <p className="text-gray-600 dark:text-dark-muted text-base sm:text-lg font-medium">No articles found matching your filters.</p>
+              <p className="text-sm text-gray-500 dark:text-dark-muted mt-2">Total articles available: {articlesData?.pagination?.total || 0}</p>
             </div>
           ) : (
             articles.map((article, index) => (
@@ -298,9 +305,9 @@ export const Home = () => {
 
         {/* Pagination */}
         {!articlesError && !articlesLoading && articles.length > 0 && pagination.totalPages > 1 && (
-          <div className="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4 bg-gradient-to-r from-white/90 to-purple-50/90 backdrop-blur-md rounded-2xl p-4 sm:p-6 shadow-xl border-2 border-purple-200">
+          <div className="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4 bg-gradient-to-r from-white/90 to-purple-50/90 dark:from-dark-card/90 dark:to-neutral-800/90 backdrop-blur-md rounded-2xl p-4 sm:p-6 shadow-xl border-2 border-purple-200 dark:border-dark-border">
             {/* Page info */}
-            <div className="text-sm text-gray-700 font-medium">
+            <div className="text-sm text-gray-700 dark:text-dark-muted font-medium">
               Showing page <span className="font-bold text-purple-600">{pagination.page}</span> of{' '}
               <span className="font-bold text-purple-600">{pagination.totalPages}</span>
               {' '}({pagination.total} total articles)
@@ -328,7 +335,7 @@ export const Home = () => {
                   <>
                     <button
                       onClick={() => setPage(1)}
-                      className="px-3 sm:px-4 py-2 rounded-lg font-semibold text-sm bg-white text-purple-600 hover:bg-purple-100 transition-all border border-purple-200"
+                      className="px-3 sm:px-4 py-2 rounded-lg font-semibold text-sm bg-white dark:bg-dark-card text-purple-600 dark:text-purple-400 hover:bg-purple-100 dark:hover:bg-neutral-700 transition-all border border-purple-200 dark:border-dark-border"
                     >
                       1
                     </button>
@@ -351,7 +358,7 @@ export const Home = () => {
                       className={`px-3 sm:px-4 py-2 rounded-lg font-semibold text-sm transition-all ${
                         pageNum === pagination.page
                           ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg scale-110'
-                          : 'bg-white text-purple-600 hover:bg-purple-100 border border-purple-200'
+                          : 'bg-white dark:bg-dark-card text-purple-600 dark:text-purple-400 hover:bg-purple-100 dark:hover:bg-neutral-700 border border-purple-200 dark:border-dark-border'
                       }`}
                     >
                       {pageNum}
@@ -366,7 +373,7 @@ export const Home = () => {
                     )}
                     <button
                       onClick={() => setPage(pagination.totalPages)}
-                      className="px-3 sm:px-4 py-2 rounded-lg font-semibold text-sm bg-white text-purple-600 hover:bg-purple-100 transition-all border border-purple-200"
+                      className="px-3 sm:px-4 py-2 rounded-lg font-semibold text-sm bg-white dark:bg-dark-card text-purple-600 dark:text-purple-400 hover:bg-purple-100 dark:hover:bg-neutral-700 transition-all border border-purple-200 dark:border-dark-border"
                     >
                       {pagination.totalPages}
                     </button>

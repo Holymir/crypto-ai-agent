@@ -38,6 +38,27 @@
   --transition-slow: 500ms ease-in-out;
 }
 
+/* Dark mode variables */
+.dark {
+  /* Background */
+  --bg-primary: #1E293B;
+  --bg-secondary: #0F172A;
+  --bg-tertiary: #334155;
+
+  /* Text */
+  --text-primary: #F1F5F9;
+  --text-secondary: #CBD5E1;
+  --text-tertiary: #94A3B8;
+
+  /* Borders */
+  --border-color: #334155;
+
+  /* Shadows - more subtle in dark mode */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.5);
+  --shadow-lg: 0 10px 25px -5px rgb(0 0 0 / 0.7);
+}
+
 @tailwind base;
 
 @layer components {

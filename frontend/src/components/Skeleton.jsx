@@ -2,7 +2,7 @@ import { motion } from 'framer-motion';
 
 // Base skeleton component with shimmer effect
 export const Skeleton = ({ className = '', variant = 'rectangular', width, height }) => {
-  const baseClasses = 'bg-gradient-to-r from-neutral-200 via-neutral-100 to-neutral-200 bg-[length:200%_100%] animate-shimmer';
+  const baseClasses = 'bg-gradient-to-r from-neutral-200 via-neutral-100 to-neutral-200 dark:from-neutral-700 dark:via-neutral-600 dark:to-neutral-700 bg-[length:200%_100%] animate-shimmer';
 
   const variantClasses = {
     rectangular: 'rounded-lg',
@@ -30,7 +30,7 @@ export const ArticleCardSkeleton = ({ index = 0 }) => {
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3, delay: index * 0.05 }}
-      className="card"
+      className="card bg-white dark:bg-dark-card border-2 border-neutral-200 dark:border-dark-border"
     >
       {/* Header: Badges */}
       <div className="flex items-center gap-2 mb-4">
@@ -64,7 +64,7 @@ export const StatCardSkeleton = ({ delay = 0 }) => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay }}
-      className="card"
+      className="card bg-white dark:bg-dark-card border-2 border-neutral-200 dark:border-dark-border"
     >
       <div className="flex items-center justify-between">
         <div className="flex-1">
@@ -80,7 +80,7 @@ export const StatCardSkeleton = ({ delay = 0 }) => {
 // Chart Skeleton
 export const ChartSkeleton = ({ height = 280 }) => {
   return (
-    <div className="bg-white/90 backdrop-blur-md rounded-2xl p-6 shadow-2xl border-2 border-neutral-200">
+    <div className="bg-white/90 dark:bg-dark-card/90 backdrop-blur-md rounded-2xl p-6 shadow-2xl border-2 border-neutral-200 dark:border-dark-border">
       <div className="flex items-center gap-2 mb-6">
         <Skeleton variant="circular" className="w-10 h-10" />
         <Skeleton className="h-6 w-48" />

@@ -53,7 +53,7 @@ export const ArticleCard = ({ article, index = 0 }) => {
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3, delay: index * 0.03, ease: 'easeOut' }}
-      className="card group relative overflow-hidden hover:-translate-y-1 transition-transform duration-200"
+      className="card group relative overflow-hidden hover:-translate-y-1 transition-transform duration-200 bg-white dark:bg-dark-card border-2 border-neutral-200 dark:border-dark-border"
     >
 
       <div className="relative">
@@ -71,7 +71,7 @@ export const ArticleCard = ({ article, index = 0 }) => {
             </motion.span>
 
             {/* Time Badge */}
-            <span className="px-3 py-1 bg-neutral-100 text-neutral-600 rounded-full text-xs font-medium">
+            <span className="px-3 py-1 bg-neutral-100 dark:bg-neutral-700 text-neutral-600 dark:text-neutral-300 rounded-full text-xs font-medium">
               {formatDate(article.publishedAt)}
             </span>
           </div>
@@ -80,7 +80,7 @@ export const ArticleCard = ({ article, index = 0 }) => {
           <div className="relative">
             <button
               onClick={() => setShowShareMenu(!showShareMenu)}
-              className="p-2 rounded-lg bg-neutral-100 hover:bg-neutral-200 text-neutral-600 hover:text-neutral-800 transition-colors"
+              className="p-2 rounded-lg bg-neutral-100 dark:bg-neutral-700 hover:bg-neutral-200 dark:hover:bg-neutral-600 text-neutral-600 dark:text-neutral-300 hover:text-neutral-800 dark:hover:text-neutral-100 transition-colors"
               aria-label="Share article"
             >
               <Share2 className="w-4 h-4" />
@@ -88,7 +88,7 @@ export const ArticleCard = ({ article, index = 0 }) => {
 
             {/* Share Menu - Icons Only */}
             {showShareMenu && (
-              <div className="absolute right-0 top-full mt-2 bg-white rounded-xl shadow-lg border border-neutral-200 p-2 z-10 flex gap-1">
+              <div className="absolute right-0 top-full mt-2 bg-white dark:bg-dark-card rounded-xl shadow-lg border border-neutral-200 dark:border-dark-border p-2 z-10 flex gap-1">
                 <button
                   onClick={() => handleShare('twitter')}
                   className="p-2 rounded-lg hover:bg-blue-50 text-neutral-600 hover:text-blue-600 transition-colors"
@@ -129,13 +129,13 @@ export const ArticleCard = ({ article, index = 0 }) => {
         </div>
 
         {/* Title */}
-        <h3 className="text-lg font-bold text-neutral-900 mb-3 group-hover:text-primary-600 transition-colors leading-snug">
+        <h3 className="text-lg font-bold text-neutral-900 dark:text-dark-text mb-3 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors leading-snug">
           {article.title}
         </h3>
 
         {/* Content Preview */}
         {article.content && article.content !== 'Historical article - content not available' && (
-          <p className="text-sm text-neutral-600 mb-4 line-clamp-2 leading-relaxed">
+          <p className="text-sm text-neutral-600 dark:text-dark-muted mb-4 line-clamp-2 leading-relaxed">
             {article.content}
           </p>
         )}
