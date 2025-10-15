@@ -10,6 +10,7 @@ import { ArticleCard } from '../components/ArticleCard';
 import { StatsOverviewSkeleton, ChartSkeleton, ArticlesListSkeleton } from '../components/Skeleton';
 import { Navigation } from '../components/Navigation';
 import { ScrollReveal } from '../components/ScrollReveal';
+import { PieChartTooltip, TrendChartTooltip } from '../components/ChartTooltip';
 
 const COLORS = {
   BULLISH: '#22c55e',
@@ -181,13 +182,23 @@ export const Home = () => {
                     outerRadius={90}
                     fill="#8884d8"
                     dataKey="value"
+                    stroke="none"
+                    activeShape={null}
+                    isAnimationActive={true}
                   >
                     {pieData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={COLORS[entry.name.toUpperCase()]} />
+                      <Cell
+                        key={`cell-${index}`}
+                        fill={COLORS[entry.name.toUpperCase()]}
+                        className="outline-none focus:outline-none"
+                      />
                     ))}
                   </Pie>
-                  <Tooltip />
-                  <Legend />
+                  <Tooltip content={<PieChartTooltip />} cursor={false} />
+                  <Legend
+                    wrapperStyle={{ paddingTop: '20px' }}
+                    iconType="circle"
+                  />
                 </PieChart>
               </ResponsiveContainer>
             </div>
@@ -214,12 +225,33 @@ export const Home = () => {
                       <stop offset="95%" stopColor={COLORS.BEARISH} stopOpacity={0}/>
                     </linearGradient>
                   </defs>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                  <XAxis dataKey="date" tick={{ fontSize: 10 }} stroke="#9ca3af" />
-                  <YAxis stroke="#9ca3af" />
-                  <Tooltip />
-                  <Area type="monotone" dataKey="BULLISH" stroke={COLORS.BULLISH} fillOpacity={1} fill="url(#colorBullish)" strokeWidth={2} />
-                  <Area type="monotone" dataKey="BEARISH" stroke={COLORS.BEARISH} fillOpacity={1} fill="url(#colorBearish)" strokeWidth={2} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" className="dark:opacity-20" />
+                  <XAxis
+                    dataKey="date"
+                    tick={{ fontSize: 10 }}
+                    stroke="#9ca3af"
+                    className="dark:opacity-50"
+                  />
+                  <YAxis stroke="#9ca3af" className="dark:opacity-50" />
+                  <Tooltip content={<TrendChartTooltip />} cursor={{ stroke: '#6366F1', strokeWidth: 2, strokeDasharray: '5 5' }} />
+                  <Area
+                    type="monotone"
+                    dataKey="BULLISH"
+                    stroke={COLORS.BULLISH}
+                    fillOpacity={1}
+                    fill="url(#colorBullish)"
+                    strokeWidth={2}
+                    activeDot={{ r: 6, strokeWidth: 2, stroke: '#fff' }}
+                  />
+                  <Area
+                    type="monotone"
+                    dataKey="BEARISH"
+                    stroke={COLORS.BEARISH}
+                    fillOpacity={1}
+                    fill="url(#colorBearish)"
+                    strokeWidth={2}
+                    activeDot={{ r: 6, strokeWidth: 2, stroke: '#fff' }}
+                  />
                 </AreaChart>
               </ResponsiveContainer>
             </div>

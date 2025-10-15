@@ -7,6 +7,29 @@ html {
   scroll-behavior: smooth;
 }
 
+/* Remove chart selection outlines */
+.recharts-wrapper,
+.recharts-surface,
+.recharts-sector,
+.recharts-pie-sector,
+.recharts-layer {
+  outline: none !important;
+}
+
+.recharts-sector:focus,
+.recharts-pie-sector:focus {
+  outline: none !important;
+}
+
+/* Smooth chart interactions */
+.recharts-pie-sector {
+  transition: opacity 0.2s ease;
+}
+
+.recharts-pie-sector:hover {
+  opacity: 0.8;
+}
+
 /* Design System CSS Variables */
 :root {
   /* Brand Colors */
