@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//c/Users/ventsislav.tsochev/Documents/blockchain/crypto-ai-agent/**)",
+      "Bash(rm:*)",
+      "Bash(rmdir:*)",
+      "Bash(git add:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
