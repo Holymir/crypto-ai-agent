@@ -50,14 +50,11 @@ export const ArticleCard = ({ article, index = 0 }) => {
 
   return (
     <motion.article
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4, delay: index * 0.05, ease: 'easeOut' }}
-      whileHover={{ y: -4 }}
-      className="card group relative overflow-hidden"
+      transition={{ duration: 0.3, delay: index * 0.03, ease: 'easeOut' }}
+      className="card group relative overflow-hidden hover:-translate-y-1 transition-transform duration-200"
     >
-      {/* Gradient overlay on hover */}
-      <div className="absolute inset-0 bg-gradient-to-r from-primary-50/0 to-secondary-50/0 group-hover:from-primary-50/50 group-hover:to-secondary-50/50 transition-all duration-300 pointer-events-none" />
 
       <div className="relative">
         {/* Header: Badges and Meta */}
@@ -81,53 +78,52 @@ export const ArticleCard = ({ article, index = 0 }) => {
 
           {/* Share Button */}
           <div className="relative">
-            <motion.button
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.95 }}
+            <button
               onClick={() => setShowShareMenu(!showShareMenu)}
               className="p-2 rounded-lg bg-neutral-100 hover:bg-neutral-200 text-neutral-600 hover:text-neutral-800 transition-colors"
               aria-label="Share article"
             >
               <Share2 className="w-4 h-4" />
-            </motion.button>
+            </button>
 
-            {/* Share Menu */}
+            {/* Share Menu - Icons Only */}
             {showShareMenu && (
-              <motion.div
-                initial={{ opacity: 0, scale: 0.95, y: -10 }}
-                animate={{ opacity: 1, scale: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.95, y: -10 }}
-                className="absolute right-0 top-full mt-2 bg-white rounded-xl shadow-lg border border-neutral-200 p-2 z-10 min-w-[160px]"
-              >
+              <div className="absolute right-0 top-full mt-2 bg-white rounded-xl shadow-lg border border-neutral-200 p-2 z-10 flex gap-1">
                 <button
                   onClick={() => handleShare('twitter')}
-                  className="flex items-center gap-2 w-full px-3 py-2 rounded-lg hover:bg-blue-50 text-neutral-700 hover:text-blue-600 transition-colors text-sm"
+                  className="p-2 rounded-lg hover:bg-blue-50 text-neutral-600 hover:text-blue-600 transition-colors"
+                  aria-label="Share on Twitter"
+                  title="Share on Twitter"
                 >
                   <Twitter className="w-4 h-4" />
-                  Twitter
                 </button>
                 <button
                   onClick={() => handleShare('facebook')}
-                  className="flex items-center gap-2 w-full px-3 py-2 rounded-lg hover:bg-blue-50 text-neutral-700 hover:text-blue-600 transition-colors text-sm"
+                  className="p-2 rounded-lg hover:bg-blue-50 text-neutral-600 hover:text-blue-600 transition-colors"
+                  aria-label="Share on Facebook"
+                  title="Share on Facebook"
                 >
                   <Facebook className="w-4 h-4" />
-                  Facebook
                 </button>
                 <button
                   onClick={() => handleShare('linkedin')}
-                  className="flex items-center gap-2 w-full px-3 py-2 rounded-lg hover:bg-blue-50 text-neutral-700 hover:text-blue-600 transition-colors text-sm"
+                  className="p-2 rounded-lg hover:bg-blue-50 text-neutral-600 hover:text-blue-600 transition-colors"
+                  aria-label="Share on LinkedIn"
+                  title="Share on LinkedIn"
                 >
                   <Linkedin className="w-4 h-4" />
-                  LinkedIn
                 </button>
                 <button
                   onClick={() => handleShare('copy')}
-                  className="flex items-center gap-2 w-full px-3 py-2 rounded-lg hover:bg-primary-50 text-neutral-700 hover:text-primary-600 transition-colors text-sm border-t border-neutral-100 mt-1 pt-2"
+                  className={`p-2 rounded-lg transition-colors border-l border-neutral-200 ml-1 pl-2 ${
+                    copied ? 'bg-primary-50 text-primary-600' : 'hover:bg-primary-50 text-neutral-600 hover:text-primary-600'
+                  }`}
+                  aria-label="Copy link"
+                  title={copied ? 'Copied!' : 'Copy link'}
                 >
                   {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
-                  {copied ? 'Copied!' : 'Copy Link'}
                 </button>
-              </motion.div>
+              </div>
             )}
           </div>
         </div>
@@ -146,17 +142,15 @@ export const ArticleCard = ({ article, index = 0 }) => {
 
         {/* Footer: Read More Button */}
         {article.url && (
-          <motion.a
+          <a
             href={article.url}
             target="_blank"
             rel="noopener noreferrer"
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
             className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-primary-500 to-secondary-500 text-white rounded-lg font-semibold text-sm hover:from-primary-600 hover:to-secondary-600 transition-all shadow-sm hover:shadow-md group/button"
           >
             Read Full Article
             <ExternalLink className="w-4 h-4 group-hover/button:translate-x-0.5 group-hover/button:-translate-y-0.5 transition-transform" />
-          </motion.a>
+          </a>
         )}
       </div>
     </motion.article>
