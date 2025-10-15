@@ -7,7 +7,7 @@ import { ErrorMessage } from '../components/ErrorMessage';
 import { SentimentBadge } from '../components/SentimentBadge';
 import { ArticleCard } from '../components/ArticleCard';
 import { StatsOverviewSkeleton, ChartSkeleton, ArticlesListSkeleton } from '../components/Skeleton';
-import { DarkModeToggle } from '../components/DarkModeToggle';
+import { Navigation } from '../components/Navigation';
 
 const COLORS = {
   BULLISH: '#22c55e',
@@ -71,8 +71,10 @@ export const Home = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-100 via-purple-50 to-pink-100 dark:from-dark-bg dark:via-neutral-900 dark:to-dark-bg transition-colors duration-300">
+      <Navigation />
+
       {/* Hero Section with Stats */}
-      <div className="relative overflow-hidden">
+      <div id="home" className="relative overflow-hidden scroll-mt-20">
         {/* Background Pattern */}
         <div className="absolute inset-0 bg-grid-slate-100 [mask-image:linear-gradient(0deg,white,rgba(255,255,255,0.6))] -z-10"></div>
 
@@ -84,19 +86,13 @@ export const Home = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 relative">
           {/* Header */}
           <div className="text-center mb-8 sm:mb-12">
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex-1"></div>
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-3 flex-1">
-                <div className="p-3 bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 rounded-2xl shadow-xl transform hover:scale-110 transition-transform">
-                  <Activity className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
-                </div>
-                <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
-                  Crypto AI Agent
-                </h1>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-4">
+              <div className="p-3 bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 rounded-2xl shadow-xl transform hover:scale-110 transition-transform">
+                <Activity className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
               </div>
-              <div className="flex-1 flex justify-end">
-                <DarkModeToggle />
-              </div>
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+                Crypto AI Agent
+              </h1>
             </div>
             <p className="text-base sm:text-lg md:text-xl text-gray-700 dark:text-dark-muted max-w-2xl mx-auto px-4">
               AI-powered real-time sentiment analysis for cryptocurrency news
@@ -155,6 +151,7 @@ export const Home = () => {
           )}
 
           {/* Charts Section */}
+          <div id="analytics" className="scroll-mt-20">
           {isInitialLoading ? (
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 mb-8 sm:mb-12">
               <ChartSkeleton />
@@ -223,11 +220,12 @@ export const Home = () => {
             </div>
           </div>
           )}
+          </div>
         </div>
       </div>
 
       {/* Articles Section */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+      <div id="articles" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 scroll-mt-20">
         {/* Search and Filters */}
         <div className="bg-gradient-to-r from-white/90 to-purple-50/90 dark:from-dark-card/90 dark:to-neutral-800/90 backdrop-blur-md rounded-2xl p-4 sm:p-6 shadow-2xl border-2 border-purple-200 dark:border-dark-border mb-6 sm:mb-8">
           <div className="flex flex-col gap-4">
