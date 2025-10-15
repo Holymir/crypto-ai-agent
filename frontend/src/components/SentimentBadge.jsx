@@ -35,12 +35,29 @@ export const SentimentBadge = ({ sentiment, size = 'md' }) => {
 
   return (
     <motion.span
-      initial={{ opacity: 0, scale: 0.9 }}
-      animate={{ opacity: 1, scale: 1 }}
-      whileHover={{ scale: 1.05 }}
-      className={`${className} ${sizeClasses[size]} inline-flex items-center gap-1.5`}
+      initial={{ opacity: 0, scale: 0.8, y: -10 }}
+      animate={{ opacity: 1, scale: 1, y: 0 }}
+      whileHover={{ scale: 1.05, y: -2 }}
+      whileTap={{ scale: 0.95 }}
+      transition={{
+        type: 'spring',
+        stiffness: 300,
+        damping: 20
+      }}
+      className={`${className} ${sizeClasses[size]} inline-flex items-center gap-1.5 cursor-default`}
     >
-      <Icon className="w-4 h-4" />
+      <motion.div
+        animate={{
+          rotate: sentiment === 'BULLISH' ? [0, -10, 0] : sentiment === 'BEARISH' ? [0, 10, 0] : 0,
+        }}
+        transition={{
+          duration: 2,
+          repeat: Infinity,
+          ease: 'easeInOut'
+        }}
+      >
+        <Icon className="w-4 h-4" />
+      </motion.div>
       {label}
     </motion.span>
   );

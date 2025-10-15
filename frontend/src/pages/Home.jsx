@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { TrendingUp, TrendingDown, Minus, BarChart3, Search, Sparkles, Zap, Activity, ChevronLeft, ChevronRight } from 'lucide-react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend, LineChart, Line, XAxis, YAxis, CartesianGrid, AreaChart, Area } from 'recharts';
+import { motion } from 'framer-motion';
 import { useSentimentStats, useSentimentTrend, useLatestArticles, useArticles } from '../hooks/useArticles';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import { ErrorMessage } from '../components/ErrorMessage';
@@ -8,6 +9,7 @@ import { SentimentBadge } from '../components/SentimentBadge';
 import { ArticleCard } from '../components/ArticleCard';
 import { StatsOverviewSkeleton, ChartSkeleton, ArticlesListSkeleton } from '../components/Skeleton';
 import { Navigation } from '../components/Navigation';
+import { ScrollReveal } from '../components/ScrollReveal';
 
 const COLORS = {
   BULLISH: '#22c55e',
@@ -159,6 +161,7 @@ export const Home = () => {
             </div>
           ) : (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 mb-8 sm:mb-12">
+            <ScrollReveal direction="left" delay={0.1}>
             {/* Sentiment Distribution */}
             <div className="bg-white/90 dark:bg-dark-card/90 backdrop-blur-md rounded-2xl p-4 sm:p-6 md:p-8 shadow-2xl border-2 border-purple-200 dark:border-dark-border hover:border-purple-400 dark:hover:border-purple-600 transition-all">
               <div className="flex items-center gap-2 mb-4 sm:mb-6">
@@ -188,7 +191,9 @@ export const Home = () => {
                 </PieChart>
               </ResponsiveContainer>
             </div>
+            </ScrollReveal>
 
+            <ScrollReveal direction="right" delay={0.2}>
             {/* Trend Chart */}
             <div className="bg-white/90 dark:bg-dark-card/90 backdrop-blur-md rounded-2xl p-4 sm:p-6 md:p-8 shadow-2xl border-2 border-blue-200 dark:border-dark-border hover:border-blue-400 dark:hover:border-blue-600 transition-all">
               <div className="flex items-center gap-2 mb-4 sm:mb-6">
@@ -218,6 +223,7 @@ export const Home = () => {
                 </AreaChart>
               </ResponsiveContainer>
             </div>
+            </ScrollReveal>
           </div>
           )}
           </div>
@@ -227,6 +233,7 @@ export const Home = () => {
       {/* Articles Section */}
       <div id="articles" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 scroll-mt-20">
         {/* Search and Filters */}
+        <ScrollReveal direction="up" delay={0.1}>
         <div className="bg-gradient-to-r from-white/90 to-purple-50/90 dark:from-dark-card/90 dark:to-neutral-800/90 backdrop-blur-md rounded-2xl p-4 sm:p-6 shadow-2xl border-2 border-purple-200 dark:border-dark-border mb-6 sm:mb-8">
           <div className="flex flex-col gap-4">
             {/* Search */}
@@ -243,42 +250,52 @@ export const Home = () => {
 
             {/* Sentiment Filters */}
             <div className="flex flex-wrap gap-2 sm:gap-3">
-              <button
+              <motion.button
                 onClick={() => handleSentimentChange('BULLISH')}
+                whileHover={{ scale: 1.02, y: -2 }}
+                whileTap={{ scale: 0.98 }}
+                transition={{ type: 'spring', stiffness: 400, damping: 17 }}
                 className={`flex-1 min-w-[100px] px-4 sm:px-6 py-2 sm:py-3 rounded-xl font-semibold transition-all text-sm sm:text-base ${
                   selectedSentiment === 'BULLISH'
                     ? 'bg-gradient-to-r from-emerald-500 to-green-600 text-white shadow-xl scale-105 border-2 border-emerald-400'
-                    : 'bg-gradient-to-r from-emerald-50 to-green-50 text-emerald-700 hover:from-emerald-100 hover:to-green-100 border-2 border-emerald-200'
+                    : 'bg-gradient-to-r from-emerald-50 to-green-50 dark:from-emerald-900/20 dark:to-green-900/20 text-emerald-700 dark:text-emerald-400 hover:from-emerald-100 hover:to-green-100 dark:hover:from-emerald-900/30 dark:hover:to-green-900/30 border-2 border-emerald-200 dark:border-emerald-700'
                 }`}
               >
                 <TrendingUp className="w-4 h-4 inline-block mr-1" />
                 Bullish
-              </button>
-              <button
+              </motion.button>
+              <motion.button
                 onClick={() => handleSentimentChange('BEARISH')}
+                whileHover={{ scale: 1.02, y: -2 }}
+                whileTap={{ scale: 0.98 }}
+                transition={{ type: 'spring', stiffness: 400, damping: 17 }}
                 className={`flex-1 min-w-[100px] px-4 sm:px-6 py-2 sm:py-3 rounded-xl font-semibold transition-all text-sm sm:text-base ${
                   selectedSentiment === 'BEARISH'
                     ? 'bg-gradient-to-r from-rose-500 to-red-600 text-white shadow-xl scale-105 border-2 border-rose-400'
-                    : 'bg-gradient-to-r from-rose-50 to-red-50 text-rose-700 hover:from-rose-100 hover:to-red-100 border-2 border-rose-200'
+                    : 'bg-gradient-to-r from-rose-50 to-red-50 dark:from-rose-900/20 dark:to-red-900/20 text-rose-700 dark:text-rose-400 hover:from-rose-100 hover:to-red-100 dark:hover:from-rose-900/30 dark:hover:to-red-900/30 border-2 border-rose-200 dark:border-rose-700'
                 }`}
               >
                 <TrendingDown className="w-4 h-4 inline-block mr-1" />
                 Bearish
-              </button>
-              <button
+              </motion.button>
+              <motion.button
                 onClick={() => handleSentimentChange('NEUTRAL')}
+                whileHover={{ scale: 1.02, y: -2 }}
+                whileTap={{ scale: 0.98 }}
+                transition={{ type: 'spring', stiffness: 400, damping: 17 }}
                 className={`flex-1 min-w-[100px] px-4 sm:px-6 py-2 sm:py-3 rounded-xl font-semibold transition-all text-sm sm:text-base ${
                   selectedSentiment === 'NEUTRAL'
                     ? 'bg-gradient-to-r from-slate-500 to-gray-600 text-white shadow-xl scale-105 border-2 border-slate-400'
-                    : 'bg-gradient-to-r from-slate-50 to-gray-50 text-slate-700 hover:from-slate-100 hover:to-gray-100 border-2 border-slate-200'
+                    : 'bg-gradient-to-r from-slate-50 to-gray-50 dark:from-slate-900/20 dark:to-gray-900/20 text-slate-700 dark:text-slate-400 hover:from-slate-100 hover:to-gray-100 dark:hover:from-slate-900/30 dark:hover:to-gray-900/30 border-2 border-slate-200 dark:border-slate-700'
                 }`}
               >
                 <Minus className="w-4 h-4 inline-block mr-1" />
                 Neutral
-              </button>
+              </motion.button>
             </div>
           </div>
         </div>
+        </ScrollReveal>
 
         {/* Articles Grid */}
         <div className="space-y-3 sm:space-y-4">
@@ -314,29 +331,33 @@ export const Home = () => {
             {/* Page controls */}
             <div className="flex items-center gap-2">
               {/* Previous button */}
-              <button
+              <motion.button
                 onClick={() => setPage(page - 1)}
                 disabled={page === 1}
+                whileHover={{ scale: page === 1 ? 1 : 1.05 }}
+                whileTap={{ scale: page === 1 ? 1 : 0.95 }}
                 className={`p-2 rounded-lg font-semibold transition-all ${
                   page === 1
-                    ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                    ? 'bg-gray-200 dark:bg-gray-700 text-gray-400 dark:text-gray-500 cursor-not-allowed'
                     : 'bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:from-purple-600 hover:to-pink-600 shadow-md hover:shadow-lg'
                 }`}
               >
                 <ChevronLeft className="w-5 h-5" />
-              </button>
+              </motion.button>
 
               {/* Page numbers */}
               <div className="flex gap-1 sm:gap-2">
                 {/* First page */}
                 {pagination.page > 3 && (
                   <>
-                    <button
+                    <motion.button
                       onClick={() => setPage(1)}
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
                       className="px-3 sm:px-4 py-2 rounded-lg font-semibold text-sm bg-white dark:bg-dark-card text-purple-600 dark:text-purple-400 hover:bg-purple-100 dark:hover:bg-neutral-700 transition-all border border-purple-200 dark:border-dark-border"
                     >
                       1
-                    </button>
+                    </motion.button>
                     {pagination.page > 4 && (
                       <span className="px-2 py-2 text-gray-500">...</span>
                     )}
@@ -350,9 +371,11 @@ export const Home = () => {
                            (pageNum >= pagination.page - 1 && pageNum <= pagination.page + 1);
                   })
                   .map(pageNum => (
-                    <button
+                    <motion.button
                       key={pageNum}
                       onClick={() => setPage(pageNum)}
+                      whileHover={{ scale: pageNum === pagination.page ? 1 : 1.05 }}
+                      whileTap={{ scale: pageNum === pagination.page ? 1 : 0.95 }}
                       className={`px-3 sm:px-4 py-2 rounded-lg font-semibold text-sm transition-all ${
                         pageNum === pagination.page
                           ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg scale-110'
@@ -360,7 +383,7 @@ export const Home = () => {
                       }`}
                     >
                       {pageNum}
-                    </button>
+                    </motion.button>
                   ))}
 
                 {/* Last page */}
@@ -369,28 +392,32 @@ export const Home = () => {
                     {pagination.page < pagination.totalPages - 3 && (
                       <span className="px-2 py-2 text-gray-500">...</span>
                     )}
-                    <button
+                    <motion.button
                       onClick={() => setPage(pagination.totalPages)}
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
                       className="px-3 sm:px-4 py-2 rounded-lg font-semibold text-sm bg-white dark:bg-dark-card text-purple-600 dark:text-purple-400 hover:bg-purple-100 dark:hover:bg-neutral-700 transition-all border border-purple-200 dark:border-dark-border"
                     >
                       {pagination.totalPages}
-                    </button>
+                    </motion.button>
                   </>
                 )}
               </div>
 
               {/* Next button */}
-              <button
+              <motion.button
                 onClick={() => setPage(page + 1)}
                 disabled={page === pagination.totalPages}
+                whileHover={{ scale: page === pagination.totalPages ? 1 : 1.05 }}
+                whileTap={{ scale: page === pagination.totalPages ? 1 : 0.95 }}
                 className={`p-2 rounded-lg font-semibold transition-all ${
                   page === pagination.totalPages
-                    ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                    ? 'bg-gray-200 dark:bg-gray-700 text-gray-400 dark:text-gray-500 cursor-not-allowed'
                     : 'bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:from-purple-600 hover:to-pink-600 shadow-md hover:shadow-lg'
                 }`}
               >
                 <ChevronRight className="w-5 h-5" />
-              </button>
+              </motion.button>
             </div>
           </div>
         )}
