@@ -2,12 +2,57 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Design System CSS Variables */
+:root {
+  /* Brand Colors */
+  --color-primary: #00D4AA;
+  --color-secondary: #6366F1;
+
+  /* Sentiment Colors */
+  --color-bullish: #10B981;
+  --color-bearish: #EF4444;
+  --color-neutral: #6B7280;
+
+  /* Background */
+  --bg-primary: #FFFFFF;
+  --bg-secondary: #F8FAFC;
+  --bg-tertiary: #F1F5F9;
+
+  /* Text */
+  --text-primary: #0F172A;
+  --text-secondary: #475569;
+  --text-tertiary: #94A3B8;
+
+  /* Borders */
+  --border-color: #E2E8F0;
+  --border-radius: 0.75rem;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 25px -5px rgb(0 0 0 / 0.1);
+
+  /* Transitions */
+  --transition-fast: 150ms ease-in-out;
+  --transition-base: 300ms ease-in-out;
+  --transition-slow: 500ms ease-in-out;
+}
+
+@tailwind base;
+
 @layer components {
   .card {
-    background-color: white;
-    border-radius: 0.5rem;
-    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+    background-color: var(--bg-primary);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-md);
     padding: 1.5rem;
+    transition: all var(--transition-base);
+    border: 1px solid var(--border-color);
+  }
+
+  .card:hover {
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-2px);
   }
 
   .badge-bullish {
