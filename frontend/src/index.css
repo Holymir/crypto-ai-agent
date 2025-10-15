@@ -21,13 +21,9 @@ html {
   outline: none !important;
 }
 
-/* Smooth chart interactions */
+/* Disable pie chart hover animation */
 .recharts-pie-sector {
-  transition: opacity 0.2s ease;
-}
-
-.recharts-pie-sector:hover {
-  opacity: 0.8;
+  pointer-events: auto;
 }
 
 /* Design System CSS Variables */

@@ -15,20 +15,19 @@ export const PieChartTooltip = ({ active, payload }) => {
 
   return (
     <motion.div
-      initial={{ opacity: 0, scale: 0.9, y: 10 }}
-      animate={{ opacity: 1, scale: 1, y: 0 }}
-      exit={{ opacity: 0, scale: 0.9, y: 10 }}
-      transition={{ duration: 0.15 }}
-      className="bg-white dark:bg-dark-card rounded-xl shadow-xl border-2 border-neutral-200 dark:border-dark-border p-4 backdrop-blur-md"
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
+      exit={{ opacity: 0, scale: 0.95 }}
+      transition={{ duration: 0.1 }}
+      className="bg-white dark:bg-dark-card rounded-lg shadow-lg border border-neutral-200 dark:border-dark-border px-3 py-2 backdrop-blur-md"
     >
-      <div className={`inline-block px-3 py-1 rounded-lg bg-gradient-to-r ${colors[name]} text-white text-sm font-bold mb-2`}>
-        {name}
-      </div>
-      <div className="text-2xl font-bold text-neutral-900 dark:text-dark-text">
-        {value}
-      </div>
-      <div className="text-xs text-neutral-500 dark:text-dark-muted mt-1">
-        articles
+      <div className="flex items-center gap-2">
+        <span className={`px-2 py-0.5 rounded text-xs font-semibold bg-gradient-to-r ${colors[name]} text-white`}>
+          {name}
+        </span>
+        <span className="text-sm font-bold text-neutral-900 dark:text-dark-text">
+          {value} articles
+        </span>
       </div>
     </motion.div>
   );
