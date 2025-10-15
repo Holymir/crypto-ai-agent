@@ -6,6 +6,7 @@ import { LoadingSpinner } from '../components/LoadingSpinner';
 import { ErrorMessage } from '../components/ErrorMessage';
 import { SentimentBadge } from '../components/SentimentBadge';
 import { ArticleCard } from '../components/ArticleCard';
+import { StatsOverviewSkeleton, ChartSkeleton, ArticlesListSkeleton } from '../components/Skeleton';
 
 const COLORS = {
   BULLISH: '#22c55e',
@@ -36,18 +37,8 @@ export const Home = () => {
   console.log('Articles Loading:', articlesLoading);
   console.log('Articles Error:', articlesError);
 
-  if (statsLoading || trendLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-100 via-purple-50 to-pink-100">
-        <div className="text-center">
-          <LoadingSpinner />
-          <p className="mt-4 text-lg font-semibold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-            Loading crypto insights...
-          </p>
-        </div>
-      </div>
-    );
-  }
+  // Keep loading states but render skeleton UI instead of spinner
+  const isInitialLoading = statsLoading || trendLoading;
 
   if (statsError) {
     return <ErrorMessage message={statsError.message} />;
@@ -110,6 +101,9 @@ export const Home = () => {
           </div>
 
           {/* Stats Cards */}
+          {isInitialLoading ? (
+            <StatsOverviewSkeleton />
+          ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8 sm:mb-12">
             {/* Total */}
             <div className="bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl p-6 shadow-2xl border border-blue-400 hover:shadow-3xl transition-all hover:-translate-y-2 hover:scale-105">
@@ -151,8 +145,15 @@ export const Home = () => {
               <div className="text-xs text-slate-200 mt-1 font-medium">Balanced outlook</div>
             </div>
           </div>
+          )}
 
           {/* Charts Section */}
+          {isInitialLoading ? (
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 mb-8 sm:mb-12">
+              <ChartSkeleton />
+              <ChartSkeleton />
+            </div>
+          ) : (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 mb-8 sm:mb-12">
             {/* Sentiment Distribution */}
             <div className="bg-white/90 backdrop-blur-md rounded-2xl p-4 sm:p-6 md:p-8 shadow-2xl border-2 border-purple-200 hover:border-purple-400 transition-all">
@@ -214,6 +215,7 @@ export const Home = () => {
               </ResponsiveContainer>
             </div>
           </div>
+          )}
         </div>
       </div>
 
@@ -281,7 +283,7 @@ export const Home = () => {
               <p className="text-sm text-red-500 mt-2">Check console for details</p>
             </div>
           ) : articlesLoading ? (
-            <LoadingSpinner />
+            <ArticlesListSkeleton count={10} />
           ) : articles.length === 0 ? (
             <div className="bg-gradient-to-r from-white/90 to-purple-50/90 backdrop-blur-md rounded-2xl p-8 sm:p-12 shadow-2xl border-2 border-purple-200 text-center">
               <p className="text-gray-600 text-base sm:text-lg font-medium">No articles found matching your filters.</p>
