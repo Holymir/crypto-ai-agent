@@ -20,7 +20,16 @@ export const api = {
 
   // Stats
   getSentimentStats: (params) => apiClient.get('/stats/sentiment', { params }),
-  getSentimentTrend: (days = 7) => apiClient.get(`/stats/trend?days=${days}`),
+  getSentimentTrend: (hours = null, days = 7, granularity = 'daily') => {
+    const params = new URLSearchParams();
+    if (hours !== null) {
+      params.append('hours', hours);
+    } else {
+      params.append('days', days);
+    }
+    params.append('granularity', granularity);
+    return apiClient.get(`/stats/trend?${params.toString()}`);
+  },
 };
 
 export default apiClient;

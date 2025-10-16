@@ -1,7 +1,7 @@
 import { Activity, Sparkles, TrendingUp, Zap, Shield, BarChart3, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { useSentimentStats, useSentimentTrend } from '../hooks/useArticles';
+import { useSentimentStats } from '../hooks/useArticles';
 import { ErrorMessage } from '../components/ErrorMessage';
 import { StatsOverviewSkeleton, ChartSkeleton } from '../components/Skeleton';
 import { Navigation } from '../components/Navigation';
@@ -11,9 +11,8 @@ import { SEO } from '../components/SEO';
 
 export const Home = () => {
   const { data: stats, isLoading: statsLoading, error: statsError } = useSentimentStats();
-  const { data: trendData, isLoading: trendLoading } = useSentimentTrend(7);
 
-  const isInitialLoading = statsLoading || trendLoading;
+  const isInitialLoading = statsLoading;
 
   if (statsError) {
     return <ErrorMessage message={statsError.message} />;
@@ -169,7 +168,7 @@ export const Home = () => {
                 <ChartSkeleton />
               </div>
             ) : (
-              <SentimentCharts stats={stats} trendData={trendData} className="mb-8 sm:mb-12" />
+              <SentimentCharts stats={stats} className="mb-8 sm:mb-12" />
             )}
           </div>
         </div>

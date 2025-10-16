@@ -125,10 +125,19 @@ class ArticleService {
 
   /**
    * Get sentiment trend over time
+   * @param {number} hours - Number of hours to look back (if provided, overrides days)
+   * @param {number} days - Number of days to look back
+   * @param {string} granularity - 'hourly' or 'daily' (default: 'daily')
    */
-  async getSentimentTrend(days = 7) {
+  async getSentimentTrend(hours = null, days = 7, granularity = 'daily') {
     const startDate = new Date();
-    startDate.setDate(startDate.getDate() - days);
+
+    // If hours is provided, use hours for lookback (more precise for 24h view)
+    if (hours !== null) {
+      startDate.setHours(startDate.getHours() - hours);
+    } else {
+      startDate.setDate(startDate.getDate() - days);
+    }
 
     const articles = await prisma.article.findMany({
       where: {
@@ -145,11 +154,24 @@ class ArticleService {
       },
     });
 
-    // Group by date
+    // Group by date or hour
     const trendMap = {};
 
     articles.forEach((article) => {
-      const dateKey = article.publishedAt.toISOString().split('T')[0];
+      let dateKey;
+
+      if (granularity === 'hourly') {
+        // Format: "YYYY-MM-DD HH:00"
+        const date = new Date(article.publishedAt);
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const hour = String(date.getHours()).padStart(2, '0');
+        dateKey = `${year}-${month}-${day} ${hour}:00`;
+      } else {
+        // Format: "YYYY-MM-DD"
+        dateKey = article.publishedAt.toISOString().split('T')[0];
+      }
 
       if (!trendMap[dateKey]) {
         trendMap[dateKey] = {

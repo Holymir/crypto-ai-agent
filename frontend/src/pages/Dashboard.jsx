@@ -1,4 +1,4 @@
-import { useSentimentStats, useSentimentTrend, useLatestArticles } from '../hooks/useArticles';
+import { useSentimentStats, useLatestArticles } from '../hooks/useArticles';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import { ErrorMessage } from '../components/ErrorMessage';
 import { SentimentBadge } from '../components/SentimentBadge';
@@ -9,10 +9,9 @@ import { SEO } from '../components/SEO';
 
 export const Dashboard = () => {
   const { data: stats, isLoading: statsLoading, error: statsError } = useSentimentStats();
-  const { data: trendData, isLoading: trendLoading } = useSentimentTrend(7);
   const { data: latestData, isLoading: latestLoading } = useLatestArticles(5);
 
-  if (statsLoading || trendLoading || latestLoading) {
+  if (statsLoading || latestLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-primary-50 via-secondary-50 to-primary-100 dark:from-dark-bg dark:via-neutral-900 dark:to-dark-bg transition-colors duration-300">
         <Navigation />
@@ -55,7 +54,7 @@ export const Dashboard = () => {
         <StatsOverview stats={stats} className="mb-8 sm:mb-12" />
 
         {/* Charts Grid */}
-        <SentimentCharts stats={stats} trendData={trendData} className="mb-8 sm:mb-12" />
+        <SentimentCharts stats={stats} className="mb-8 sm:mb-12" />
 
         {/* Latest Articles */}
         <div className="bg-white/90 dark:bg-dark-card/90 backdrop-blur-md rounded-2xl p-4 sm:p-6 md:p-8 shadow-2xl border-2 border-primary-200 dark:border-dark-border">

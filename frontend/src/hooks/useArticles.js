@@ -31,11 +31,11 @@ export const useSentimentStats = (params) => {
   });
 };
 
-export const useSentimentTrend = (days = 7) => {
+export const useSentimentTrend = (hours = null, days = 7, granularity = 'daily') => {
   return useQuery({
-    queryKey: ['stats', 'trend', days],
+    queryKey: ['stats', 'trend', hours, days, granularity],
     queryFn: async () => {
-      const response = await api.getSentimentTrend(days);
+      const response = await api.getSentimentTrend(hours, days, granularity);
       return response.data;
     },
   });

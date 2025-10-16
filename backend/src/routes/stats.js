@@ -33,15 +33,31 @@ router.get(
 /**
  * GET /api/stats/trend
  * Get sentiment trend over time
+ * Query params:
+ *   - hours: number of hours to look back (overrides days if provided)
+ *   - days: number of days to look back (default: 7)
+ *   - granularity: 'hourly' or 'daily' (default: 'daily')
  */
 router.get(
   '/trend',
-  [query('days').optional().isInt({ min: 1, max: 365 }).toInt()],
+  [
+    query('hours').optional().isInt({ min: 1, max: 168 }).toInt(),
+    query('days').optional().isInt({ min: 1, max: 365 }).toInt(),
+    query('granularity').optional().isIn(['hourly', 'daily']),
+  ],
   validate,
   async (req, res, next) => {
     try {
-      const days = req.query.days || 7;
-      const trend = await articleService.getSentimentTrend(days);
+      const hours = req.query.hours ? parseInt(req.query.hours) : null;
+      const days = req.query.days ? parseInt(req.query.days) : 7;
+      const granularity = req.query.granularity || 'daily';
+
+      console.log('[STATS/TREND] Request params:', { hours, days, granularity });
+
+      const trend = await articleService.getSentimentTrend(hours, days, granularity);
+
+      console.log('[STATS/TREND] Returned', trend.length, 'data points');
+
       res.json({ trend });
     } catch (error) {
       next(error);
