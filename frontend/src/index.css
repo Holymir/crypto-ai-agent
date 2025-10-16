@@ -28,9 +28,9 @@ html {
 
 /* Design System CSS Variables */
 :root {
-  /* Brand Colors */
-  --color-primary: #00D4AA;
-  --color-secondary: #6366F1;
+  /* Brand Colors - Warm Theme */
+  --color-primary: #f97316;
+  --color-secondary: #f59e0b;
 
   /* Sentiment Colors */
   --color-bullish: #10B981;
