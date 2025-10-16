@@ -39,7 +39,7 @@ export const Articles = () => {
   const { articles = [], pagination = { page: 1, totalPages: 1, total: 0 } } = data || {};
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-100 via-purple-50 to-pink-100 dark:from-dark-bg dark:via-neutral-900 dark:to-dark-bg transition-colors duration-300">
+    <div className="min-h-screen bg-gradient-to-br from-primary-50 via-secondary-50 to-primary-100 dark:from-dark-bg dark:via-neutral-900 dark:to-dark-bg transition-colors duration-300">
       <SEO
         title="All Articles"
         description="Browse and filter analyzed cryptocurrency news articles. Search through our comprehensive database of sentiment-analyzed crypto news from top sources."
@@ -51,7 +51,7 @@ export const Articles = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
         {/* Header */}
         <div className="text-center mb-8 sm:mb-12">
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent mb-2">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold bg-gradient-to-r from-primary-600 via-secondary-600 to-primary-700 bg-clip-text text-transparent mb-2">
             All Articles
           </h1>
           <p className="text-base sm:text-lg text-gray-700 dark:text-dark-muted">
@@ -61,15 +61,15 @@ export const Articles = () => {
 
         {/* Search and Filters */}
         <ScrollReveal direction="up" delay={0.1}>
-          <div className="bg-gradient-to-r from-white/90 to-purple-50/90 dark:from-dark-card/90 dark:to-neutral-800/90 backdrop-blur-md rounded-2xl p-4 sm:p-6 shadow-2xl border-2 border-purple-200 dark:border-dark-border mb-6 sm:mb-8">
+          <div className="bg-gradient-to-r from-white/90 to-primary-50/90 dark:from-dark-card/90 dark:to-neutral-800/90 backdrop-blur-md rounded-2xl p-4 sm:p-6 shadow-2xl border-2 border-primary-200 dark:border-dark-border mb-6 sm:mb-8">
             <div className="flex flex-col gap-4">
               {/* Search */}
               <div className="relative">
-                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-purple-400 w-5 h-5" />
+                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-primary-400 w-5 h-5" />
                 <input
                   type="text"
                   placeholder="Search articles..."
-                  className="w-full pl-12 pr-4 py-3 sm:py-4 border-2 border-purple-200 dark:border-dark-border rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all text-sm sm:text-base bg-white dark:bg-dark-card dark:text-dark-text"
+                  className="w-full pl-12 pr-4 py-3 sm:py-4 border-2 border-primary-200 dark:border-dark-border rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all text-sm sm:text-base bg-white dark:bg-dark-card dark:text-dark-text"
                   value={searchTerm}
                   onChange={handleSearchChange}
                 />
@@ -162,7 +162,7 @@ export const Articles = () => {
           ) : isLoading ? (
             <ArticlesListSkeleton count={20} />
           ) : articles.length === 0 ? (
-            <div className="bg-gradient-to-r from-white/90 to-purple-50/90 dark:from-dark-card/90 dark:to-neutral-800/90 backdrop-blur-md rounded-2xl p-8 sm:p-12 shadow-2xl border-2 border-purple-200 dark:border-dark-border text-center">
+            <div className="bg-gradient-to-r from-white/90 to-primary-50/90 dark:from-dark-card/90 dark:to-neutral-800/90 backdrop-blur-md rounded-2xl p-8 sm:p-12 shadow-2xl border-2 border-primary-200 dark:border-dark-border text-center">
               <p className="text-gray-600 dark:text-dark-muted text-base sm:text-lg font-medium">
                 No articles found matching your filters.
               </p>
@@ -179,11 +179,11 @@ export const Articles = () => {
 
         {/* Pagination */}
         {!error && !isLoading && articles.length > 0 && pagination.totalPages > 1 && (
-          <div className="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4 bg-gradient-to-r from-white/90 to-purple-50/90 dark:from-dark-card/90 dark:to-neutral-800/90 backdrop-blur-md rounded-2xl p-4 sm:p-6 shadow-xl border-2 border-purple-200 dark:border-dark-border">
+          <div className="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4 bg-gradient-to-r from-white/90 to-primary-50/90 dark:from-dark-card/90 dark:to-neutral-800/90 backdrop-blur-md rounded-2xl p-4 sm:p-6 shadow-xl border-2 border-primary-200 dark:border-dark-border">
             {/* Page info */}
             <div className="text-sm text-gray-700 dark:text-dark-muted font-medium">
-              Showing page <span className="font-bold text-purple-600">{pagination.page}</span> of{' '}
-              <span className="font-bold text-purple-600">{pagination.totalPages}</span>
+              Showing page <span className="font-bold text-primary-600">{pagination.page}</span> of{' '}
+              <span className="font-bold text-primary-600">{pagination.totalPages}</span>
               {' '}({pagination.total} total articles)
             </div>
 
@@ -198,7 +198,7 @@ export const Articles = () => {
                 className={`p-2 rounded-lg font-semibold transition-all ${
                   page === 1
                     ? 'bg-gray-200 dark:bg-gray-700 text-gray-400 dark:text-gray-500 cursor-not-allowed'
-                    : 'bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:from-purple-600 hover:to-pink-600 shadow-md hover:shadow-lg'
+                    : 'bg-gradient-to-r from-primary-500 to-secondary-500 text-white hover:from-primary-600 hover:to-secondary-600 shadow-md hover:shadow-lg'
                 }`}
               >
                 <ChevronLeft className="w-5 h-5" />
@@ -213,7 +213,7 @@ export const Articles = () => {
                       onClick={() => setPage(1)}
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
-                      className="px-3 sm:px-4 py-2 rounded-lg font-semibold text-sm bg-white dark:bg-dark-card text-purple-600 dark:text-purple-400 hover:bg-purple-100 dark:hover:bg-neutral-700 transition-all border border-purple-200 dark:border-dark-border"
+                      className="px-3 sm:px-4 py-2 rounded-lg font-semibold text-sm bg-white dark:bg-dark-card text-primary-600 dark:text-primary-400 hover:bg-primary-100 dark:hover:bg-neutral-700 transition-all border border-primary-200 dark:border-dark-border"
                     >
                       1
                     </motion.button>
@@ -237,8 +237,8 @@ export const Articles = () => {
                       whileTap={{ scale: pageNum === pagination.page ? 1 : 0.95 }}
                       className={`px-3 sm:px-4 py-2 rounded-lg font-semibold text-sm transition-all ${
                         pageNum === pagination.page
-                          ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg scale-110'
-                          : 'bg-white dark:bg-dark-card text-purple-600 dark:text-purple-400 hover:bg-purple-100 dark:hover:bg-neutral-700 border border-purple-200 dark:border-dark-border'
+                          ? 'bg-gradient-to-r from-primary-500 to-secondary-500 text-white shadow-lg scale-110'
+                          : 'bg-white dark:bg-dark-card text-primary-600 dark:text-primary-400 hover:bg-primary-100 dark:hover:bg-neutral-700 border border-primary-200 dark:border-dark-border'
                       }`}
                     >
                       {pageNum}
@@ -255,7 +255,7 @@ export const Articles = () => {
                       onClick={() => setPage(pagination.totalPages)}
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
-                      className="px-3 sm:px-4 py-2 rounded-lg font-semibold text-sm bg-white dark:bg-dark-card text-purple-600 dark:text-purple-400 hover:bg-purple-100 dark:hover:bg-neutral-700 transition-all border border-purple-200 dark:border-dark-border"
+                      className="px-3 sm:px-4 py-2 rounded-lg font-semibold text-sm bg-white dark:bg-dark-card text-primary-600 dark:text-primary-400 hover:bg-primary-100 dark:hover:bg-neutral-700 transition-all border border-primary-200 dark:border-dark-border"
                     >
                       {pagination.totalPages}
                     </motion.button>
@@ -272,7 +272,7 @@ export const Articles = () => {
                 className={`p-2 rounded-lg font-semibold transition-all ${
                   page === pagination.totalPages
                     ? 'bg-gray-200 dark:bg-gray-700 text-gray-400 dark:text-gray-500 cursor-not-allowed'
-                    : 'bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:from-purple-600 hover:to-pink-600 shadow-md hover:shadow-lg'
+                    : 'bg-gradient-to-r from-primary-500 to-secondary-500 text-white hover:from-primary-600 hover:to-secondary-600 shadow-md hover:shadow-lg'
                 }`}
               >
                 <ChevronRight className="w-5 h-5" />

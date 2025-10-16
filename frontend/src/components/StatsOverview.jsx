@@ -15,14 +15,14 @@ export const StatsOverview = ({ stats, className = '' }) => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3, delay: 0 }}
-        className="bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl p-6 shadow-2xl border border-blue-400 hover:shadow-3xl transition-all hover:-translate-y-2 hover:scale-105"
+        className="bg-gradient-to-br from-primary-500 to-secondary-600 rounded-2xl p-6 shadow-2xl border border-primary-400 hover:shadow-3xl transition-all hover:-translate-y-2 hover:scale-105"
       >
         <div className="flex items-center justify-between mb-2">
-          <span className="text-sm font-semibold text-blue-100">Total Articles</span>
-          <BarChart3 className="w-5 h-5 text-blue-200" />
+          <span className="text-sm font-semibold text-primary-100">Total Articles</span>
+          <BarChart3 className="w-5 h-5 text-primary-200" />
         </div>
         <div className="text-3xl sm:text-4xl font-bold text-white">{stats?.total || 0}</div>
-        <div className="text-xs text-blue-200 mt-1 font-medium">All time analyzed</div>
+        <div className="text-xs text-primary-200 mt-1 font-medium">All time analyzed</div>
       </motion.div>
 
       {/* Bullish */}

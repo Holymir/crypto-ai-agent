@@ -25,12 +25,12 @@ export const SentimentCharts = ({ stats, trendData, className = '' }) => {
     <div className={`grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 ${className}`}>
       <ScrollReveal direction="left" delay={0.1}>
         {/* Sentiment Distribution */}
-        <div className="bg-white/90 dark:bg-dark-card/90 backdrop-blur-md rounded-2xl p-4 sm:p-6 md:p-8 shadow-2xl border-2 border-purple-200 dark:border-dark-border hover:border-purple-400 dark:hover:border-purple-600 transition-all">
+        <div className="bg-white/90 dark:bg-dark-card/90 backdrop-blur-md rounded-2xl p-4 sm:p-6 md:p-8 shadow-2xl border-2 border-primary-200 dark:border-dark-border hover:border-primary-400 dark:hover:border-primary-600 transition-all">
           <div className="flex items-center gap-2 mb-4 sm:mb-6">
-            <div className="p-2 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg">
+            <div className="p-2 bg-gradient-to-br from-primary-500 to-secondary-500 rounded-lg">
               <Zap className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
             </div>
-            <h2 className="text-lg sm:text-xl md:text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">Sentiment Distribution</h2>
+            <h2 className="text-lg sm:text-xl md:text-2xl font-bold bg-gradient-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent">Sentiment Distribution</h2>
           </div>
           <ResponsiveContainer width="100%" height={280}>
             <PieChart>
@@ -67,12 +67,12 @@ export const SentimentCharts = ({ stats, trendData, className = '' }) => {
 
       <ScrollReveal direction="right" delay={0.2}>
         {/* Trend Chart */}
-        <div className="bg-white/90 dark:bg-dark-card/90 backdrop-blur-md rounded-2xl p-4 sm:p-6 md:p-8 shadow-2xl border-2 border-blue-200 dark:border-dark-border hover:border-blue-400 dark:hover:border-blue-600 transition-all">
+        <div className="bg-white/90 dark:bg-dark-card/90 backdrop-blur-md rounded-2xl p-4 sm:p-6 md:p-8 shadow-2xl border-2 border-secondary-200 dark:border-dark-border hover:border-secondary-400 dark:hover:border-secondary-600 transition-all">
           <div className="flex items-center gap-2 mb-4 sm:mb-6">
-            <div className="p-2 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-lg">
+            <div className="p-2 bg-gradient-to-br from-secondary-500 to-primary-500 rounded-lg">
               <Activity className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
             </div>
-            <h2 className="text-lg sm:text-xl md:text-2xl font-bold bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">7-Day Trend</h2>
+            <h2 className="text-lg sm:text-xl md:text-2xl font-bold bg-gradient-to-r from-secondary-600 to-primary-600 bg-clip-text text-transparent">7-Day Trend</h2>
           </div>
           <ResponsiveContainer width="100%" height={280}>
             <AreaChart data={trendChartData}>
