@@ -1,17 +1,11 @@
-import { TrendingUp, TrendingDown, Minus, BarChart3 } from 'lucide-react';
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend, LineChart, Line, XAxis, YAxis, CartesianGrid } from 'recharts';
 import { useSentimentStats, useSentimentTrend, useLatestArticles } from '../hooks/useArticles';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import { ErrorMessage } from '../components/ErrorMessage';
-import { StatCard } from '../components/StatCard';
 import { SentimentBadge } from '../components/SentimentBadge';
-
-const COLORS = {
-  BULLISH: '#22c55e',
-  BEARISH: '#ef4444',
-  NEUTRAL: '#64748b',
-  ERROR: '#9ca3af',
-};
+import { Navigation } from '../components/Navigation';
+import { StatsOverview } from '../components/StatsOverview';
+import { SentimentCharts } from '../components/SentimentCharts';
+import { SEO } from '../components/SEO';
 
 export const Dashboard = () => {
   const { data: stats, isLoading: statsLoading, error: statsError } = useSentimentStats();
@@ -19,122 +13,77 @@ export const Dashboard = () => {
   const { data: latestData, isLoading: latestLoading } = useLatestArticles(5);
 
   if (statsLoading || trendLoading || latestLoading) {
-    return <LoadingSpinner />;
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-indigo-100 via-purple-50 to-pink-100 dark:from-dark-bg dark:via-neutral-900 dark:to-dark-bg transition-colors duration-300">
+        <Navigation />
+        <LoadingSpinner />
+      </div>
+    );
   }
 
   if (statsError) {
-    return <ErrorMessage message={statsError.message} />;
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-indigo-100 via-purple-50 to-pink-100 dark:from-dark-bg dark:via-neutral-900 dark:to-dark-bg transition-colors duration-300">
+        <Navigation />
+        <ErrorMessage message={statsError.message} />
+      </div>
+    );
   }
 
-  const pieData = [
-    { name: 'Bullish', value: stats?.BULLISH || 0 },
-    { name: 'Bearish', value: stats?.BEARISH || 0 },
-    { name: 'Neutral', value: stats?.NEUTRAL || 0 },
-  ].filter(item => item.value > 0);
-
-  const trendChartData = trendData?.trend || [];
-
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold text-gray-900">Crypto Sentiment Dashboard</h1>
-        <p className="text-gray-600 mt-1">Real-time cryptocurrency news sentiment analysis</p>
-      </div>
+    <div className="min-h-screen bg-gradient-to-br from-indigo-100 via-purple-50 to-pink-100 dark:from-dark-bg dark:via-neutral-900 dark:to-dark-bg transition-colors duration-300">
+      <SEO
+        title="Analytics Dashboard"
+        description="View comprehensive cryptocurrency sentiment analytics, market trends, and the latest news analysis in one dashboard."
+        keywords="crypto dashboard, sentiment analytics, market trends, crypto statistics, real-time analysis"
+      />
 
-      {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <StatCard
-          title="Total Articles"
-          value={stats?.total || 0}
-          icon={BarChart3}
-          color="blue"
-        />
-        <StatCard
-          title="Bullish"
-          value={stats?.BULLISH || 0}
-          icon={TrendingUp}
-          color="green"
-        />
-        <StatCard
-          title="Bearish"
-          value={stats?.BEARISH || 0}
-          icon={TrendingDown}
-          color="red"
-        />
-        <StatCard
-          title="Neutral"
-          value={stats?.NEUTRAL || 0}
-          icon={Minus}
-          color="gray"
-        />
-      </div>
+      <Navigation />
 
-      {/* Charts Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Pie Chart */}
-        <div className="card">
-          <h2 className="text-xl font-semibold mb-4">Sentiment Distribution</h2>
-          <ResponsiveContainer width="100%" height={300}>
-            <PieChart>
-              <Pie
-                data={pieData}
-                cx="50%"
-                cy="50%"
-                labelLine={false}
-                label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                outerRadius={100}
-                fill="#8884d8"
-                dataKey="value"
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+        {/* Header */}
+        <div className="text-center mb-8 sm:mb-12">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent mb-2">
+            Analytics Dashboard
+          </h1>
+          <p className="text-base sm:text-lg text-gray-700 dark:text-dark-muted">
+            Real-time cryptocurrency news sentiment analysis
+          </p>
+        </div>
+
+        {/* Stats Grid */}
+        <StatsOverview stats={stats} className="mb-8 sm:mb-12" />
+
+        {/* Charts Grid */}
+        <SentimentCharts stats={stats} trendData={trendData} className="mb-8 sm:mb-12" />
+
+        {/* Latest Articles */}
+        <div className="bg-white/90 dark:bg-dark-card/90 backdrop-blur-md rounded-2xl p-4 sm:p-6 md:p-8 shadow-2xl border-2 border-purple-200 dark:border-dark-border">
+          <h2 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-6">
+            Latest Articles
+          </h2>
+          <div className="space-y-4">
+            {latestData?.articles?.map((article) => (
+              <div
+                key={article.id}
+                className="flex items-start justify-between p-4 bg-gradient-to-r from-gray-50 to-purple-50/50 dark:from-neutral-800 dark:to-neutral-700 rounded-xl hover:shadow-md transition-all hover:scale-[1.02]"
               >
-                {pieData.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={COLORS[entry.name.toUpperCase()]} />
-                ))}
-              </Pie>
-              <Tooltip />
-              <Legend />
-            </PieChart>
-          </ResponsiveContainer>
-        </div>
-
-        {/* Line Chart */}
-        <div className="card">
-          <h2 className="text-xl font-semibold mb-4">7-Day Sentiment Trend</h2>
-          <ResponsiveContainer width="100%" height={300}>
-            <LineChart data={trendChartData}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="date" tick={{ fontSize: 12 }} />
-              <YAxis />
-              <Tooltip />
-              <Legend />
-              <Line type="monotone" dataKey="BULLISH" stroke={COLORS.BULLISH} strokeWidth={2} />
-              <Line type="monotone" dataKey="BEARISH" stroke={COLORS.BEARISH} strokeWidth={2} />
-              <Line type="monotone" dataKey="NEUTRAL" stroke={COLORS.NEUTRAL} strokeWidth={2} />
-            </LineChart>
-          </ResponsiveContainer>
-        </div>
-      </div>
-
-      {/* Latest Articles */}
-      <div className="card">
-        <h2 className="text-xl font-semibold mb-4">Latest Articles</h2>
-        <div className="space-y-4">
-          {latestData?.articles?.map((article) => (
-            <div
-              key={article.id}
-              className="flex items-start justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
-            >
-              <div className="flex-1">
-                <h3 className="font-medium text-gray-900">{article.title}</h3>
-                <div className="flex items-center gap-3 mt-2 text-sm text-gray-600">
-                  <span>{article.source}</span>
-                  <span>•</span>
-                  <span>{new Date(article.publishedAt).toLocaleDateString()}</span>
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-semibold text-gray-900 dark:text-dark-text text-sm sm:text-base mb-2 line-clamp-2">
+                    {article.title}
+                  </h3>
+                  <div className="flex items-center gap-3 text-xs sm:text-sm text-gray-600 dark:text-dark-muted">
+                    <span className="font-medium">{article.source}</span>
+                    <span>•</span>
+                    <span>{new Date(article.publishedAt).toLocaleDateString()}</span>
+                  </div>
+                </div>
+                <div className="ml-4 flex-shrink-0">
+                  <SentimentBadge sentiment={article.sentiment} />
                 </div>
               </div>
-              <SentimentBadge sentiment={article.sentiment} />
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
     </div>

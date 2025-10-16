@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Activity, Menu, X } from 'lucide-react';
 import { DarkModeToggle } from './DarkModeToggle';
@@ -6,6 +7,7 @@ import { DarkModeToggle } from './DarkModeToggle';
 export const Navigation = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const location = useLocation();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -28,24 +30,19 @@ export const Navigation = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  // Close mobile menu on route change
+  useEffect(() => {
+    setIsMobileMenuOpen(false);
+  }, [location]);
+
   const navLinks = [
-    { name: 'Home', href: '#home' },
-    { name: 'Analytics', href: '#analytics' },
-    { name: 'Articles', href: '#articles' },
+    { name: 'Home', href: '/' },
+    { name: 'Dashboard', href: '/dashboard' },
+    { name: 'Articles', href: '/articles' },
   ];
 
-  const scrollToSection = (e, href) => {
-    e.preventDefault();
-    const target = document.querySelector(href);
-    if (target) {
-      const offset = 80; // Account for sticky header
-      const targetPosition = target.offsetTop - offset;
-      window.scrollTo({
-        top: targetPosition,
-        behavior: 'smooth'
-      });
-      setIsMobileMenuOpen(false);
-    }
+  const isActivePath = (href) => {
+    return location.pathname === href;
   };
 
   return (
@@ -63,31 +60,35 @@ export const Navigation = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16 sm:h-20">
             {/* Logo */}
-            <a
-              href="#home"
-              onClick={(e) => scrollToSection(e, '#home')}
+            <Link
+              to="/"
               className="flex items-center gap-2 sm:gap-3 group"
             >
               <div className="p-2 bg-gradient-to-br from-primary-500 to-secondary-500 rounded-xl shadow-lg group-hover:scale-110 transition-transform">
                 <Activity className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
               </div>
               <span className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-primary-600 to-secondary-600 dark:from-primary-400 dark:to-secondary-400 bg-clip-text text-transparent">
-                Sentifi
+                CryptoSentinel
               </span>
-            </a>
+            </Link>
 
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center gap-8">
               {navLinks.map((link) => (
-                <a
+                <Link
                   key={link.name}
-                  href={link.href}
-                  onClick={(e) => scrollToSection(e, link.href)}
-                  className="text-neutral-700 dark:text-dark-text hover:text-primary-600 dark:hover:text-primary-400 font-medium transition-colors relative group"
+                  to={link.href}
+                  className={`font-medium transition-colors relative group ${
+                    isActivePath(link.href)
+                      ? 'text-primary-600 dark:text-primary-400'
+                      : 'text-neutral-700 dark:text-dark-text hover:text-primary-600 dark:hover:text-primary-400'
+                  }`}
                 >
                   {link.name}
-                  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-primary-500 to-secondary-500 group-hover:w-full transition-all duration-300"></span>
-                </a>
+                  <span className={`absolute -bottom-1 left-0 h-0.5 bg-gradient-to-r from-primary-500 to-secondary-500 transition-all duration-300 ${
+                    isActivePath(link.href) ? 'w-full' : 'w-0 group-hover:w-full'
+                  }`}></span>
+                </Link>
               ))}
               <DarkModeToggle />
             </div>
@@ -122,14 +123,17 @@ export const Navigation = () => {
             >
               <div className="px-4 py-4 space-y-2">
                 {navLinks.map((link) => (
-                  <a
+                  <Link
                     key={link.name}
-                    href={link.href}
-                    onClick={(e) => scrollToSection(e, link.href)}
-                    className="block px-4 py-3 rounded-lg text-neutral-700 dark:text-dark-text hover:bg-neutral-100 dark:hover:bg-neutral-700 font-medium transition-colors"
+                    to={link.href}
+                    className={`block px-4 py-3 rounded-lg font-medium transition-colors ${
+                      isActivePath(link.href)
+                        ? 'bg-primary-100 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400'
+                        : 'text-neutral-700 dark:text-dark-text hover:bg-neutral-100 dark:hover:bg-neutral-700'
+                    }`}
                   >
                     {link.name}
-                  </a>
+                  </Link>
                 ))}
               </div>
             </motion.div>
