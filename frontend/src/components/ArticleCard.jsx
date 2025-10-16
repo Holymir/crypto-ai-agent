@@ -1,11 +1,12 @@
 import { motion } from 'framer-motion';
-import { ExternalLink, Share2, Twitter, Facebook, Linkedin, Copy, Check } from 'lucide-react';
+import { ExternalLink, Share2, Twitter, Facebook, Linkedin, Copy, Check, Bookmark, Clock } from 'lucide-react';
 import { SentimentBadge } from './SentimentBadge';
 import { useState } from 'react';
 
 export const ArticleCard = ({ article, index = 0 }) => {
   const [showShareMenu, setShowShareMenu] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [isBookmarked, setIsBookmarked] = useState(false);
 
   const handleShare = (platform) => {
     const url = article.url || window.location.href;
@@ -48,6 +49,21 @@ export const ArticleCard = ({ article, index = 0 }) => {
     }
   };
 
+  // Calculate read time based on content length
+  const calculateReadTime = () => {
+    if (!article.content || article.content === 'Historical article - content not available') {
+      return 2; // Default 2 min for articles without content
+    }
+    const wordsPerMinute = 200;
+    const wordCount = article.title.split(' ').length + (article.content?.split(' ').length || 0);
+    return Math.max(1, Math.ceil(wordCount / wordsPerMinute));
+  };
+
+  const handleBookmark = () => {
+    setIsBookmarked(!isBookmarked);
+    // In a real app, this would save to localStorage or a backend
+  };
+
   return (
     <motion.article
       initial={{ opacity: 0, y: 10 }}
@@ -74,10 +90,33 @@ export const ArticleCard = ({ article, index = 0 }) => {
             <span className="px-3 py-1 bg-neutral-100 dark:bg-neutral-700 text-neutral-600 dark:text-neutral-300 rounded-full text-xs font-medium">
               {formatDate(article.publishedAt)}
             </span>
+
+            {/* Read Time Badge */}
+            <span className="px-3 py-1 bg-neutral-100 dark:bg-neutral-700 text-neutral-600 dark:text-neutral-300 rounded-full text-xs font-medium flex items-center gap-1">
+              <Clock className="w-3 h-3" />
+              {calculateReadTime()} min read
+            </span>
           </div>
 
-          {/* Share Button */}
-          <div className="relative">
+          {/* Action Buttons */}
+          <div className="flex items-center gap-2">
+            {/* Bookmark Button */}
+            <motion.button
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+              onClick={handleBookmark}
+              className={`p-2 rounded-lg transition-colors ${
+                isBookmarked
+                  ? 'bg-primary-100 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400'
+                  : 'bg-neutral-100 dark:bg-neutral-700 hover:bg-neutral-200 dark:hover:bg-neutral-600 text-neutral-600 dark:text-neutral-300'
+              }`}
+              aria-label={isBookmarked ? 'Remove bookmark' : 'Bookmark article'}
+            >
+              <Bookmark className={`w-4 h-4 ${isBookmarked ? 'fill-current' : ''}`} />
+            </motion.button>
+
+            {/* Share Button */}
+            <div className="relative">
             <button
               onClick={() => setShowShareMenu(!showShareMenu)}
               className="p-2 rounded-lg bg-neutral-100 dark:bg-neutral-700 hover:bg-neutral-200 dark:hover:bg-neutral-600 text-neutral-600 dark:text-neutral-300 hover:text-neutral-800 dark:hover:text-neutral-100 transition-colors"
@@ -125,6 +164,7 @@ export const ArticleCard = ({ article, index = 0 }) => {
                 </button>
               </div>
             )}
+            </div>
           </div>
         </div>
 

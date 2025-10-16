@@ -1,4 +1,6 @@
-import { Activity, Sparkles } from 'lucide-react';
+import { Activity, Sparkles, TrendingUp, Zap, Shield, BarChart3, ArrowRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { useSentimentStats, useSentimentTrend } from '../hooks/useArticles';
 import { ErrorMessage } from '../components/ErrorMessage';
 import { StatsOverviewSkeleton, ChartSkeleton } from '../components/Skeleton';
@@ -50,6 +52,106 @@ export const Home = () => {
               <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-amber-500 animate-pulse" />
               <span className="text-xs sm:text-sm text-gray-600 dark:text-dark-muted font-medium">Powered by OpenAI GPT-3.5</span>
             </div>
+
+            {/* CTA Buttons */}
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-8">
+              <Link to="/dashboard">
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="group px-8 py-4 bg-gradient-to-r from-primary-500 to-secondary-500 text-white rounded-xl font-semibold text-lg shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-2"
+                >
+                  Get Started
+                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                </motion.button>
+              </Link>
+              <Link to="/articles">
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="px-8 py-4 bg-white dark:bg-dark-card text-primary-600 dark:text-primary-400 rounded-xl font-semibold text-lg shadow-lg hover:shadow-xl transition-all duration-300 border-2 border-primary-200 dark:border-primary-800"
+                >
+                  Browse Articles
+                </motion.button>
+              </Link>
+            </div>
+
+            {/* Social Proof - Live Stats */}
+            {!isInitialLoading && stats && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+                className="flex flex-wrap items-center justify-center gap-6 sm:gap-8 mt-10 text-sm sm:text-base text-gray-600 dark:text-dark-muted"
+              >
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 bg-primary-500 rounded-full animate-pulse"></div>
+                  <span className="font-semibold text-gray-900 dark:text-white">{stats.total.toLocaleString()}</span>
+                  <span>Articles Analyzed</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <TrendingUp className="w-4 h-4 text-primary-500" />
+                  <span className="font-semibold text-gray-900 dark:text-white">Live Updates</span>
+                  <span>Every 2 Hours</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Shield className="w-4 h-4 text-primary-500" />
+                  <span className="font-semibold text-gray-900 dark:text-white">AI-Powered</span>
+                  <span>Sentiment Analysis</span>
+                </div>
+              </motion.div>
+            )}
+          </div>
+
+          {/* Feature Highlights */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12 sm:mb-16">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.1 }}
+              className="bg-white dark:bg-dark-card rounded-2xl p-6 shadow-lg border border-neutral-200 dark:border-dark-border hover:shadow-xl transition-shadow"
+            >
+              <div className="w-12 h-12 bg-gradient-to-br from-primary-100 to-primary-200 dark:from-primary-900/30 dark:to-primary-800/30 rounded-xl flex items-center justify-center mb-4">
+                <Zap className="w-6 h-6 text-primary-600 dark:text-primary-400" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">Real-Time Analysis</h3>
+              <p className="text-gray-600 dark:text-dark-muted">
+                Get instant AI-powered sentiment analysis on the latest crypto news from top sources every 2 hours.
+              </p>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2 }}
+              className="bg-white dark:bg-dark-card rounded-2xl p-6 shadow-lg border border-neutral-200 dark:border-dark-border hover:shadow-xl transition-shadow"
+            >
+              <div className="w-12 h-12 bg-gradient-to-br from-secondary-100 to-secondary-200 dark:from-secondary-900/30 dark:to-secondary-800/30 rounded-xl flex items-center justify-center mb-4">
+                <BarChart3 className="w-6 h-6 text-secondary-600 dark:text-secondary-400" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">Visual Insights</h3>
+              <p className="text-gray-600 dark:text-dark-muted">
+                Track sentiment trends with interactive charts and comprehensive analytics dashboards.
+              </p>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.3 }}
+              className="bg-white dark:bg-dark-card rounded-2xl p-6 shadow-lg border border-neutral-200 dark:border-dark-border hover:shadow-xl transition-shadow"
+            >
+              <div className="w-12 h-12 bg-gradient-to-br from-primary-100 to-secondary-200 dark:from-primary-900/30 dark:to-secondary-800/30 rounded-xl flex items-center justify-center mb-4">
+                <Shield className="w-6 h-6 text-primary-600 dark:text-primary-400" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">Trusted Sources</h3>
+              <p className="text-gray-600 dark:text-dark-muted">
+                Aggregates news from CoinDesk, CoinTelegraph, and other leading crypto news platforms.
+              </p>
+            </motion.div>
           </div>
 
           {/* Stats Cards */}
