@@ -1,5 +1,5 @@
 {
-  "name": "cryptosentinel-ai",
+  "name": "sentifi-ai",
   "version": "1.0.0",
   "description": "An intelligent system for real-time crypto market sentiment analysis",
   "main": "index.js",

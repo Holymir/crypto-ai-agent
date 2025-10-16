@@ -1,4 +1,4 @@
-# Deployment Guide - CryptoSentinel AI
+# Deployment Guide - SentiFi AI
 
 ## Overview
 This guide explains how to deploy your advanced crypto intelligence platform to production. We'll cover multiple deployment options with step-by-step instructions.

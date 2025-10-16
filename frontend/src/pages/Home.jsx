@@ -36,9 +36,9 @@ export const Home = () => {
           {/* Header */}
           <div className="text-center mb-8 sm:mb-12">
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-4">
-              <div className="p-3 bg-gradient-to-br from-primary-500 to-secondary-500 rounded-2xl shadow-xl transform hover:scale-110 transition-transform">
+              {/* <div className="p-3 bg-gradient-to-br from-primary-500 to-secondary-500 rounded-2xl shadow-xl transform hover:scale-110 transition-transform">
                 <Activity className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
-              </div>
+              </div> */}
               <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold bg-gradient-to-r from-primary-600 via-secondary-600 to-primary-700 bg-clip-text text-transparent">
                 AI-Powered Crypto News Sentiment
               </h1>

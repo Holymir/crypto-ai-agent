@@ -1,4 +1,4 @@
-# 🤖 CryptoSentinel AI
+# 🤖 SentiFi AI
 
 An advanced cryptocurrency intelligence platform that delivers real-time market insights through AI-powered sentiment analysis. Automatically aggregates and processes news from major crypto sources (CoinDesk, CoinTelegraph), leveraging OpenAI GPT-3.5 for deep sentiment analysis, and presents actionable insights through an intuitive interactive dashboard.
 
