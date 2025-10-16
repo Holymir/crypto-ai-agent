@@ -68,7 +68,7 @@ export const Navigation = () => {
                 <Activity className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
               </div>
               <span className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-primary-600 to-secondary-600 dark:from-primary-400 dark:to-secondary-400 bg-clip-text text-transparent">
-                CryptoSentinel
+                CryptoSentiment
               </span>
             </Link>
 
