@@ -50,18 +50,18 @@ export const Articles = () => {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
         {/* Header */}
-        <div className="text-center mb-8 sm:mb-12">
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold bg-gradient-to-r from-primary-600 via-secondary-600 to-primary-700 bg-clip-text text-transparent mb-2">
+        <div className="text-center section-spacing">
+          <h1 className="text-display bg-gradient-to-r from-primary-600 via-secondary-600 to-primary-700 bg-clip-text text-transparent mb-4">
             All Articles
           </h1>
-          <p className="text-base sm:text-lg text-gray-700 dark:text-dark-muted">
+          <p className="text-lg sm:text-xl text-gray-600 dark:text-dark-muted">
             Browse and filter analyzed cryptocurrency news
           </p>
         </div>
 
         {/* Search and Filters */}
         <ScrollReveal direction="up" delay={0.1}>
-          <div className="bg-gradient-to-r from-white/90 to-primary-50/90 dark:from-dark-card/90 dark:to-neutral-800/90 backdrop-blur-md rounded-2xl p-4 sm:p-6 shadow-2xl border-2 border-primary-200 dark:border-dark-border mb-6 sm:mb-8">
+          <div className="glass-strong rounded-2xl card-spacing shadow-2xl mb-6 sm:mb-8">
             <div className="flex flex-col gap-4">
               {/* Search */}
               <div className="relative">
@@ -69,7 +69,7 @@ export const Articles = () => {
                 <input
                   type="text"
                   placeholder="Search articles..."
-                  className="w-full pl-12 pr-4 py-3 sm:py-4 border-2 border-primary-200 dark:border-dark-border rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all text-sm sm:text-base bg-white dark:bg-dark-card dark:text-dark-text"
+                  className="w-full pl-12 pr-4 py-3 sm:py-4 glass rounded-xl focus-ring smooth-transition text-sm sm:text-base dark:text-dark-text"
                   value={searchTerm}
                   onChange={handleSearchChange}
                 />
@@ -154,7 +154,7 @@ export const Articles = () => {
         {/* Articles List */}
         <div className="space-y-3 sm:space-y-4">
           {error ? (
-            <div className="bg-gradient-to-r from-red-50 to-rose-50 dark:from-red-900/30 dark:to-rose-900/30 backdrop-blur-md rounded-2xl p-8 sm:p-12 shadow-2xl border-2 border-red-200 dark:border-red-800 text-center">
+            <div className="glass-strong rounded-2xl p-8 sm:p-12 shadow-2xl border-2 border-red-200/50 dark:border-red-800/50 text-center">
               <p className="text-red-600 dark:text-red-400 text-base sm:text-lg font-medium">
                 Error loading articles: {error.message}
               </p>
@@ -162,7 +162,7 @@ export const Articles = () => {
           ) : isLoading ? (
             <ArticlesListSkeleton count={20} />
           ) : articles.length === 0 ? (
-            <div className="bg-gradient-to-r from-white/90 to-primary-50/90 dark:from-dark-card/90 dark:to-neutral-800/90 backdrop-blur-md rounded-2xl p-8 sm:p-12 shadow-2xl border-2 border-primary-200 dark:border-dark-border text-center">
+            <div className="glass-strong rounded-2xl p-8 sm:p-12 shadow-2xl text-center">
               <p className="text-gray-600 dark:text-dark-muted text-base sm:text-lg font-medium">
                 No articles found matching your filters.
               </p>
@@ -179,7 +179,7 @@ export const Articles = () => {
 
         {/* Pagination */}
         {!error && !isLoading && articles.length > 0 && pagination.totalPages > 1 && (
-          <div className="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4 bg-gradient-to-r from-white/90 to-primary-50/90 dark:from-dark-card/90 dark:to-neutral-800/90 backdrop-blur-md rounded-2xl p-4 sm:p-6 shadow-xl border-2 border-primary-200 dark:border-dark-border">
+          <div className="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4 glass-strong rounded-2xl p-4 sm:p-6 shadow-xl">
             {/* Page info */}
             <div className="text-sm text-gray-700 dark:text-dark-muted font-medium">
               Showing page <span className="font-bold text-primary-600">{pagination.page}</span> of{' '}

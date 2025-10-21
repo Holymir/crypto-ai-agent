@@ -41,7 +41,7 @@ export const SentimentCharts = ({ stats, className = '' }) => {
     <div className={`grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 ${className}`}>
       <ScrollReveal direction="left" delay={0.1}>
         {/* Sentiment Distribution */}
-        <div className="bg-white/90 dark:bg-dark-card/90 backdrop-blur-md rounded-2xl p-4 sm:p-6 md:p-8 shadow-2xl border-2 border-primary-200 dark:border-dark-border hover:border-primary-400 dark:hover:border-primary-600 transition-all">
+        <div className="glass-strong rounded-2xl card-spacing shadow-2xl hover-lift hover-glow">
           <div className="flex items-center gap-2 mb-4 sm:mb-6">
             <div className="p-2 bg-gradient-to-br from-primary-500 to-secondary-500 rounded-lg">
               <Zap className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
@@ -71,7 +71,19 @@ export const SentimentCharts = ({ stats, className = '' }) => {
                   />
                 ))}
               </Pie>
-              <Tooltip content={<PieChartTooltip />} cursor={false} />
+              <Tooltip
+                content={<PieChartTooltip />}
+                cursor={false}
+                contentStyle={{
+                  background: 'rgba(255, 255, 255, 0.95)',
+                  backdropFilter: 'blur(10px)',
+                  WebkitBackdropFilter: 'blur(10px)',
+                  border: '1px solid rgba(249, 115, 22, 0.2)',
+                  borderRadius: '12px',
+                  padding: '12px',
+                  boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1)',
+                }}
+              />
               <Legend
                 wrapperStyle={{ paddingTop: '20px' }}
                 iconType="circle"
@@ -83,7 +95,7 @@ export const SentimentCharts = ({ stats, className = '' }) => {
 
       <ScrollReveal direction="right" delay={0.2}>
         {/* Trend Chart */}
-        <div className="bg-white/90 dark:bg-dark-card/90 backdrop-blur-md rounded-2xl p-4 sm:p-6 md:p-8 shadow-2xl border-2 border-secondary-200 dark:border-dark-border hover:border-secondary-400 dark:hover:border-secondary-600 transition-all">
+        <div className="glass-strong rounded-2xl card-spacing shadow-2xl hover-lift hover-glow-secondary">
           <div className="flex items-center justify-between mb-4 sm:mb-6">
             <div className="flex items-center gap-2">
               <div className="p-2 bg-gradient-to-br from-secondary-500 to-primary-500 rounded-lg">
@@ -141,7 +153,19 @@ export const SentimentCharts = ({ stats, className = '' }) => {
                 }}
               />
               <YAxis stroke="#9ca3af" className="dark:opacity-50" />
-              <Tooltip content={<TrendChartTooltip />} cursor={{ stroke: '#6366F1', strokeWidth: 2, strokeDasharray: '5 5' }} />
+              <Tooltip
+                content={<TrendChartTooltip />}
+                cursor={{ stroke: '#6366F1', strokeWidth: 2, strokeDasharray: '5 5' }}
+                contentStyle={{
+                  background: 'rgba(255, 255, 255, 0.95)',
+                  backdropFilter: 'blur(10px)',
+                  WebkitBackdropFilter: 'blur(10px)',
+                  border: '1px solid rgba(245, 158, 11, 0.2)',
+                  borderRadius: '12px',
+                  padding: '12px',
+                  boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1)',
+                }}
+              />
               <Area
                 type="monotone"
                 dataKey="BULLISH"
