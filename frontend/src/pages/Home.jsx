@@ -1,4 +1,4 @@
-import { Activity, Sparkles, TrendingUp, Zap, Shield, BarChart3, ArrowRight } from 'lucide-react';
+import { Activity, Sparkles, TrendingUp, Zap, Shield, BarChart3, ArrowRight, Brain, Clock, Database, LineChart } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useSentimentStats } from '../hooks/useArticles';
@@ -34,123 +34,235 @@ export const Home = () => {
         <div className="absolute inset-0 bg-grid-slate-100 [mask-image:linear-gradient(0deg,white,rgba(255,255,255,0.6))] dark:bg-grid-slate-800 -z-10"></div>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 relative">
-          {/* Header */}
-          <div className="text-center mb-8 sm:mb-12">
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-4">
-              {/* <div className="p-3 bg-gradient-to-br from-primary-500 to-secondary-500 rounded-2xl shadow-xl transform hover:scale-110 transition-transform">
-                <Activity className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
-              </div> */}
-              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold bg-gradient-to-r from-primary-600 via-secondary-600 to-primary-700 bg-clip-text text-transparent">
-                AI-Powered Crypto News Sentiment
+          {/* Hero Section */}
+          <div className="text-center mb-12 sm:mb-16">
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              className="flex flex-col items-center justify-center gap-4 mb-6"
+            >
+              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-gray-900 dark:text-white leading-tight">
+                Make Smarter Crypto Decisions
               </h1>
-            </div>
-            <p className="text-base sm:text-lg md:text-xl text-gray-700 dark:text-dark-muted max-w-2xl mx-auto px-4">
-              Because every market move starts with a story — and crypto news is where those stories ignite.
-            </p>
-            <div className="flex items-center justify-center gap-2 mt-4">
-              <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-amber-500 animate-pulse" />
-              <span className="text-xs sm:text-sm text-gray-600 dark:text-dark-muted font-medium">Powered by OpenAI GPT-3.5</span>
-            </div>
+              <p className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold bg-gradient-to-r from-primary-600 via-secondary-600 to-primary-700 bg-clip-text text-transparent">
+                With AI Sentiment Analysis
+              </p>
+            </motion.div>
+
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.2, duration: 0.6 }}
+              className="text-lg sm:text-xl text-gray-600 dark:text-dark-muted max-w-3xl mx-auto px-4 mb-8"
+            >
+              Track real-time market sentiment from thousands of crypto news articles. Get actionable insights updated every 2 hours to stay ahead of market trends.
+            </motion.p>
 
             {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-8">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3, duration: 0.6 }}
+              className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12"
+            >
               <Link to="/dashboard">
                 <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="group px-8 py-4 bg-gradient-to-r from-primary-500 to-secondary-500 text-white rounded-xl font-semibold text-lg shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-2"
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="group w-full sm:w-auto px-12 py-5 bg-gradient-to-r from-primary-600 to-secondary-600 text-white rounded-xl font-semibold text-lg shadow-xl hover:shadow-2xl transition-all duration-300 flex items-center justify-center gap-3"
                 >
-                  Get Started
+                  Get Started Free
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </motion.button>
               </Link>
               <Link to="/articles">
                 <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="px-8 py-4 bg-white dark:bg-dark-card text-primary-600 dark:text-primary-400 rounded-xl font-semibold text-lg shadow-lg hover:shadow-xl transition-all duration-300 border-2 border-primary-200 dark:border-primary-800"
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="w-full sm:w-auto px-12 py-5 bg-transparent text-gray-700 dark:text-dark-text rounded-xl font-semibold text-lg hover:bg-white/50 dark:hover:bg-dark-card/50 transition-all duration-300 border-2 border-gray-300 dark:border-dark-border"
                 >
-                  Browse Articles
+                  Explore Articles
                 </motion.button>
               </Link>
-            </div>
+            </motion.div>
 
             {/* Social Proof - Live Stats */}
             {!isInitialLoading && stats && (
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3 }}
-                className="flex flex-wrap items-center justify-center gap-6 sm:gap-8 mt-10 text-sm sm:text-base text-gray-600 dark:text-dark-muted"
+                transition={{ delay: 0.4 }}
+                className="inline-flex flex-wrap items-center justify-center gap-8 px-8 py-4 bg-white/60 dark:bg-dark-card/60 backdrop-blur-sm rounded-2xl border border-gray-200 dark:border-dark-border shadow-lg"
               >
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 bg-primary-500 rounded-full animate-pulse"></div>
-                  <span className="font-semibold text-gray-900 dark:text-white">{stats.total.toLocaleString()}</span>
-                  <span>Articles Analyzed</span>
+                <div className="flex items-center gap-3">
+                  <Database className="w-5 h-5 text-primary-600 dark:text-primary-400" />
+                  <div className="text-left">
+                    <div className="text-2xl font-bold text-gray-900 dark:text-white">{stats.total.toLocaleString()}</div>
+                    <div className="text-sm text-gray-600 dark:text-dark-muted">Articles Analyzed</div>
+                  </div>
                 </div>
-                <div className="flex items-center gap-2">
-                  <TrendingUp className="w-4 h-4 text-primary-500" />
-                  <span className="font-semibold text-gray-900 dark:text-white">Live Updates</span>
-                  <span>Every 2 Hours</span>
+                <div className="h-12 w-px bg-gray-300 dark:bg-dark-border hidden sm:block"></div>
+                <div className="flex items-center gap-3">
+                  <Clock className="w-5 h-5 text-secondary-600 dark:text-secondary-400" />
+                  <div className="text-left">
+                    <div className="text-2xl font-bold text-gray-900 dark:text-white">2hrs</div>
+                    <div className="text-sm text-gray-600 dark:text-dark-muted">Update Frequency</div>
+                  </div>
                 </div>
-                <div className="flex items-center gap-2">
-                  <Shield className="w-4 h-4 text-primary-500" />
-                  <span className="font-semibold text-gray-900 dark:text-white">AI-Powered</span>
-                  <span>Sentiment Analysis</span>
+                <div className="h-12 w-px bg-gray-300 dark:bg-dark-border hidden sm:block"></div>
+                <div className="flex items-center gap-3">
+                  <Brain className="w-5 h-5 text-primary-600 dark:text-primary-400" />
+                  <div className="text-left">
+                    <div className="text-2xl font-bold text-gray-900 dark:text-white">GPT-3.5</div>
+                    <div className="text-sm text-gray-600 dark:text-dark-muted">AI-Powered</div>
+                  </div>
                 </div>
               </motion.div>
             )}
           </div>
 
-          {/* Feature Highlights */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12 sm:mb-16">
+          {/* Why Choose Us Section */}
+          <div className="mb-16 sm:mb-20">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: 0.1 }}
-              className="bg-white dark:bg-dark-card rounded-2xl p-6 shadow-lg border border-neutral-200 dark:border-dark-border hover:shadow-xl transition-shadow"
+              className="text-center mb-12"
             >
-              <div className="w-12 h-12 bg-gradient-to-br from-primary-100 to-primary-200 dark:from-primary-900/30 dark:to-primary-800/30 rounded-xl flex items-center justify-center mb-4">
-                <Zap className="w-6 h-6 text-primary-600 dark:text-primary-400" />
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">Real-Time Analysis</h3>
-              <p className="text-gray-600 dark:text-dark-muted">
-                Get instant AI-powered sentiment analysis on the latest crypto news from top sources every 2 hours.
+              <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">
+                Why Use Our Platform?
+              </h2>
+              <p className="text-lg text-gray-600 dark:text-dark-muted max-w-2xl mx-auto">
+                Everything you need to understand crypto market sentiment at a glance
               </p>
             </motion.div>
 
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.1 }}
+                className="bg-white dark:bg-dark-card rounded-2xl p-8 shadow-lg border border-neutral-200 dark:border-dark-border hover:shadow-2xl hover:border-primary-300 dark:hover:border-primary-700 transition-all duration-300"
+              >
+                <div className="w-14 h-14 bg-gradient-to-br from-primary-500 to-primary-600 rounded-2xl flex items-center justify-center mb-6 shadow-lg">
+                  <Brain className="w-7 h-7 text-white" />
+                </div>
+                <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">AI-Powered Insights</h3>
+                <p className="text-gray-600 dark:text-dark-muted leading-relaxed">
+                  Advanced GPT-3.5 analysis evaluates sentiment from thousands of articles, identifying bullish, bearish, or neutral trends to help you make informed decisions.
+                </p>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.2 }}
+                className="bg-white dark:bg-dark-card rounded-2xl p-8 shadow-lg border border-neutral-200 dark:border-dark-border hover:shadow-2xl hover:border-secondary-300 dark:hover:border-secondary-700 transition-all duration-300"
+              >
+                <div className="w-14 h-14 bg-gradient-to-br from-secondary-500 to-secondary-600 rounded-2xl flex items-center justify-center mb-6 shadow-lg">
+                  <LineChart className="w-7 h-7 text-white" />
+                </div>
+                <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">Real-Time Tracking</h3>
+                <p className="text-gray-600 dark:text-dark-muted leading-relaxed">
+                  Monitor sentiment changes with interactive charts and dashboards. Automatic updates every 2 hours ensure you never miss important market shifts.
+                </p>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.3 }}
+                className="bg-white dark:bg-dark-card rounded-2xl p-8 shadow-lg border border-neutral-200 dark:border-dark-border hover:shadow-2xl hover:border-primary-300 dark:hover:border-primary-700 transition-all duration-300"
+              >
+                <div className="w-14 h-14 bg-gradient-to-br from-primary-500 to-secondary-600 rounded-2xl flex items-center justify-center mb-6 shadow-lg">
+                  <Shield className="w-7 h-7 text-white" />
+                </div>
+                <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">Premium Sources</h3>
+                <p className="text-gray-600 dark:text-dark-muted leading-relaxed">
+                  Curated content from CoinDesk, CoinTelegraph, and leading crypto publications. Only reliable, high-quality sources for accurate sentiment analysis.
+                </p>
+              </motion.div>
+            </div>
+          </div>
+
+          {/* How It Works Section */}
+          <div className="mb-16 sm:mb-20">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: 0.2 }}
-              className="bg-white dark:bg-dark-card rounded-2xl p-6 shadow-lg border border-neutral-200 dark:border-dark-border hover:shadow-xl transition-shadow"
+              className="text-center mb-12"
             >
-              <div className="w-12 h-12 bg-gradient-to-br from-secondary-100 to-secondary-200 dark:from-secondary-900/30 dark:to-secondary-800/30 rounded-xl flex items-center justify-center mb-4">
-                <BarChart3 className="w-6 h-6 text-secondary-600 dark:text-secondary-400" />
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">Visual Insights</h3>
-              <p className="text-gray-600 dark:text-dark-muted">
-                Track sentiment trends with interactive charts and comprehensive analytics dashboards.
+              <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">
+                How It Works
+              </h2>
+              <p className="text-lg text-gray-600 dark:text-dark-muted max-w-2xl mx-auto">
+                Simple, automated sentiment analysis in three steps
               </p>
             </motion.div>
 
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.3 }}
-              className="bg-white dark:bg-dark-card rounded-2xl p-6 shadow-lg border border-neutral-200 dark:border-dark-border hover:shadow-xl transition-shadow"
-            >
-              <div className="w-12 h-12 bg-gradient-to-br from-primary-100 to-secondary-200 dark:from-primary-900/30 dark:to-secondary-800/30 rounded-xl flex items-center justify-center mb-4">
-                <Shield className="w-6 h-6 text-primary-600 dark:text-primary-400" />
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">Trusted Sources</h3>
-              <p className="text-gray-600 dark:text-dark-muted">
-                Aggregates news from CoinDesk, CoinTelegraph, and other leading crypto news platforms.
-              </p>
-            </motion.div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-6 relative">
+              {/* Connecting Line (Desktop only) */}
+              <div className="hidden md:block absolute top-16 left-0 right-0 h-1 bg-gradient-to-r from-primary-200 via-secondary-200 to-primary-200 dark:from-primary-900 dark:via-secondary-900 dark:to-primary-900 -z-10" style={{ top: '64px' }}></div>
+
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.1 }}
+                className="relative"
+              >
+                <div className="bg-white dark:bg-dark-card rounded-2xl p-8 shadow-lg border-2 border-primary-200 dark:border-primary-800">
+                  <div className="w-16 h-16 bg-gradient-to-br from-primary-500 to-primary-600 rounded-full flex items-center justify-center mb-6 mx-auto shadow-xl">
+                    <span className="text-3xl font-bold text-white">1</span>
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3 text-center">News Aggregation</h3>
+                  <p className="text-gray-600 dark:text-dark-muted text-center leading-relaxed">
+                    Our system continuously collects crypto news from trusted sources like CoinDesk, CoinTelegraph, and more.
+                  </p>
+                </div>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.2 }}
+                className="relative"
+              >
+                <div className="bg-white dark:bg-dark-card rounded-2xl p-8 shadow-lg border-2 border-secondary-200 dark:border-secondary-800">
+                  <div className="w-16 h-16 bg-gradient-to-br from-secondary-500 to-secondary-600 rounded-full flex items-center justify-center mb-6 mx-auto shadow-xl">
+                    <span className="text-3xl font-bold text-white">2</span>
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3 text-center">AI Analysis</h3>
+                  <p className="text-gray-600 dark:text-dark-muted text-center leading-relaxed">
+                    GPT-3.5 analyzes each article to determine sentiment (positive, negative, or neutral) with high accuracy.
+                  </p>
+                </div>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, x: 20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.3 }}
+                className="relative"
+              >
+                <div className="bg-white dark:bg-dark-card rounded-2xl p-8 shadow-lg border-2 border-primary-200 dark:border-primary-800">
+                  <div className="w-16 h-16 bg-gradient-to-br from-primary-500 to-secondary-600 rounded-full flex items-center justify-center mb-6 mx-auto shadow-xl">
+                    <span className="text-3xl font-bold text-white">3</span>
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3 text-center">Visual Insights</h3>
+                  <p className="text-gray-600 dark:text-dark-muted text-center leading-relaxed">
+                    View trends through interactive charts and dashboards, updated every 2 hours for real-time market insights.
+                  </p>
+                </div>
+              </motion.div>
+            </div>
           </div>
 
           {/* Stats Cards */}
@@ -172,6 +284,34 @@ export const Home = () => {
             )}
           </div>
         </div>
+      </div>
+
+      {/* Final CTA Section */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16 sm:pb-20">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="bg-gradient-to-r from-primary-600 via-secondary-600 to-primary-600 rounded-3xl p-12 sm:p-16 text-center shadow-2xl"
+        >
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-6">
+            Ready to Stay Ahead of the Market?
+          </h2>
+          <p className="text-lg sm:text-xl text-white/90 max-w-2xl mx-auto mb-8">
+            Join traders and investors using AI-powered sentiment analysis to make smarter crypto decisions.
+          </p>
+          <Link to="/dashboard">
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="px-12 py-5 bg-white text-primary-600 rounded-xl font-bold text-lg shadow-xl hover:shadow-2xl transition-all duration-300 inline-flex items-center gap-3"
+            >
+              Start Analyzing Now
+              <ArrowRight className="w-5 h-5" />
+            </motion.button>
+          </Link>
+          <p className="text-sm text-white/70 mt-6">No credit card required • Free to use</p>
+        </motion.div>
       </div>
 
       {/* Footer */}
