@@ -42,10 +42,10 @@ export const Home = () => {
               transition={{ duration: 0.6 }}
               className="flex flex-col items-center justify-center gap-4 mb-6"
             >
-              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-gray-900 dark:text-white leading-tight">
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-white leading-tight">
                 Make Smarter Crypto Decisions
               </h1>
-              <p className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold bg-gradient-to-r from-primary-600 via-secondary-600 to-primary-700 bg-clip-text text-transparent">
+              <p className="text-4xl sm:text-5xl lg:text-6xl font-bold bg-gradient-to-r from-primary-600 via-secondary-600 to-primary-700 bg-clip-text text-transparent">
                 With AI Sentiment Analysis
               </p>
             </motion.div>
@@ -93,7 +93,7 @@ export const Home = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4 }}
-                className="inline-flex flex-wrap items-center justify-center gap-8 px-8 py-4 bg-white/60 dark:bg-dark-card/60 backdrop-blur-sm rounded-2xl border border-gray-200 dark:border-dark-border shadow-lg"
+                className="inline-flex flex-wrap items-center justify-center gap-8 px-8 py-4 glass-strong rounded-2xl shadow-xl"
               >
                 <div className="flex items-center gap-3">
                   <Database className="w-5 h-5 text-primary-600 dark:text-primary-400" />
@@ -144,7 +144,7 @@ export const Home = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: 0.1 }}
-                className="bg-white dark:bg-dark-card rounded-2xl p-8 shadow-lg border border-neutral-200 dark:border-dark-border hover:shadow-2xl hover:border-primary-300 dark:hover:border-primary-700 transition-all duration-300"
+                className="glass rounded-2xl card-spacing shadow-lg hover-lift hover-glow"
               >
                 <div className="w-14 h-14 bg-gradient-to-br from-primary-500 to-primary-600 rounded-2xl flex items-center justify-center mb-6 shadow-lg">
                   <Brain className="w-7 h-7 text-white" />
@@ -160,7 +160,7 @@ export const Home = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: 0.2 }}
-                className="bg-white dark:bg-dark-card rounded-2xl p-8 shadow-lg border border-neutral-200 dark:border-dark-border hover:shadow-2xl hover:border-secondary-300 dark:hover:border-secondary-700 transition-all duration-300"
+                className="glass rounded-2xl card-spacing shadow-lg hover-lift hover-glow-secondary"
               >
                 <div className="w-14 h-14 bg-gradient-to-br from-secondary-500 to-secondary-600 rounded-2xl flex items-center justify-center mb-6 shadow-lg">
                   <LineChart className="w-7 h-7 text-white" />
@@ -176,7 +176,7 @@ export const Home = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: 0.3 }}
-                className="bg-white dark:bg-dark-card rounded-2xl p-8 shadow-lg border border-neutral-200 dark:border-dark-border hover:shadow-2xl hover:border-primary-300 dark:hover:border-primary-700 transition-all duration-300"
+                className="glass rounded-2xl card-spacing shadow-lg hover-lift hover-glow"
               >
                 <div className="w-14 h-14 bg-gradient-to-br from-primary-500 to-secondary-600 rounded-2xl flex items-center justify-center mb-6 shadow-lg">
                   <Shield className="w-7 h-7 text-white" />
@@ -216,8 +216,8 @@ export const Home = () => {
                 transition={{ delay: 0.1 }}
                 className="relative"
               >
-                <div className="bg-white dark:bg-dark-card rounded-2xl p-8 shadow-lg border-2 border-primary-200 dark:border-primary-800">
-                  <div className="w-16 h-16 bg-gradient-to-br from-primary-500 to-primary-600 rounded-full flex items-center justify-center mb-6 mx-auto shadow-xl">
+                <div className="glass rounded-2xl card-spacing shadow-lg hover-lift border-2 border-primary-200/50 dark:border-primary-800/50">
+                  <div className="w-16 h-16 bg-gradient-to-br from-primary-500 to-primary-600 rounded-full flex items-center justify-center mb-6 mx-auto shadow-xl animate-float">
                     <span className="text-3xl font-bold text-white">1</span>
                   </div>
                   <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3 text-center">News Aggregation</h3>
@@ -234,8 +234,8 @@ export const Home = () => {
                 transition={{ delay: 0.2 }}
                 className="relative"
               >
-                <div className="bg-white dark:bg-dark-card rounded-2xl p-8 shadow-lg border-2 border-secondary-200 dark:border-secondary-800">
-                  <div className="w-16 h-16 bg-gradient-to-br from-secondary-500 to-secondary-600 rounded-full flex items-center justify-center mb-6 mx-auto shadow-xl">
+                <div className="glass rounded-2xl card-spacing shadow-lg hover-lift border-2 border-secondary-200/50 dark:border-secondary-800/50">
+                  <div className="w-16 h-16 bg-gradient-to-br from-secondary-500 to-secondary-600 rounded-full flex items-center justify-center mb-6 mx-auto shadow-xl animate-float" style={{ animationDelay: '0.5s' }}>
                     <span className="text-3xl font-bold text-white">2</span>
                   </div>
                   <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3 text-center">AI Analysis</h3>
@@ -252,8 +252,8 @@ export const Home = () => {
                 transition={{ delay: 0.3 }}
                 className="relative"
               >
-                <div className="bg-white dark:bg-dark-card rounded-2xl p-8 shadow-lg border-2 border-primary-200 dark:border-primary-800">
-                  <div className="w-16 h-16 bg-gradient-to-br from-primary-500 to-secondary-600 rounded-full flex items-center justify-center mb-6 mx-auto shadow-xl">
+                <div className="glass rounded-2xl card-spacing shadow-lg hover-lift border-2 border-primary-200/50 dark:border-primary-800/50">
+                  <div className="w-16 h-16 bg-gradient-to-br from-primary-500 to-secondary-600 rounded-full flex items-center justify-center mb-6 mx-auto shadow-xl animate-float" style={{ animationDelay: '1s' }}>
                     <span className="text-3xl font-bold text-white">3</span>
                   </div>
                   <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3 text-center">Visual Insights</h3>

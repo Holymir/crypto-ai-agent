@@ -41,11 +41,11 @@ export const Dashboard = () => {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
         {/* Header */}
-        <div className="text-center mb-8 sm:mb-12">
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold bg-gradient-to-r from-primary-600 via-secondary-600 to-primary-700 bg-clip-text text-transparent mb-2">
+        <div className="text-center section-spacing">
+          <h1 className="text-display bg-gradient-to-r from-primary-600 via-secondary-600 to-primary-700 bg-clip-text text-transparent mb-4">
             Analytics Dashboard
           </h1>
-          <p className="text-base sm:text-lg text-gray-700 dark:text-dark-muted">
+          <p className="text-lg sm:text-xl text-gray-600 dark:text-dark-muted">
             Real-time cryptocurrency news sentiment analysis
           </p>
         </div>
@@ -57,15 +57,15 @@ export const Dashboard = () => {
         <SentimentCharts stats={stats} className="mb-8 sm:mb-12" />
 
         {/* Latest Articles */}
-        <div className="bg-white/90 dark:bg-dark-card/90 backdrop-blur-md rounded-2xl p-4 sm:p-6 md:p-8 shadow-2xl border-2 border-primary-200 dark:border-dark-border">
-          <h2 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent mb-6">
+        <div className="glass-strong rounded-2xl card-spacing shadow-2xl">
+          <h2 className="text-display-sm bg-gradient-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent mb-6">
             Latest Articles
           </h2>
           <div className="space-y-4">
             {latestData?.articles?.map((article) => (
               <div
                 key={article.id}
-                className="flex items-start justify-between p-4 bg-gradient-to-r from-gray-50 to-purple-50/50 dark:from-neutral-800 dark:to-neutral-700 rounded-xl hover:shadow-md transition-all hover:scale-[1.02]"
+                className="flex items-start justify-between p-4 glass rounded-xl hover-lift smooth-transition"
               >
                 <div className="flex-1 min-w-0">
                   <h3 className="font-semibold text-gray-900 dark:text-dark-text text-sm sm:text-base mb-2 line-clamp-2">

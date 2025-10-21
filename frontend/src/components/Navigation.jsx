@@ -53,7 +53,7 @@ export const Navigation = () => {
         transition={{ duration: 0.3 }}
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
           isScrolled
-            ? 'bg-white/95 dark:bg-dark-card/95 backdrop-blur-lg shadow-lg border-b border-neutral-200 dark:border-dark-border'
+            ? 'glass-strong shadow-xl border-b border-white/20 dark:border-white/10'
             : 'bg-transparent'
         }`}
       >
@@ -64,7 +64,7 @@ export const Navigation = () => {
               to="/"
               className="flex items-center gap-2 sm:gap-3 group"
             >
-              <div className="p-2 bg-gradient-to-br from-primary-500 to-secondary-500 rounded-xl shadow-lg group-hover:scale-110 transition-transform">
+              <div className="p-2 bg-gradient-to-br from-primary-500 to-secondary-500 rounded-xl shadow-lg group-hover:scale-110 group-hover:shadow-glow-primary smooth-transition">
                 <Activity className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
               </div>
               <span className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-primary-600 to-secondary-600 dark:from-primary-400 dark:to-secondary-400 bg-clip-text text-transparent">
@@ -119,7 +119,7 @@ export const Navigation = () => {
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.2 }}
-              className="md:hidden bg-white dark:bg-dark-card border-t border-neutral-200 dark:border-dark-border"
+              className="md:hidden glass-strong border-t border-white/20 dark:border-white/10"
             >
               <div className="px-4 py-4 space-y-2">
                 {navLinks.map((link) => (
