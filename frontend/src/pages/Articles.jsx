@@ -135,12 +135,12 @@ export const Articles = () => {
                 transition={{ delay: 0.2 }}
                 className="flex items-center gap-2 sm:gap-3 p-3 glass rounded-xl"
               >
-                <div className="p-2 rounded-lg bg-gradient-to-br from-emerald-500/20 to-green-500/20">
-                  <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5 text-emerald-600 dark:text-emerald-400" />
+                <div className="p-2 rounded-lg bg-gradient-to-br from-bullish-500/20 to-bullish-500/20">
+                  <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5 text-bullish-600 dark:text-bullish-400" />
                 </div>
                 <div>
                   <div className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Bullish</div>
-                  <div className="text-lg sm:text-2xl font-bold text-emerald-600 dark:text-emerald-400">
+                  <div className="text-lg sm:text-2xl font-bold text-bullish-600 dark:text-bullish-400">
                     {articles.filter(a => a.sentiment === 'BULLISH').length}
                     {totalCount > articles.length && (
                       <span className="text-xs font-normal text-gray-500 dark:text-gray-400 ml-1">
@@ -158,12 +158,12 @@ export const Articles = () => {
                 transition={{ delay: 0.3 }}
                 className="flex items-center gap-2 sm:gap-3 p-3 glass rounded-xl"
               >
-                <div className="p-2 rounded-lg bg-gradient-to-br from-rose-500/20 to-red-500/20">
-                  <TrendingDown className="w-4 h-4 sm:w-5 sm:h-5 text-rose-600 dark:text-rose-400" />
+                <div className="p-2 rounded-lg bg-gradient-to-br from-bearish-500/20 to-bearish-500/20">
+                  <TrendingDown className="w-4 h-4 sm:w-5 sm:h-5 text-bearish-600 dark:text-bearish-400" />
                 </div>
                 <div>
                   <div className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Bearish</div>
-                  <div className="text-lg sm:text-2xl font-bold text-rose-600 dark:text-rose-400">
+                  <div className="text-lg sm:text-2xl font-bold text-bearish-600 dark:text-bearish-400">
                     {articles.filter(a => a.sentiment === 'BEARISH').length}
                     {totalCount > articles.length && (
                       <span className="text-xs font-normal text-gray-500 dark:text-gray-400 ml-1">
@@ -249,8 +249,8 @@ export const Articles = () => {
                   transition={{ type: 'spring', stiffness: 400, damping: 17 }}
                   className={`flex-1 min-w-[100px] px-4 sm:px-6 py-2 sm:py-3 rounded-xl font-semibold transition-all text-sm sm:text-base ${
                     selectedSentiment === 'BULLISH'
-                      ? 'bg-gradient-to-r from-emerald-500 to-green-600 text-white shadow-xl scale-105 border-2 border-emerald-400'
-                      : 'bg-gradient-to-r from-emerald-50 to-green-50 dark:from-emerald-900/20 dark:to-green-900/20 text-emerald-700 dark:text-emerald-400 hover:from-emerald-100 hover:to-green-100 dark:hover:from-emerald-900/30 dark:hover:to-green-900/30 border-2 border-emerald-200 dark:border-emerald-700'
+                      ? 'bg-gradient-to-r from-bullish-500 to-bullish-600 text-white shadow-xl scale-105 border-2 border-bullish-400'
+                      : 'bg-gradient-to-r from-bullish-50 to-bullish-50 dark:from-bullish-900/20 dark:to-bullish-900/20 text-bullish-700 dark:text-bullish-400 hover:from-bullish-100 hover:to-bullish-100 dark:hover:from-bullish-900/30 dark:hover:to-bullish-900/30 border-2 border-bullish-200 dark:border-bullish-700'
                   }`}
                 >
                   <TrendingUp className="w-4 h-4 inline-block mr-1" />
@@ -263,8 +263,8 @@ export const Articles = () => {
                   transition={{ type: 'spring', stiffness: 400, damping: 17 }}
                   className={`flex-1 min-w-[100px] px-4 sm:px-6 py-2 sm:py-3 rounded-xl font-semibold transition-all text-sm sm:text-base ${
                     selectedSentiment === 'BEARISH'
-                      ? 'bg-gradient-to-r from-rose-500 to-red-600 text-white shadow-xl scale-105 border-2 border-rose-400'
-                      : 'bg-gradient-to-r from-rose-50 to-red-50 dark:from-rose-900/20 dark:to-red-900/20 text-rose-700 dark:text-rose-400 hover:from-rose-100 hover:to-red-100 dark:hover:from-rose-900/30 dark:hover:to-red-900/30 border-2 border-rose-200 dark:border-rose-700'
+                      ? 'bg-gradient-to-r from-bearish-500 to-bearish-600 text-white shadow-xl scale-105 border-2 border-bearish-400'
+                      : 'bg-gradient-to-r from-bearish-50 to-bearish-50 dark:from-bearish-900/20 dark:to-bearish-900/20 text-bearish-700 dark:text-bearish-400 hover:from-bearish-100 hover:to-bearish-100 dark:hover:from-bearish-900/30 dark:hover:to-bearish-900/30 border-2 border-bearish-200 dark:border-bearish-700'
                   }`}
                 >
                   <TrendingDown className="w-4 h-4 inline-block mr-1" />

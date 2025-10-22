@@ -27,10 +27,10 @@ const TREND_TIME_PERIODS = [
   { label: '7D', days: 7 },
 ];
 
-// Get sentiment colors from Tailwind theme
+// Get sentiment colors from Tailwind theme - softer, more professional tones
 const COLORS = {
-  BULLISH: '#10B981',   // bullish-500 from tailwind.config
-  BEARISH: '#EF4444',   // bearish-500 from tailwind.config
+  BULLISH: '#3d9970',   // bullish-500 from tailwind.config (softer teal-green)
+  BEARISH: '#e66b6b',   // bearish-500 from tailwind.config (softer coral-red)
   NEUTRAL: '#6B7280',   // neutral-500 from tailwind.config
 };
 
@@ -288,16 +288,16 @@ export const Dashboard = () => {
     if (score >= 70) {
       return {
         mood: 'Bullish',
-        color: 'text-emerald-600 dark:text-emerald-400',
-        bgColor: 'from-emerald-500/20 to-green-500/20',
+        color: 'text-bullish-600 dark:text-bullish-400',
+        bgColor: 'from-bullish-500/20 to-bullish-400/20',
         icon: TrendingUp,
         description: 'Strong positive sentiment detected in the crypto market',
       };
     } else if (score <= 30) {
       return {
         mood: 'Bearish',
-        color: 'text-rose-600 dark:text-rose-400',
-        bgColor: 'from-rose-500/20 to-red-500/20',
+        color: 'text-bearish-600 dark:text-bearish-400',
+        bgColor: 'from-bearish-500/20 to-bearish-400/20',
         icon: TrendingDown,
         description: 'Cautious sentiment prevails across crypto news',
       };
@@ -451,12 +451,12 @@ export const Dashboard = () => {
                 transition={{ delay: 0.2 }}
                 className="flex items-center gap-2 p-2 glass rounded-lg"
               >
-                <div className="p-1.5 rounded-lg bg-gradient-to-br from-emerald-500/20 to-green-500/20">
-                  <TrendingUp className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                <div className="p-1.5 rounded-lg bg-gradient-to-br from-bullish-500/20 to-bullish-400/20">
+                  <TrendingUp className="w-4 h-4 text-bullish-600 dark:text-bullish-400" />
                 </div>
                 <div>
                   <div className="text-xs text-gray-500 dark:text-gray-400">Bullish</div>
-                  <div className="text-lg font-bold text-emerald-600 dark:text-emerald-400">{stats?.BULLISH || 0}</div>
+                  <div className="text-lg font-bold text-bullish-600 dark:text-bullish-400">{stats?.BULLISH || 0}</div>
                 </div>
               </motion.div>
 

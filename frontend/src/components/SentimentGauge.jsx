@@ -18,9 +18,9 @@ export const SentimentGauge = ({ score = 50, className = '' }) => {
     if (value <= 30) {
       return {
         label: 'Bearish',
-        color: '#ef4444',
-        bgColor: 'from-rose-500 to-red-600',
-        textColor: 'text-rose-600 dark:text-rose-400',
+        color: '#e66b6b',
+        bgColor: 'from-bearish-500 to-bearish-600',
+        textColor: 'text-bearish-600 dark:text-bearish-400',
       };
     }
     if (value <= 70) {
@@ -33,9 +33,9 @@ export const SentimentGauge = ({ score = 50, className = '' }) => {
     }
     return {
       label: 'Bullish',
-      color: '#22c55e',
-      bgColor: 'from-emerald-500 to-green-600',
-      textColor: 'text-emerald-600 dark:text-emerald-400',
+      color: '#3d9970',
+      bgColor: 'from-bullish-500 to-bullish-600',
+      textColor: 'text-bullish-600 dark:text-bullish-400',
     };
   };
 
@@ -66,9 +66,9 @@ export const SentimentGauge = ({ score = 50, className = '' }) => {
           >
             <defs>
               <linearGradient id="gaugeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stopColor="#ef4444" />
+                <stop offset="0%" stopColor="#e66b6b" />
                 <stop offset="50%" stopColor="#64748b" />
-                <stop offset="100%" stopColor="#22c55e" />
+                <stop offset="100%" stopColor="#3d9970" />
               </linearGradient>
             </defs>
 
@@ -116,9 +116,9 @@ export const SentimentGauge = ({ score = 50, className = '' }) => {
             </motion.g>
 
             {/* Scale markers */}
-            <text x="20" y="115" fontSize="10" fill="#ef4444" className="dark:fill-rose-400" textAnchor="middle" fontWeight="600">0</text>
+            <text x="20" y="115" fontSize="10" fill="#e66b6b" className="dark:fill-bearish-400" textAnchor="middle" fontWeight="600">0</text>
             <text x="100" y="25" fontSize="10" fill="#64748b" className="dark:fill-slate-400" textAnchor="middle" fontWeight="600">50</text>
-            <text x="180" y="115" fontSize="10" fill="#22c55e" className="dark:fill-emerald-400" textAnchor="middle" fontWeight="600">100</text>
+            <text x="180" y="115" fontSize="10" fill="#3d9970" className="dark:fill-bullish-400" textAnchor="middle" fontWeight="600">100</text>
           </svg>
         </div>
 

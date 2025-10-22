@@ -16,7 +16,7 @@ export const TopSources = ({ period = 7, className = '' }) => {
   const getSentimentColor = (sentiment) => {
     switch (sentiment) {
       case 'BULLISH':
-        return 'bg-emerald-500';
+        return 'bg-bullish-500';
       case 'BEARISH':
         return 'bg-rose-500';
       case 'NEUTRAL':

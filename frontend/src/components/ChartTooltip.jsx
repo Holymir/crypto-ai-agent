@@ -8,8 +8,8 @@ export const PieChartTooltip = ({ active, payload }) => {
   const { name, value } = data;
 
   const colors = {
-    Bullish: 'from-emerald-500 to-green-600',
-    Bearish: 'from-rose-500 to-red-600',
+    Bullish: 'from-bullish-500 to-bullish-600',
+    Bearish: 'from-bearish-500 to-bearish-600',
     Neutral: 'from-slate-500 to-gray-600',
   };
 

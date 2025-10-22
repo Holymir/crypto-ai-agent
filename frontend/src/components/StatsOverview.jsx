@@ -67,17 +67,17 @@ export const StatsOverview = ({ stats, previousStats, period = null, className =
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3, delay: 0.1 }}
-        className="bg-gradient-to-br from-emerald-500 to-green-600 rounded-2xl p-6 shadow-2xl border border-emerald-400 hover:shadow-3xl transition-all hover:-translate-y-2 hover:scale-105"
+        className="bg-gradient-to-br from-bullish-500 to-bullish-600 rounded-2xl p-6 shadow-2xl border border-bullish-400 hover:shadow-3xl transition-all hover:-translate-y-2 hover:scale-105"
       >
         <div className="flex items-center justify-between mb-2">
-          <span className="text-sm font-semibold text-emerald-100">Bullish</span>
-          <TrendingUp className="w-5 h-5 text-emerald-200" />
+          <span className="text-sm font-semibold text-bullish-100">Bullish</span>
+          <TrendingUp className="w-5 h-5 text-bullish-200" />
         </div>
         <div className="flex items-baseline gap-2">
           <div className="text-3xl sm:text-4xl font-bold text-white">{animatedBullish}</div>
           {trends && <TrendIndicator value={trends.bullish} className="text-white" />}
         </div>
-        <div className="text-xs text-emerald-200 mt-1 font-medium">
+        <div className="text-xs text-bullish-200 mt-1 font-medium">
           {trends ? `${bullishPercentage}% • ${comparisonText}` : `${bullishPercentage}% positive signals`}
         </div>
       </motion.div>
@@ -87,17 +87,17 @@ export const StatsOverview = ({ stats, previousStats, period = null, className =
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3, delay: 0.2 }}
-        className="bg-gradient-to-br from-rose-500 to-red-600 rounded-2xl p-6 shadow-2xl border border-rose-400 hover:shadow-3xl transition-all hover:-translate-y-2 hover:scale-105"
+        className="bg-gradient-to-br from-bearish-500 to-bearish-600 rounded-2xl p-6 shadow-2xl border border-bearish-400 hover:shadow-3xl transition-all hover:-translate-y-2 hover:scale-105"
       >
         <div className="flex items-center justify-between mb-2">
-          <span className="text-sm font-semibold text-rose-100">Bearish</span>
-          <TrendingDown className="w-5 h-5 text-rose-200" />
+          <span className="text-sm font-semibold text-bearish-100">Bearish</span>
+          <TrendingDown className="w-5 h-5 text-bearish-200" />
         </div>
         <div className="flex items-baseline gap-2">
           <div className="text-3xl sm:text-4xl font-bold text-white">{animatedBearish}</div>
           {trends && <TrendIndicator value={trends.bearish} className="text-white" />}
         </div>
-        <div className="text-xs text-rose-200 mt-1 font-medium">
+        <div className="text-xs text-bearish-200 mt-1 font-medium">
           {trends ? `${bearishPercentage}% • ${comparisonText}` : `${bearishPercentage}% negative signals`}
         </div>
       </motion.div>

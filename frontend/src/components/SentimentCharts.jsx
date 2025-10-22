@@ -5,10 +5,10 @@ import { ScrollReveal } from './ScrollReveal';
 import { PieChartTooltip, TrendChartTooltip } from './ChartTooltip';
 import { useSentimentTrend } from '../hooks/useArticles';
 
-// Colors from tailwind.config.js
+// Colors from tailwind.config.js - softer, more professional tones
 const COLORS = {
-  BULLISH: '#10B981',   // bullish-500
-  BEARISH: '#EF4444',   // bearish-500
+  BULLISH: '#3d9970',   // bullish-500 (softer teal-green)
+  BEARISH: '#e66b6b',   // bearish-500 (softer coral-red)
   NEUTRAL: '#6B7280',   // neutral-500
 };
 

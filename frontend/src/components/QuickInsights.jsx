@@ -92,14 +92,14 @@ export const QuickInsights = ({ stats, className = '' }) => {
         return {
           bg: 'bg-gradient-to-r from-emerald-50 to-green-50 dark:from-emerald-900/20 dark:to-green-900/20',
           border: 'border-emerald-200 dark:border-emerald-800',
-          icon: 'text-emerald-600 dark:text-emerald-400',
+          icon: 'text-bullish-600 dark:text-bullish-400',
           text: 'text-emerald-900 dark:text-emerald-100',
         };
       case 'bearish':
         return {
           bg: 'bg-gradient-to-r from-rose-50 to-red-50 dark:from-rose-900/20 dark:to-red-900/20',
           border: 'border-rose-200 dark:border-rose-800',
-          icon: 'text-rose-600 dark:text-rose-400',
+          icon: 'text-bearish-600 dark:text-bearish-400',
           text: 'text-rose-900 dark:text-rose-100',
         };
       case 'neutral':

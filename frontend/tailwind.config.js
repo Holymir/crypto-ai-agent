@@ -34,17 +34,17 @@ export default {
           800: '#92400e',
           900: '#78350f',
         },
-        // Sentiment colors
+        // Sentiment colors - Softer, more professional tones
         bullish: {
           50: '#f0fdf4',
           100: '#dcfce7',
           200: '#bbf7d0',
           300: '#86efac',
-          400: '#4ade80',
-          500: '#10B981', // Optimized green
-          600: '#16a34a',
-          700: '#15803d',
-          800: '#166534',
+          400: '#5ebc87',
+          500: '#3d9970', // Softer teal-green (less aggressive)
+          600: '#2d8659',
+          700: '#206d48',
+          800: '#1a5a3c',
           900: '#14532d',
         },
         bearish: {
@@ -53,10 +53,10 @@ export default {
           200: '#fecaca',
           300: '#fca5a5',
           400: '#f87171',
-          500: '#EF4444', // Optimized red
-          600: '#dc2626',
-          700: '#b91c1c',
-          800: '#991b1b',
+          500: '#e66b6b', // Softer coral-red (less harsh)
+          600: '#d45555',
+          700: '#b84545',
+          800: '#9a3838',
           900: '#7f1d1d',
         },
         neutral: {
