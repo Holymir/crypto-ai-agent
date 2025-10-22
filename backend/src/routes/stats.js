@@ -12,15 +12,24 @@ const router = express.Router();
 router.get(
   '/sentiment',
   [
+    query('days').optional().isInt({ min: 1, max: 365 }).toInt(),
     query('startDate').optional().isISO8601().toDate(),
     query('endDate').optional().isISO8601().toDate(),
   ],
   validate,
   async (req, res, next) => {
     try {
-      // If no date range specified, get ALL articles (use a very old start date)
-      const endDate = req.query.endDate || new Date();
-      const startDate = req.query.startDate || new Date('2020-01-01');
+      let startDate, endDate;
+
+      // Priority: days parameter > explicit date range > default (all time)
+      if (req.query.days) {
+        endDate = new Date();
+        startDate = new Date();
+        startDate.setDate(startDate.getDate() - parseInt(req.query.days));
+      } else {
+        endDate = req.query.endDate || new Date();
+        startDate = req.query.startDate || new Date('2020-01-01');
+      }
 
       const stats = await articleService.getSentimentStats(startDate, endDate);
       res.json(stats);

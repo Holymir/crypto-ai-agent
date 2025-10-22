@@ -17,6 +17,7 @@ router.get(
     query('sentiment').optional().isIn(['BULLISH', 'BEARISH', 'NEUTRAL', 'ERROR']),
     query('source').optional().isString(),
     query('search').optional().isString(),
+    query('days').optional().isInt({ min: 1, max: 365 }).toInt(),
     query('orderBy').optional().isIn(['publishedAt', 'analyzedAt', 'createdAt']),
     query('order').optional().isIn(['asc', 'desc']),
   ],

@@ -37,6 +37,7 @@ class ArticleService {
       sentiment,
       source,
       search,
+      days,
       orderBy = 'publishedAt',
       order = 'desc',
     } = options;
@@ -60,6 +61,15 @@ class ArticleService {
         { title: { contains: search, mode: 'insensitive' } },
         { content: { contains: search, mode: 'insensitive' } },
       ];
+    }
+
+    // Add date filtering if days parameter is provided
+    if (days) {
+      const startDate = new Date();
+      startDate.setDate(startDate.getDate() - parseInt(days, 10));
+      where.publishedAt = {
+        gte: startDate,
+      };
     }
 
     const [articles, total] = await Promise.all([
