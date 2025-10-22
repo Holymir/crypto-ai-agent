@@ -323,7 +323,7 @@ export const Dashboard = () => {
 
   if (statsLoading || latestLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-primary-50 via-secondary-50 to-primary-100 dark:from-dark-bg dark:via-neutral-900 dark:to-dark-bg transition-colors duration-300">
+      <div className="min-h-screen bg-gradient-to-br from-primary-50 via-secondary-50 to-primary-100 dark:from-dark-bg dark:via-neutral-900 dark:to-dark-bg transition-colors duration-300 overflow-x-hidden">
         <Navigation />
         <LoadingSpinner />
       </div>
@@ -332,7 +332,7 @@ export const Dashboard = () => {
 
   if (statsError) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-primary-50 via-secondary-50 to-primary-100 dark:from-dark-bg dark:via-neutral-900 dark:to-dark-bg transition-colors duration-300">
+      <div className="min-h-screen bg-gradient-to-br from-primary-50 via-secondary-50 to-primary-100 dark:from-dark-bg dark:via-neutral-900 dark:to-dark-bg transition-colors duration-300 overflow-x-hidden">
         <Navigation />
         <ErrorMessage message={statsError.message} />
       </div>
@@ -340,7 +340,7 @@ export const Dashboard = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary-50 via-secondary-50 to-primary-100 dark:from-dark-bg dark:via-neutral-900 dark:to-dark-bg transition-colors duration-300">
+    <div className="min-h-screen bg-gradient-to-br from-primary-50 via-secondary-50 to-primary-100 dark:from-dark-bg dark:via-neutral-900 dark:to-dark-bg transition-colors duration-300 overflow-x-hidden">
       <SEO
         title="Analytics Dashboard"
         description="View comprehensive cryptocurrency sentiment analytics, market trends, and the latest news analysis in one dashboard."

@@ -178,10 +178,10 @@ export const Home = () => {
                 <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">Why It Matters</span>
               </div>
               <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">
-                News is a Mirror of Human Behavior
+                Markets React to News, but News Reflects the Market.
               </h2>
               <p className="text-lg text-gray-600 dark:text-dark-muted max-w-3xl mx-auto leading-relaxed">
-                <strong className="text-gray-900 dark:text-white">Crypto news within the community</strong> often reveals what the degens feel and expect, while <strong className="text-gray-900 dark:text-white">crypto coverage in mainstream media</strong> signals what the mass retail crowd is about to do.
+                <strong className="text-gray-900 dark:text-white">Crypto news within the community</strong> often drives what the degens feel and expect, while <strong className="text-gray-900 dark:text-white">crypto coverage in mainstream media</strong> signals what the mass retail crowd is about to do.
               </p>
             </motion.div>
 
