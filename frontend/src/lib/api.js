@@ -30,6 +30,7 @@ export const api = {
     params.append('granularity', granularity);
     return apiClient.get(`/stats/trend?${params.toString()}`);
   },
+  getTopSources: (days = 7, limit = 5) => apiClient.get('/stats/sources', { params: { days, limit } }),
 };
 
 export default apiClient;

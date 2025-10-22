@@ -31,6 +31,33 @@ router.get(
 );
 
 /**
+ * GET /api/stats/sources
+ * Get top news sources by article count
+ * Query params:
+ *   - days: number of days to look back (default: 7)
+ *   - limit: number of sources to return (default: 5)
+ */
+router.get(
+  '/sources',
+  [
+    query('days').optional().isInt({ min: 1, max: 365 }).toInt(),
+    query('limit').optional().isInt({ min: 1, max: 20 }).toInt(),
+  ],
+  validate,
+  async (req, res, next) => {
+    try {
+      const days = req.query.days ? parseInt(req.query.days) : 7;
+      const limit = req.query.limit ? parseInt(req.query.limit) : 5;
+
+      const sources = await articleService.getTopSources(days, limit);
+      res.json({ sources });
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+/**
  * GET /api/stats/trend
  * Get sentiment trend over time
  * Query params:

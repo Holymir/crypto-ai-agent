@@ -202,6 +202,73 @@ class ArticleService {
       },
     });
   }
+
+  /**
+   * Get top news sources by article count
+   * @param {number} days - Number of days to look back
+   * @param {number} limit - Number of sources to return
+   */
+  async getTopSources(days = 7, limit = 5) {
+    const startDate = new Date();
+    startDate.setDate(startDate.getDate() - days);
+
+    // Get all articles in the date range
+    const articles = await prisma.article.findMany({
+      where: {
+        publishedAt: {
+          gte: startDate,
+        },
+      },
+      select: {
+        source: true,
+        sentiment: true,
+      },
+    });
+
+    // Group by source and count
+    const sourceMap = {};
+
+    articles.forEach((article) => {
+      if (!sourceMap[article.source]) {
+        sourceMap[article.source] = {
+          name: article.source,
+          count: 0,
+          sentiments: {
+            BULLISH: 0,
+            BEARISH: 0,
+            NEUTRAL: 0,
+            ERROR: 0,
+          },
+        };
+      }
+
+      sourceMap[article.source].count++;
+      sourceMap[article.source].sentiments[article.sentiment]++;
+    });
+
+    // Convert to array and calculate dominant sentiment
+    const sources = Object.values(sourceMap).map((source) => {
+      const { BULLISH, BEARISH, NEUTRAL } = source.sentiments;
+      let dominantSentiment = 'NEUTRAL';
+
+      if (BULLISH > BEARISH && BULLISH > NEUTRAL) {
+        dominantSentiment = 'BULLISH';
+      } else if (BEARISH > BULLISH && BEARISH > NEUTRAL) {
+        dominantSentiment = 'BEARISH';
+      }
+
+      return {
+        name: source.name,
+        count: source.count,
+        sentiment: dominantSentiment,
+      };
+    });
+
+    // Sort by count and return top N
+    return sources
+      .sort((a, b) => b.count - a.count)
+      .slice(0, limit);
+  }
 }
 
 module.exports = new ArticleService();

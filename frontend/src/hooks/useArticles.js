@@ -40,3 +40,13 @@ export const useSentimentTrend = (hours = null, days = 7, granularity = 'daily')
     },
   });
 };
+
+export const useTopSources = (days = 7, limit = 5) => {
+  return useQuery({
+    queryKey: ['stats', 'sources', days, limit],
+    queryFn: async () => {
+      const response = await api.getTopSources(days, limit);
+      return response.data;
+    },
+  });
+};
