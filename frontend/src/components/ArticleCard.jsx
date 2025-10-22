@@ -127,10 +127,10 @@ export const ArticleCard = ({ article, index = 0 }) => {
 
             {/* Share Menu - Icons Only */}
             {showShareMenu && (
-              <div className="absolute right-0 top-full mt-2 bg-white dark:bg-dark-card rounded-xl shadow-lg border border-neutral-200 dark:border-dark-border p-2 z-50 flex gap-1 whitespace-nowrap">
+              <div className="fixed sm:absolute right-4 sm:right-0 top-auto sm:top-full bottom-20 sm:bottom-auto mt-0 sm:mt-2 bg-white dark:bg-dark-card rounded-xl shadow-2xl border border-neutral-200 dark:border-dark-border p-2 z-50 flex gap-1 whitespace-nowrap">
                 <button
                   onClick={() => handleShare('twitter')}
-                  className="p-2 rounded-lg hover:bg-blue-50 text-neutral-600 hover:text-blue-600 transition-colors"
+                  className="p-2 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/30 text-neutral-600 dark:text-neutral-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                   aria-label="Share on Twitter"
                   title="Share on Twitter"
                 >
@@ -138,7 +138,7 @@ export const ArticleCard = ({ article, index = 0 }) => {
                 </button>
                 <button
                   onClick={() => handleShare('facebook')}
-                  className="p-2 rounded-lg hover:bg-blue-50 text-neutral-600 hover:text-blue-600 transition-colors"
+                  className="p-2 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/30 text-neutral-600 dark:text-neutral-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                   aria-label="Share on Facebook"
                   title="Share on Facebook"
                 >
@@ -146,7 +146,7 @@ export const ArticleCard = ({ article, index = 0 }) => {
                 </button>
                 <button
                   onClick={() => handleShare('linkedin')}
-                  className="p-2 rounded-lg hover:bg-blue-50 text-neutral-600 hover:text-blue-600 transition-colors"
+                  className="p-2 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/30 text-neutral-600 dark:text-neutral-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                   aria-label="Share on LinkedIn"
                   title="Share on LinkedIn"
                 >
@@ -154,8 +154,10 @@ export const ArticleCard = ({ article, index = 0 }) => {
                 </button>
                 <button
                   onClick={() => handleShare('copy')}
-                  className={`p-2 rounded-lg transition-colors border-l border-neutral-200 ml-1 pl-2 ${
-                    copied ? 'bg-primary-50 text-primary-600' : 'hover:bg-primary-50 text-neutral-600 hover:text-primary-600'
+                  className={`p-2 rounded-lg transition-colors border-l border-neutral-200 dark:border-neutral-600 ml-1 pl-2 ${
+                    copied
+                      ? 'bg-primary-50 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400'
+                      : 'hover:bg-primary-50 dark:hover:bg-primary-900/30 text-neutral-600 dark:text-neutral-300 hover:text-primary-600 dark:hover:text-primary-400'
                   }`}
                   aria-label="Copy link"
                   title={copied ? 'Copied!' : 'Copy link'}

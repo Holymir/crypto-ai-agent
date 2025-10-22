@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useInfiniteQuery } from '@tanstack/react-query';
 import { api } from '../lib/api';
 
 export const useArticles = (params) => {
@@ -8,6 +8,21 @@ export const useArticles = (params) => {
       const response = await api.getArticles(params);
       return response.data;
     },
+  });
+};
+
+export const useInfiniteArticles = (params) => {
+  return useInfiniteQuery({
+    queryKey: ['articles', 'infinite', params],
+    queryFn: async ({ pageParam = 1 }) => {
+      const response = await api.getArticles({ ...params, page: pageParam });
+      return response.data;
+    },
+    getNextPageParam: (lastPage) => {
+      const { page, totalPages } = lastPage.pagination;
+      return page < totalPages ? page + 1 : undefined;
+    },
+    initialPageParam: 1,
   });
 };
 

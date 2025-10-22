@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
-import { Search, TrendingUp, TrendingDown, Minus, ChevronLeft, ChevronRight, Filter, Calendar, BarChart3, ArrowUpCircle } from 'lucide-react';
+import { useState, useEffect, useCallback, useRef } from 'react';
+import { Search, TrendingUp, TrendingDown, Minus, Calendar, BarChart3, ArrowUpCircle, Loader2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useArticles } from '../hooks/useArticles';
+import { useInfiniteArticles } from '../hooks/useArticles';
 import { useCountUp } from '../hooks/useCountUp';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import { ErrorMessage } from '../components/ErrorMessage';
@@ -23,8 +23,64 @@ export const Articles = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedSentiment, setSelectedSentiment] = useState('');
   const [selectedDateRange, setSelectedDateRange] = useState(null);
-  const [page, setPage] = useState(1);
   const [showBackToTop, setShowBackToTop] = useState(false);
+
+  // Intersection Observer ref for infinite scroll
+  const loadMoreRef = useRef(null);
+
+  // Build query params, excluding empty values
+  const articleParams = {
+    limit: 20,
+    ...(searchTerm && { search: searchTerm }),
+    ...(selectedSentiment && { sentiment: selectedSentiment }),
+    ...(selectedDateRange && { days: selectedDateRange }),
+    orderBy: 'publishedAt',
+    order: 'desc',
+  };
+
+  const {
+    data,
+    isLoading,
+    isFetchingNextPage,
+    hasNextPage,
+    fetchNextPage,
+    error,
+  } = useInfiniteArticles(articleParams);
+
+  // Flatten all pages into a single articles array
+  const articles = data?.pages?.flatMap((page) => page.articles) || [];
+  const totalCount = data?.pages?.[0]?.pagination?.total || 0;
+  const animatedCount = useCountUp(totalCount, 1000);
+
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value);
+  };
+
+  const handleSentimentFilter = (sentiment) => {
+    setSelectedSentiment(selectedSentiment === sentiment ? '' : sentiment);
+  };
+
+  // Infinite scroll with Intersection Observer
+  const handleObserver = useCallback(
+    (entries) => {
+      const [target] = entries;
+      if (target.isIntersecting && hasNextPage && !isFetchingNextPage) {
+        fetchNextPage();
+      }
+    },
+    [fetchNextPage, hasNextPage, isFetchingNextPage]
+  );
+
+  useEffect(() => {
+    const element = loadMoreRef.current;
+    if (!element) return;
+
+    const option = { threshold: 0.1 };
+    const observer = new IntersectionObserver(handleObserver, option);
+    observer.observe(element);
+
+    return () => observer.disconnect();
+  }, [handleObserver]);
 
   // Scroll listener for Back to Top button
   useEffect(() => {
@@ -34,35 +90,6 @@ export const Articles = () => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
-
-  // Build query params, excluding empty values
-  const articleParams = {
-    page: page,
-    limit: 20,
-    ...(searchTerm && { search: searchTerm }),
-    ...(selectedSentiment && { sentiment: selectedSentiment }),
-    ...(selectedDateRange && { days: selectedDateRange }),
-    orderBy: 'publishedAt',
-    order: 'desc',
-  };
-
-  const { data, isLoading, error } = useArticles(articleParams);
-
-  // Animated count for results
-  const totalCount = data?.pagination?.total || 0;
-  const animatedCount = useCountUp(totalCount, 1000);
-
-  const handleSearchChange = (e) => {
-    setSearchTerm(e.target.value);
-    setPage(1);
-  };
-
-  const handleSentimentFilter = (sentiment) => {
-    setSelectedSentiment(selectedSentiment === sentiment ? '' : sentiment);
-    setPage(1);
-  };
-
-  const { articles = [], pagination = { page: 1, totalPages: 1, total: 0 } } = data || {};
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary-50 via-secondary-50 to-primary-100 dark:from-dark-bg dark:via-neutral-900 dark:to-dark-bg transition-colors duration-300">
@@ -115,6 +142,11 @@ export const Articles = () => {
                   <div className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Bullish</div>
                   <div className="text-lg sm:text-2xl font-bold text-emerald-600 dark:text-emerald-400">
                     {articles.filter(a => a.sentiment === 'BULLISH').length}
+                    {totalCount > articles.length && (
+                      <span className="text-xs font-normal text-gray-500 dark:text-gray-400 ml-1">
+                        / {Math.round((articles.filter(a => a.sentiment === 'BULLISH').length / articles.length) * totalCount)}
+                      </span>
+                    )}
                   </div>
                 </div>
               </motion.div>
@@ -133,6 +165,11 @@ export const Articles = () => {
                   <div className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Bearish</div>
                   <div className="text-lg sm:text-2xl font-bold text-rose-600 dark:text-rose-400">
                     {articles.filter(a => a.sentiment === 'BEARISH').length}
+                    {totalCount > articles.length && (
+                      <span className="text-xs font-normal text-gray-500 dark:text-gray-400 ml-1">
+                        / {Math.round((articles.filter(a => a.sentiment === 'BEARISH').length / articles.length) * totalCount)}
+                      </span>
+                    )}
                   </div>
                 </div>
               </motion.div>
@@ -151,6 +188,11 @@ export const Articles = () => {
                   <div className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Neutral</div>
                   <div className="text-lg sm:text-2xl font-bold text-slate-600 dark:text-slate-400">
                     {articles.filter(a => a.sentiment === 'NEUTRAL').length}
+                    {totalCount > articles.length && (
+                      <span className="text-xs font-normal text-gray-500 dark:text-gray-400 ml-1">
+                        / {Math.round((articles.filter(a => a.sentiment === 'NEUTRAL').length / articles.length) * totalCount)}
+                      </span>
+                    )}
                   </div>
                 </div>
               </motion.div>
@@ -168,7 +210,6 @@ export const Articles = () => {
                   whileTap={{ scale: 0.95 }}
                   onClick={() => {
                     setSelectedDateRange(filter.days);
-                    setPage(1);
                   }}
                   className={`px-3 py-2 rounded-lg text-sm font-semibold transition-all ${
                     selectedDateRange === filter.days
@@ -263,7 +304,6 @@ export const Articles = () => {
                     onClick={() => {
                       setSearchTerm('');
                       setSelectedSentiment('');
-                      setPage(1);
                     }}
                     className="text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 font-medium ml-2"
                   >
@@ -291,18 +331,37 @@ export const Articles = () => {
                 No articles found matching your filters.
               </p>
               <p className="text-sm text-gray-500 dark:text-dark-muted mt-2">
-                Total articles available: {pagination.total || 0}
+                Total articles available: {totalCount}
               </p>
             </div>
           ) : (
-            articles.map((article, index) => (
-              <ArticleCard key={article.id} article={article} index={index} />
-            ))
+            <>
+              {articles.map((article, index) => (
+                <ArticleCard key={article.id} article={article} index={index} />
+              ))}
+
+              {/* Infinite Scroll Trigger */}
+              <div ref={loadMoreRef} className="py-8">
+                {isFetchingNextPage && (
+                  <div className="flex justify-center items-center gap-2">
+                    <Loader2 className="w-6 h-6 animate-spin text-primary-500" />
+                    <span className="text-gray-600 dark:text-dark-muted font-medium">
+                      Loading more articles...
+                    </span>
+                  </div>
+                )}
+                {!hasNextPage && articles.length > 0 && (
+                  <div className="text-center text-gray-500 dark:text-dark-muted text-sm">
+                    You've reached the end • {totalCount} total articles
+                  </div>
+                )}
+              </div>
+            </>
           )}
         </div>
 
-        {/* Pagination */}
-        {!error && !isLoading && articles.length > 0 && pagination.totalPages > 1 && (
+        {/* Remove old pagination - keeping comment for reference */}
+        {false && !error && !isLoading && articles.length > 0 && (
           <div className="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4 glass-strong rounded-2xl p-4 sm:p-6 shadow-xl">
             {/* Page info */}
             <div className="text-sm text-gray-700 dark:text-dark-muted font-medium">
