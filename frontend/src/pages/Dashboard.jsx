@@ -12,7 +12,7 @@ import { SentimentGauge } from '../components/SentimentGauge';
 import { TopSources } from '../components/TopSources';
 import { QuickInsights } from '../components/QuickInsights';
 import { SEO } from '../components/SEO';
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend, AreaChart, Area, XAxis, YAxis, CartesianGrid } from 'recharts';
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, AreaChart, Area, XAxis, YAxis, CartesianGrid } from 'recharts';
 import { PieChartTooltip, TrendChartTooltip } from '../components/ChartTooltip';
 import { ScrollReveal } from '../components/ScrollReveal';
 
@@ -152,7 +152,7 @@ const SentimentDistributionCard = ({ stats }) => {
   ].filter(item => item.value > 0);
 
   // Custom label renderer with better positioning
-  const renderCustomLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent, name }) => {
+  const renderCustomLabel = ({ cx, cy, midAngle, outerRadius, percent, name }) => {
     const RADIAN = Math.PI / 180;
     // Position label outside the pie with more distance
     const radius = outerRadius + 35;
@@ -342,7 +342,7 @@ export const Dashboard = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary-50 via-secondary-50 to-primary-100 dark:from-dark-bg dark:via-neutral-900 dark:to-dark-bg transition-colors duration-300 overflow-x-hidden">
       <SEO
-        title="Analytics Dashboard"
+        title="Dashboard"
         description="View comprehensive cryptocurrency sentiment analytics, market trends, and the latest news analysis in one dashboard."
         keywords="crypto dashboard, sentiment analytics, market trends, crypto statistics, real-time analysis"
       />

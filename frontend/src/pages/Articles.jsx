@@ -1,11 +1,8 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { Search, TrendingUp, TrendingDown, Minus, Calendar, BarChart3, ArrowUpCircle, Loader2 } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatePresence, motion} from 'framer-motion';
 import { useInfiniteArticles } from '../hooks/useArticles';
 import { useCountUp } from '../hooks/useCountUp';
-import { LoadingSpinner } from '../components/LoadingSpinner';
-import { ErrorMessage } from '../components/ErrorMessage';
-import { SentimentBadge } from '../components/SentimentBadge';
 import { Navigation } from '../components/Navigation';
 import { ArticleCard } from '../components/ArticleCard';
 import { ArticlesListSkeleton } from '../components/Skeleton';
@@ -94,7 +91,7 @@ export const Articles = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary-50 via-secondary-50 to-primary-100 dark:from-dark-bg dark:via-neutral-900 dark:to-dark-bg transition-colors duration-300">
       <SEO
-        title="All Articles"
+        title="Articles"
         description="Browse and filter analyzed cryptocurrency news articles. Search through our comprehensive database of sentiment-analyzed crypto news from top sources."
         keywords="crypto articles, cryptocurrency news, bitcoin news, ethereum articles, crypto analysis, filtered news"
       />
@@ -360,109 +357,6 @@ export const Articles = () => {
           )}
         </div>
 
-        {/* Remove old pagination - keeping comment for reference */}
-        {false && !error && !isLoading && articles.length > 0 && (
-          <div className="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4 glass-strong rounded-2xl p-4 sm:p-6 shadow-xl">
-            {/* Page info */}
-            <div className="text-sm text-gray-700 dark:text-dark-muted font-medium">
-              Showing page <span className="font-bold text-primary-600">{pagination.page}</span> of{' '}
-              <span className="font-bold text-primary-600">{pagination.totalPages}</span>
-              {' '}({pagination.total} total articles)
-            </div>
-
-            {/* Page controls */}
-            <div className="flex items-center gap-2">
-              {/* Previous button */}
-              <motion.button
-                onClick={() => setPage(page - 1)}
-                disabled={page === 1}
-                whileHover={{ scale: page === 1 ? 1 : 1.05 }}
-                whileTap={{ scale: page === 1 ? 1 : 0.95 }}
-                className={`p-2 rounded-lg font-semibold transition-all ${
-                  page === 1
-                    ? 'bg-gray-200 dark:bg-gray-700 text-gray-400 dark:text-gray-500 cursor-not-allowed'
-                    : 'bg-gradient-to-r from-primary-500 to-secondary-500 text-white hover:from-primary-600 hover:to-secondary-600 shadow-md hover:shadow-lg'
-                }`}
-              >
-                <ChevronLeft className="w-5 h-5" />
-              </motion.button>
-
-              {/* Page numbers */}
-              <div className="flex gap-1 sm:gap-2">
-                {/* First page */}
-                {pagination.page > 3 && (
-                  <>
-                    <motion.button
-                      onClick={() => setPage(1)}
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      className="px-3 sm:px-4 py-2 rounded-lg font-semibold text-sm bg-white dark:bg-dark-card text-primary-600 dark:text-primary-400 hover:bg-primary-100 dark:hover:bg-neutral-700 transition-all border border-primary-200 dark:border-dark-border"
-                    >
-                      1
-                    </motion.button>
-                    {pagination.page > 4 && (
-                      <span className="px-2 py-2 text-gray-500">...</span>
-                    )}
-                  </>
-                )}
-
-                {/* Pages around current */}
-                {Array.from({ length: pagination.totalPages }, (_, i) => i + 1)
-                  .filter(pageNum => {
-                    return pageNum === pagination.page ||
-                           (pageNum >= pagination.page - 1 && pageNum <= pagination.page + 1);
-                  })
-                  .map(pageNum => (
-                    <motion.button
-                      key={pageNum}
-                      onClick={() => setPage(pageNum)}
-                      whileHover={{ scale: pageNum === pagination.page ? 1 : 1.05 }}
-                      whileTap={{ scale: pageNum === pagination.page ? 1 : 0.95 }}
-                      className={`px-3 sm:px-4 py-2 rounded-lg font-semibold text-sm transition-all ${
-                        pageNum === pagination.page
-                          ? 'bg-gradient-to-r from-primary-500 to-secondary-500 text-white shadow-lg scale-110'
-                          : 'bg-white dark:bg-dark-card text-primary-600 dark:text-primary-400 hover:bg-primary-100 dark:hover:bg-neutral-700 border border-primary-200 dark:border-dark-border'
-                      }`}
-                    >
-                      {pageNum}
-                    </motion.button>
-                  ))}
-
-                {/* Last page */}
-                {pagination.page < pagination.totalPages - 2 && (
-                  <>
-                    {pagination.page < pagination.totalPages - 3 && (
-                      <span className="px-2 py-2 text-gray-500">...</span>
-                    )}
-                    <motion.button
-                      onClick={() => setPage(pagination.totalPages)}
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      className="px-3 sm:px-4 py-2 rounded-lg font-semibold text-sm bg-white dark:bg-dark-card text-primary-600 dark:text-primary-400 hover:bg-primary-100 dark:hover:bg-neutral-700 transition-all border border-primary-200 dark:border-dark-border"
-                    >
-                      {pagination.totalPages}
-                    </motion.button>
-                  </>
-                )}
-              </div>
-
-              {/* Next button */}
-              <motion.button
-                onClick={() => setPage(page + 1)}
-                disabled={page === pagination.totalPages}
-                whileHover={{ scale: page === pagination.totalPages ? 1 : 1.05 }}
-                whileTap={{ scale: page === pagination.totalPages ? 1 : 0.95 }}
-                className={`p-2 rounded-lg font-semibold transition-all ${
-                  page === pagination.totalPages
-                    ? 'bg-gray-200 dark:bg-gray-700 text-gray-400 dark:text-gray-500 cursor-not-allowed'
-                    : 'bg-gradient-to-r from-primary-500 to-secondary-500 text-white hover:from-primary-600 hover:to-secondary-600 shadow-md hover:shadow-lg'
-                }`}
-              >
-                <ChevronRight className="w-5 h-5" />
-              </motion.button>
-            </div>
-          </div>
-        )}
 
         {/* Back to Top Floating Button */}
         <AnimatePresence>

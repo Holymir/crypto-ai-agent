@@ -1,11 +1,12 @@
-import { Shield, ArrowRight, Brain, Clock, Database, LineChart } from 'lucide-react';
+import { ArrowRight, Brain, Clock, Database, LineChart } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
 import { useSentimentStats } from '../hooks/useArticles';
 import { ErrorMessage } from '../components/ErrorMessage';
 import { Navigation } from '../components/Navigation';
 import { SEO } from '../components/SEO';
 import dashboardDemo from '../assets/dashboard-demo.png';
+import { motion } from 'framer-motion';
+
 
 export const Home = () => {
   const { data: stats, error: statsError } = useSentimentStats();
@@ -17,7 +18,7 @@ export const Home = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary-50 via-secondary-50 to-primary-100 dark:from-dark-bg dark:via-neutral-900 dark:to-dark-bg transition-colors duration-300">
       <SEO
-        title="Home"
+        title="SentiFi"
         description="Real-time cryptocurrency sentiment analysis powered by AI. Track market mood with advanced sentiment analytics for Bitcoin, Ethereum, and more."
         keywords="crypto sentiment analysis, cryptocurrency news, bitcoin sentiment, ethereum analysis, AI crypto analytics, market sentiment tracker"
       />

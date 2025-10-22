@@ -14,7 +14,7 @@ export const SEO = ({
 }) => {
   useEffect(() => {
     // Update document title
-    const fullTitle = title ? `${title} | CryptoSentiment AI` : 'CryptoSentiment AI - AI-Powered Crypto Sentiment Analysis';
+    const fullTitle = title ? `${title} | AI-Powered Crypto Sentiment` : 'SentiFi - AI-Powered Crypto Sentiment';
     document.title = fullTitle;
 
     // Update or create meta tags
@@ -54,7 +54,7 @@ export const SEO = ({
 
     // Cleanup function - restore default title on unmount
     return () => {
-      document.title = 'CryptoSentiment AI - AI-Powered Crypto Sentiment Analysis';
+      document.title = 'AI-Powered Crypto Sentiment Analysis';
     };
   }, [title, description, keywords, ogImage, ogType, twitterCard]);
 
