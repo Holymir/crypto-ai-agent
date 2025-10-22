@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { Search, TrendingUp, TrendingDown, Minus, Calendar, BarChart3, ArrowUpCircle, Loader2 } from 'lucide-react';
-import { AnimatePresence, motion} from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import { useInfiniteArticles } from '../hooks/useArticles';
 import { useCountUp } from '../hooks/useCountUp';
 import { Navigation } from '../components/Navigation';
@@ -8,13 +8,8 @@ import { ArticleCard } from '../components/ArticleCard';
 import { ArticlesListSkeleton } from '../components/Skeleton';
 import { ScrollReveal } from '../components/ScrollReveal';
 import { SEO } from '../components/SEO';
-
-const DATE_FILTERS = [
-  { label: '24H', days: 1 },
-  { label: '7D', days: 7 },
-  { label: '30D', days: 30 },
-  { label: 'All', days: null },
-];
+import { FilterButtonGroup } from '../components/FilterButtonGroup';
+import { DATE_FILTERS } from '../constants/filters';
 
 export const Articles = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -199,25 +194,12 @@ export const Articles = () => {
           {/* Date Range Filters */}
           <div className="flex items-center justify-center gap-2">
             <Calendar className="w-4 h-4 text-gray-500 dark:text-gray-400" />
-            <div className="flex gap-2">
-              {DATE_FILTERS.map((filter) => (
-                <motion.button
-                  key={filter.label}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => {
-                    setSelectedDateRange(filter.days);
-                  }}
-                  className={`px-3 py-2 rounded-lg text-sm font-semibold transition-all ${
-                    selectedDateRange === filter.days
-                      ? 'bg-gradient-to-r from-primary-500 to-secondary-500 text-white shadow-lg'
-                      : 'bg-white/80 dark:bg-neutral-800/80 text-gray-700 dark:text-gray-300 hover:bg-white dark:hover:bg-neutral-700 border border-gray-200 dark:border-neutral-600'
-                  }`}
-                >
-                  {filter.label}
-                </motion.button>
-              ))}
-            </div>
+            <FilterButtonGroup
+              options={DATE_FILTERS}
+              selected={selectedDateRange}
+              onChange={setSelectedDateRange}
+              variant="primary"
+            />
           </div>
         </motion.div>
 

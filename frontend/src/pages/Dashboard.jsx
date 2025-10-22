@@ -15,17 +15,9 @@ import { SEO } from '../components/SEO';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, AreaChart, Area, XAxis, YAxis, CartesianGrid } from 'recharts';
 import { PieChartTooltip, TrendChartTooltip } from '../components/ChartTooltip';
 import { ScrollReveal } from '../components/ScrollReveal';
-
-const TIME_PERIODS = [
-  { label: '24H', days: 1 },
-  { label: '7D', days: 7 },
-  { label: '30D', days: 30 },
-];
-
-const TREND_TIME_PERIODS = [
-  { label: '24H', days: 1 },
-  { label: '7D', days: 7 },
-];
+import { FilterButtonGroup } from '../components/FilterButtonGroup';
+import { StatsCard } from '../components/StatsCard';
+import { DATE_FILTERS } from '../constants/filters';
 
 // Get sentiment colors from Tailwind theme - softer, more professional tones
 const COLORS = {
@@ -56,21 +48,13 @@ const SentimentTrendCard = () => {
               Sentiment Trend
             </h2>
           </div>
-          <div className="flex gap-2">
-            {TREND_TIME_PERIODS.map((period) => (
-              <button
-                key={period.days}
-                onClick={() => setSelectedPeriod(period.days)}
-                className={`px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition-all ${
-                  selectedPeriod === period.days
-                    ? 'bg-gradient-to-r from-secondary-500 to-primary-500 text-white shadow-lg'
-                    : 'bg-gray-100 dark:bg-neutral-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-neutral-600'
-                }`}
-              >
-                {period.label}
-              </button>
-            ))}
-          </div>
+          <FilterButtonGroup
+            options={DATE_FILTERS}
+            selected={selectedPeriod}
+            onChange={setSelectedPeriod}
+            size="sm"
+            variant="white"
+          />
         </div>
         {trendLoading ? (
           <div className="flex items-center justify-center h-[240px] sm:h-[280px]">
@@ -387,96 +371,55 @@ export const Dashboard = () => {
             <div className="flex flex-wrap items-center gap-2">
               <div className="flex items-center gap-2 text-gray-600 dark:text-dark-muted">
                 <Calendar className="w-4 h-4" />
-                <span className="text-xs font-semibold uppercase">Period:</span>
+                {/* <span className="text-xs font-semibold uppercase">Period:</span> */}
               </div>
-              <div className="flex gap-2">
-                {TIME_PERIODS.map((period) => (
-                  <motion.button
-                    key={period.days}
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={() => setSelectedPeriod(period.days)}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
-                      selectedPeriod === period.days
-                        ? 'bg-gradient-to-r from-primary-500 to-secondary-500 text-white shadow-lg hover:shadow-glow-primary'
-                        : 'bg-white/80 dark:bg-neutral-800/80 text-gray-700 dark:text-gray-300 hover:bg-white dark:hover:bg-neutral-700 border border-gray-200 dark:border-neutral-600'
-                    }`}
-                  >
-                    {period.label}
-                  </motion.button>
-                ))}
-              </div>
+              <FilterButtonGroup
+                options={DATE_FILTERS}
+                selected={selectedPeriod}
+                onChange={setSelectedPeriod}
+                size="sm"
+                variant="primary"
+              />
             </div>
           </div>
 
           {/* Compact Quick Stats Bar */}
           <div className={`glass-strong rounded-xl p-4 bg-gradient-to-r ${sentimentHero.bgColor} border border-white/20 dark:border-white/10`}>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
-              {/* Sentiment Score */}
-              <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.1 }}
-                className="flex items-center gap-2 p-2 glass rounded-lg"
-              >
-                <div className={`p-1.5 rounded-lg bg-gradient-to-br ${sentimentHero.bgColor}`}>
-                  <Activity className={`w-4 h-4 ${sentimentHero.color}`} />
-                </div>
-                <div>
-                  <div className="text-xs text-gray-500 dark:text-gray-400">Score</div>
-                  <div className={`text-lg font-bold ${sentimentHero.color}`}>{sentimentScore}/100</div>
-                </div>
-              </motion.div>
-
-              {/* Total Articles */}
-              <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.15 }}
-                className="flex items-center gap-2 p-2 glass rounded-lg"
-              >
-                <div className="p-1.5 rounded-lg bg-gradient-to-br from-primary-500/20 to-secondary-500/20">
-                  <Calendar className="w-4 h-4 text-primary-600 dark:text-primary-400" />
-                </div>
-                <div>
-                  <div className="text-xs text-gray-500 dark:text-gray-400">Articles</div>
-                  <div className="text-lg font-bold text-gray-900 dark:text-dark-text">{stats?.total || 0}</div>
-                </div>
-              </motion.div>
-
-              {/* Bullish Count */}
-              <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.2 }}
-                className="flex items-center gap-2 p-2 glass rounded-lg"
-              >
-                <div className="p-1.5 rounded-lg bg-gradient-to-br from-bullish-500/20 to-bullish-400/20">
-                  <TrendingUp className="w-4 h-4 text-bullish-600 dark:text-bullish-400" />
-                </div>
-                <div>
-                  <div className="text-xs text-gray-500 dark:text-gray-400">Bullish</div>
-                  <div className="text-lg font-bold text-bullish-600 dark:text-bullish-400">{stats?.BULLISH || 0}</div>
-                </div>
-              </motion.div>
-
-              {/* Last Updated */}
-              <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.25 }}
-                className="flex items-center gap-2 p-2 glass rounded-lg"
-              >
-                <div className="p-1.5 rounded-lg bg-gradient-to-br from-blue-500/20 to-indigo-500/20">
-                  <Clock className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-                </div>
-                <div>
-                  <div className="text-xs text-gray-500 dark:text-gray-400">Updated</div>
-                  <div className="text-sm font-bold text-gray-900 dark:text-dark-text">
-                    {currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                  </div>
-                </div>
-              </motion.div>
+              <StatsCard
+                icon={Activity}
+                label="Score"
+                value={`${sentimentScore}/100`}
+                iconColor={sentimentHero.bgColor}
+                textColor={sentimentHero.color}
+                delay={0.1}
+                className="p-2"
+              />
+              <StatsCard
+                icon={Calendar}
+                label="Articles"
+                value={stats?.total || 0}
+                iconColor="from-primary-500/20 to-secondary-500/20"
+                delay={0.15}
+                className="p-2"
+              />
+              <StatsCard
+                icon={TrendingUp}
+                label="Bullish"
+                value={stats?.BULLISH || 0}
+                iconColor="from-bullish-500/20 to-bullish-400/20"
+                textColor="text-bullish-600 dark:text-bullish-400"
+                delay={0.2}
+                className="p-2"
+              />
+              <StatsCard
+                icon={Clock}
+                label="Updated"
+                value={currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                iconColor="from-blue-500/20 to-indigo-500/20"
+                delay={0.25}
+                className="p-2"
+              />
             </div>
           </div>
         </motion.div>

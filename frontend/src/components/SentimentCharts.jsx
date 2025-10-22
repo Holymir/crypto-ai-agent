@@ -4,6 +4,8 @@ import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend, AreaChart, A
 import { ScrollReveal } from './ScrollReveal';
 import { PieChartTooltip, TrendChartTooltip } from './ChartTooltip';
 import { useSentimentTrend } from '../hooks/useArticles';
+import { FilterButtonGroup } from './FilterButtonGroup';
+import { DATE_FILTERS } from '../constants/filters';
 
 // Colors from tailwind.config.js - softer, more professional tones
 const COLORS = {
@@ -11,11 +13,6 @@ const COLORS = {
   BEARISH: '#e66b6b',   // bearish-500 (softer coral-red)
   NEUTRAL: '#6B7280',   // neutral-500
 };
-
-const TIME_PERIODS = [
-  { label: '24H', days: 1 },
-  { label: '7D', days: 7 },
-];
 
 /**
  * Reusable sentiment charts component displaying pie chart and trend chart
@@ -104,21 +101,13 @@ export const SentimentCharts = ({ stats, className = '' }) => {
               </div>
               <h2 className="text-lg sm:text-xl md:text-2xl font-bold bg-gradient-to-r from-secondary-600 to-primary-600 bg-clip-text text-transparent">Sentiment Trend</h2>
             </div>
-            <div className="flex gap-2">
-              {TIME_PERIODS.map((period) => (
-                <button
-                  key={period.days}
-                  onClick={() => setSelectedPeriod(period.days)}
-                  className={`px-3 py-1.5 rounded-lg text-sm font-semibold transition-all ${
-                    selectedPeriod === period.days
-                      ? 'bg-gradient-to-r from-secondary-500 to-primary-500 text-white shadow-lg'
-                      : 'bg-gray-100 dark:bg-neutral-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-neutral-600'
-                  }`}
-                >
-                  {period.label}
-                </button>
-              ))}
-            </div>
+            <FilterButtonGroup
+              options={DATE_FILTERS}
+              selected={selectedPeriod}
+              onChange={setSelectedPeriod}
+              size="sm"
+              variant="white"
+            />
           </div>
           {trendLoading ? (
             <div className="flex items-center justify-center h-[280px]">
