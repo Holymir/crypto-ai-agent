@@ -1,7 +1,8 @@
-import { useState } from 'react';
-import { Search, TrendingUp, TrendingDown, Minus, ChevronLeft, ChevronRight } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { useState, useEffect } from 'react';
+import { Search, TrendingUp, TrendingDown, Minus, ChevronLeft, ChevronRight, Filter, Calendar, BarChart3, ArrowUpCircle } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useArticles } from '../hooks/useArticles';
+import { useCountUp } from '../hooks/useCountUp';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import { ErrorMessage } from '../components/ErrorMessage';
 import { SentimentBadge } from '../components/SentimentBadge';
@@ -11,10 +12,28 @@ import { ArticlesListSkeleton } from '../components/Skeleton';
 import { ScrollReveal } from '../components/ScrollReveal';
 import { SEO } from '../components/SEO';
 
+const DATE_FILTERS = [
+  { label: '24H', days: 1 },
+  { label: '7D', days: 7 },
+  { label: '30D', days: 30 },
+  { label: 'All', days: null },
+];
+
 export const Articles = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedSentiment, setSelectedSentiment] = useState('');
+  const [selectedDateRange, setSelectedDateRange] = useState(null);
   const [page, setPage] = useState(1);
+  const [showBackToTop, setShowBackToTop] = useState(false);
+
+  // Scroll listener for Back to Top button
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowBackToTop(window.scrollY > 400);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   // Build query params, excluding empty values
   const articleParams = {
@@ -22,9 +41,16 @@ export const Articles = () => {
     limit: 20,
     ...(searchTerm && { search: searchTerm }),
     ...(selectedSentiment && { sentiment: selectedSentiment }),
+    ...(selectedDateRange && { days: selectedDateRange }),
+    orderBy: 'publishedAt',
+    order: 'desc',
   };
 
   const { data, isLoading, error } = useArticles(articleParams);
+
+  // Animated count for results
+  const totalCount = data?.pagination?.total || 0;
+  const animatedCount = useCountUp(totalCount, 1000);
 
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
@@ -49,15 +75,113 @@ export const Articles = () => {
       <Navigation />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
-        {/* Header */}
-        <div className="text-center section-spacing">
-          <h1 className="text-display bg-gradient-to-r from-primary-600 via-secondary-600 to-primary-700 bg-clip-text text-transparent mb-4">
-            All Articles
-          </h1>
-          <p className="text-lg sm:text-xl text-gray-600 dark:text-dark-muted">
-            Browse and filter analyzed cryptocurrency news
-          </p>
-        </div>
+        {/* Enhanced Hero Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="mb-6 sm:mb-8"
+        >
+          {/* Stats Summary Bar */}
+          <div className="glass-strong rounded-2xl p-4 sm:p-6 mb-4 border-2 border-white/20 dark:border-white/10">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
+              {/* Total Results */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.1 }}
+                className="flex items-center gap-2 sm:gap-3 p-3 glass rounded-xl"
+              >
+                <div className="p-2 rounded-lg bg-gradient-to-br from-primary-500/20 to-secondary-500/20">
+                  <BarChart3 className="w-4 h-4 sm:w-5 sm:h-5 text-primary-600 dark:text-primary-400" />
+                </div>
+                <div>
+                  <div className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Results</div>
+                  <div className="text-lg sm:text-2xl font-bold text-gray-900 dark:text-dark-text">{animatedCount}</div>
+                </div>
+              </motion.div>
+
+              {/* Bullish */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.2 }}
+                className="flex items-center gap-2 sm:gap-3 p-3 glass rounded-xl"
+              >
+                <div className="p-2 rounded-lg bg-gradient-to-br from-emerald-500/20 to-green-500/20">
+                  <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5 text-emerald-600 dark:text-emerald-400" />
+                </div>
+                <div>
+                  <div className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Bullish</div>
+                  <div className="text-lg sm:text-2xl font-bold text-emerald-600 dark:text-emerald-400">
+                    {articles.filter(a => a.sentiment === 'BULLISH').length}
+                  </div>
+                </div>
+              </motion.div>
+
+              {/* Bearish */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.3 }}
+                className="flex items-center gap-2 sm:gap-3 p-3 glass rounded-xl"
+              >
+                <div className="p-2 rounded-lg bg-gradient-to-br from-rose-500/20 to-red-500/20">
+                  <TrendingDown className="w-4 h-4 sm:w-5 sm:h-5 text-rose-600 dark:text-rose-400" />
+                </div>
+                <div>
+                  <div className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Bearish</div>
+                  <div className="text-lg sm:text-2xl font-bold text-rose-600 dark:text-rose-400">
+                    {articles.filter(a => a.sentiment === 'BEARISH').length}
+                  </div>
+                </div>
+              </motion.div>
+
+              {/* Neutral */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.4 }}
+                className="flex items-center gap-2 sm:gap-3 p-3 glass rounded-xl"
+              >
+                <div className="p-2 rounded-lg bg-gradient-to-br from-slate-500/20 to-gray-500/20">
+                  <Minus className="w-4 h-4 sm:w-5 sm:h-5 text-slate-600 dark:text-slate-400" />
+                </div>
+                <div>
+                  <div className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Neutral</div>
+                  <div className="text-lg sm:text-2xl font-bold text-slate-600 dark:text-slate-400">
+                    {articles.filter(a => a.sentiment === 'NEUTRAL').length}
+                  </div>
+                </div>
+              </motion.div>
+            </div>
+          </div>
+
+          {/* Date Range Filters */}
+          <div className="flex items-center justify-center gap-2">
+            <Calendar className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+            <div className="flex gap-2">
+              {DATE_FILTERS.map((filter) => (
+                <motion.button
+                  key={filter.label}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => {
+                    setSelectedDateRange(filter.days);
+                    setPage(1);
+                  }}
+                  className={`px-3 py-2 rounded-lg text-sm font-semibold transition-all ${
+                    selectedDateRange === filter.days
+                      ? 'bg-gradient-to-r from-primary-500 to-secondary-500 text-white shadow-lg'
+                      : 'bg-white/80 dark:bg-neutral-800/80 text-gray-700 dark:text-gray-300 hover:bg-white dark:hover:bg-neutral-700 border border-gray-200 dark:border-neutral-600'
+                  }`}
+                >
+                  {filter.label}
+                </motion.button>
+              ))}
+            </div>
+          </div>
+        </motion.div>
 
         {/* Search and Filters */}
         <ScrollReveal direction="up" delay={0.1}>
@@ -280,6 +404,24 @@ export const Articles = () => {
             </div>
           </div>
         )}
+
+        {/* Back to Top Floating Button */}
+        <AnimatePresence>
+          {showBackToTop && (
+            <motion.button
+              initial={{ opacity: 0, scale: 0 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0 }}
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+              className="fixed bottom-8 right-8 p-4 bg-gradient-to-r from-primary-500 to-secondary-500 text-white rounded-full shadow-2xl hover:shadow-glow-primary z-50 group"
+              aria-label="Back to top"
+            >
+              <ArrowUpCircle className="w-6 h-6 group-hover:animate-bounce" />
+            </motion.button>
+          )}
+        </AnimatePresence>
       </div>
     </div>
   );

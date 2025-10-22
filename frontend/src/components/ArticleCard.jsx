@@ -127,7 +127,7 @@ export const ArticleCard = ({ article, index = 0 }) => {
 
             {/* Share Menu - Icons Only */}
             {showShareMenu && (
-              <div className="absolute right-0 top-full mt-2 bg-white dark:bg-dark-card rounded-xl shadow-lg border border-neutral-200 dark:border-dark-border p-2 z-10 flex gap-1">
+              <div className="absolute right-0 top-full mt-2 bg-white dark:bg-dark-card rounded-xl shadow-lg border border-neutral-200 dark:border-dark-border p-2 z-50 flex gap-1 whitespace-nowrap">
                 <button
                   onClick={() => handleShare('twitter')}
                   className="p-2 rounded-lg hover:bg-blue-50 text-neutral-600 hover:text-blue-600 transition-colors"
