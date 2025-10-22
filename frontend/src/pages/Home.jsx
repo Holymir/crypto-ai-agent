@@ -89,12 +89,12 @@ export const Home = () => {
               </div>
             </motion.div>
 
-            {/* Right Column - Dashboard Screenshot */}
+            {/* Right Column - Dashboard Screenshot (Hidden on Mobile) */}
             <motion.div
               initial={{ opacity: 0, x: 30 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.7, delay: 0.2 }}
-              className="relative"
+              className="relative hidden lg:block"
             >
               {/* Dashboard Screenshot with Mockup Frame */}
               <div className="relative group">
