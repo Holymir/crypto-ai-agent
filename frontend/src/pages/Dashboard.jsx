@@ -27,11 +27,14 @@ const COLORS = {
 };
 
 // Sentiment Trend Card Component
-const SentimentTrendCard = () => {
-  const [selectedPeriod, setSelectedPeriod] = useState(7);
+// Now controlled by parent's selectedPeriod from header filter
+const SentimentTrendCard = ({ selectedPeriod = 7 }) => {
   const granularity = selectedPeriod === 1 ? 'hourly' : 'daily';
   const hours = selectedPeriod === 1 ? 24 : null;
-  const days = selectedPeriod === 1 ? 1 : selectedPeriod;
+  // TODO: For "All" (null), currently using 90 days as a workaround.
+  // Need to update API to support fetching all historical data without time limit
+  // or implement proper pagination/aggregation for large datasets
+  const days = selectedPeriod === 1 ? 1 : (selectedPeriod || 90);
 
   const { data: trendData, isLoading: trendLoading } = useSentimentTrend(hours, days, granularity);
   const trendChartData = trendData?.trend || [];
@@ -39,22 +42,13 @@ const SentimentTrendCard = () => {
   return (
     <ScrollReveal direction="right" delay={0.1}>
       <div className="glass-strong rounded-2xl p-4 sm:p-6 shadow-2xl hover-lift hover-glow-secondary h-full">
-        <div className="flex items-center justify-between mb-4 sm:mb-6">
-          <div className="flex items-center gap-2">
-            <div className="p-2 bg-gradient-to-br from-secondary-500 to-primary-500 rounded-lg">
-              <Activity className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
-            </div>
-            <h2 className="text-lg sm:text-xl md:text-2xl font-bold bg-gradient-to-r from-secondary-600 to-primary-600 bg-clip-text text-transparent">
-              Sentiment Trend
-            </h2>
+        <div className="flex items-center gap-2 mb-4 sm:mb-6">
+          <div className="p-2 bg-gradient-to-br from-secondary-500 to-primary-500 rounded-lg">
+            <Activity className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
           </div>
-          <FilterButtonGroup
-            options={DATE_FILTERS}
-            selected={selectedPeriod}
-            onChange={setSelectedPeriod}
-            size="sm"
-            variant="white"
-          />
+          <h2 className="text-lg sm:text-xl md:text-2xl font-bold bg-gradient-to-r from-secondary-600 to-primary-600 bg-clip-text text-transparent">
+            Sentiment Trend
+          </h2>
         </div>
         {trendLoading ? (
           <div className="flex items-center justify-center h-[240px] sm:h-[280px]">
@@ -433,7 +427,7 @@ export const Dashboard = () => {
 
           {/* Sentiment Trend - Right Side */}
           <div className="lg:col-span-3">
-            <SentimentTrendCard />
+            <SentimentTrendCard selectedPeriod={selectedPeriod} />
           </div>
         </div>
 
