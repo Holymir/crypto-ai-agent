@@ -12,7 +12,8 @@ const COLORS = {
 };
 
 /**
- * Reusable sentiment charts component displaying pie chart and trend chart
+ * Reusable media sentiment charts component displaying distribution and trend
+ * Shows sentiment analysis from news articles over time
  * Now accepts selectedPeriod from parent to sync with dashboard time filter
  */
 export const SentimentCharts = ({ stats, selectedPeriod = 7, className = '' }) => {
@@ -44,7 +45,7 @@ export const SentimentCharts = ({ stats, selectedPeriod = 7, className = '' }) =
             <div className="p-2 bg-gradient-to-br from-primary-500 to-secondary-500 rounded-lg">
               <Zap className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
             </div>
-            <h2 className="text-lg sm:text-xl md:text-2xl font-bold bg-gradient-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent">Sentiment Distribution</h2>
+            <h2 className="text-lg sm:text-xl md:text-2xl font-bold bg-gradient-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent">Media Sentiment Distribution</h2>
           </div>
           <ResponsiveContainer width="100%" height={280}>
             <PieChart>
@@ -98,7 +99,14 @@ export const SentimentCharts = ({ stats, selectedPeriod = 7, className = '' }) =
             <div className="p-2 bg-gradient-to-br from-secondary-500 to-primary-500 rounded-lg">
               <Activity className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
             </div>
-            <h2 className="text-lg sm:text-xl md:text-2xl font-bold bg-gradient-to-r from-secondary-600 to-primary-600 bg-clip-text text-transparent">Sentiment Trend</h2>
+            <div className="flex flex-col">
+              <h2 className="text-lg sm:text-xl md:text-2xl font-bold bg-gradient-to-r from-secondary-600 to-primary-600 bg-clip-text text-transparent">
+                Media Sentiment Trend
+              </h2>
+              <p className="text-xs text-neutral-500 dark:text-dark-muted">
+                {selectedPeriod === 1 ? '24-hour news coverage' : selectedPeriod === 7 ? '7-day news coverage' : `${selectedPeriod}-day news coverage`}
+              </p>
+            </div>
           </div>
           {trendLoading ? (
             <div className="flex items-center justify-center h-[280px]">
@@ -123,17 +131,52 @@ export const SentimentCharts = ({ stats, selectedPeriod = 7, className = '' }) =
                 tick={{ fontSize: 10 }}
                 stroke="#9ca3af"
                 className="dark:opacity-50"
+                interval="preserveStartEnd"
+                minTickGap={30}
+                angle={-45}
+                textAnchor="end"
+                height={60}
                 tickFormatter={(value) => {
                   if (granularity === 'hourly') {
-                    // Format: "HH:00" from "YYYY-MM-DD HH:00"
-                    return value.split(' ')[1];
+                    // Parse the date string and convert to user's local time
+                    // Format from backend: "YYYY-MM-DD HH:00"
+                    const date = new Date(value);
+
+                    // Check if date is valid
+                    if (isNaN(date.getTime())) {
+                      return value.split(' ')[1] || '';
+                    }
+
+                    // Format in user's local time with 12-hour format
+                    return date.toLocaleTimeString('en-US', {
+                      hour: 'numeric',
+                      hour12: true
+                    });
                   }
-                  // Format: "MM/DD" from "YYYY-MM-DD"
-                  const [, month, day] = value.split('-');
-                  return `${month}/${day}`;
+                  // For daily view, format as "MMM DD"
+                  const date = new Date(value);
+                  if (isNaN(date.getTime())) {
+                    // Fallback to old format if parsing fails
+                    const [, month, day] = value.split('-');
+                    return `${month}/${day}`;
+                  }
+                  return date.toLocaleDateString('en-US', {
+                    month: 'short',
+                    day: 'numeric'
+                  });
                 }}
               />
-              <YAxis stroke="#9ca3af" className="dark:opacity-50" />
+              <YAxis
+                stroke="#9ca3af"
+                className="dark:opacity-50"
+                tick={{ fontSize: 10 }}
+                label={{
+                  value: 'Articles',
+                  angle: -90,
+                  position: 'insideLeft',
+                  style: { fontSize: 11, fill: '#6b7280' }
+                }}
+              />
               <Tooltip
                 content={<TrendChartTooltip />}
                 cursor={{ stroke: '#6366F1', strokeWidth: 2, strokeDasharray: '5 5' }}

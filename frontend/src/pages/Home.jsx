@@ -19,8 +19,8 @@ export const Home = () => {
     <div className="min-h-screen bg-gradient-to-br from-primary-50 via-secondary-50 to-primary-100 dark:from-dark-bg dark:via-neutral-900 dark:to-dark-bg transition-colors duration-300">
       <SEO
         title="SentiFi"
-        description="Real-time cryptocurrency sentiment analysis powered by AI. Track market mood with advanced sentiment analytics for Bitcoin, Ethereum, and more."
-        keywords="crypto sentiment analysis, cryptocurrency news, bitcoin sentiment, ethereum analysis, AI crypto analytics, market sentiment tracker"
+        description="Real-time cryptocurrency media sentiment analysis powered by AI. Track how crypto is portrayed in the news with advanced sentiment analytics from hundreds of sources."
+        keywords="crypto media sentiment, cryptocurrency news analysis, bitcoin news sentiment, media coverage analytics, AI news sentiment, crypto journalism tracker"
       />
 
       <Navigation />

@@ -37,6 +37,29 @@ export const PieChartTooltip = ({ active, payload }) => {
 export const TrendChartTooltip = ({ active, payload, label }) => {
   if (!active || !payload || !payload.length) return null;
 
+  // Format the label for better display
+  const formatLabel = (dateStr) => {
+    const date = new Date(dateStr);
+    if (isNaN(date.getTime())) return dateStr;
+
+    // Check if it's an hourly format (contains time)
+    if (dateStr.includes(':')) {
+      return date.toLocaleString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: '2-digit',
+        hour12: true
+      });
+    }
+    // Daily format
+    return date.toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric'
+    });
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.9, y: 10 }}
@@ -46,7 +69,7 @@ export const TrendChartTooltip = ({ active, payload, label }) => {
       className="bg-white dark:bg-dark-card rounded-xl shadow-xl border-2 border-neutral-200 dark:border-dark-border p-4 backdrop-blur-md"
     >
       <div className="text-sm font-semibold text-neutral-700 dark:text-dark-muted mb-3">
-        {label}
+        {formatLabel(label)}
       </div>
       <div className="space-y-2">
         {payload.map((entry, index) => (

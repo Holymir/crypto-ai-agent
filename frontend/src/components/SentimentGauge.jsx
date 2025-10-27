@@ -2,9 +2,9 @@ import { motion } from 'framer-motion';
 import { TrendingUp, TrendingDown, Activity } from 'lucide-react';
 
 /**
- * Sentiment Score Gauge Component
- * Displays a visual progress bar showing overall market sentiment (0-100)
- * 0-30: Bearish, 30-70: Neutral, 70-100: Bullish
+ * Media Sentiment Score Gauge Component
+ * Displays a visual progress bar showing media sentiment from analyzed news (0-100)
+ * 0-30: Bearish media coverage, 30-70: Neutral coverage, 70-100: Bullish coverage
  */
 export const SentimentGauge = ({ score = 50, className = '' }) => {
   // Clamp score between 0-100
@@ -50,7 +50,7 @@ export const SentimentGauge = ({ score = 50, className = '' }) => {
           <Icon className="w-5 h-5 text-white" />
         </div>
         <h2 className="text-xl md:text-2xl font-bold bg-gradient-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent">
-          Sentiment Score
+          Media Sentiment Score
         </h2>
       </div>
 
@@ -111,8 +111,8 @@ export const SentimentGauge = ({ score = 50, className = '' }) => {
       {/* Description */}
       <div className="p-4 glass rounded-xl">
         <p className="text-sm text-gray-600 dark:text-dark-muted text-center">
-          The sentiment score represents overall market sentiment based on analyzed news articles.
-          Higher values indicate more bullish sentiment, lower values indicate bearish sentiment.
+          The sentiment score represents media sentiment based on analyzed news articles.
+          Higher values indicate more positive media coverage, lower values indicate negative coverage.
         </p>
       </div>
     </div>

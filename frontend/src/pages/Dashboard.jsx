@@ -26,7 +26,7 @@ const COLORS = {
   NEUTRAL: '#6B7280',   // neutral-500 from tailwind.config
 };
 
-// Sentiment Trend Card Component
+// Media Sentiment Trend Card Component
 // Now controlled by parent's selectedPeriod from header filter
 const SentimentTrendCard = ({ selectedPeriod = 7 }) => {
   const granularity = selectedPeriod === 1 ? 'hourly' : 'daily';
@@ -47,7 +47,7 @@ const SentimentTrendCard = ({ selectedPeriod = 7 }) => {
             <Activity className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
           </div>
           <h2 className="text-lg sm:text-xl md:text-2xl font-bold bg-gradient-to-r from-secondary-600 to-primary-600 bg-clip-text text-transparent">
-            Sentiment Trend
+            Media Sentiment Trend
           </h2>
         </div>
         {trendLoading ? (
@@ -121,7 +121,7 @@ const SentimentTrendCard = ({ selectedPeriod = 7 }) => {
   );
 };
 
-// Sentiment Distribution Card Component
+// Media Sentiment Distribution Card Component
 const SentimentDistributionCard = ({ stats }) => {
   const pieData = [
     { name: 'Bullish', value: stats?.BULLISH || 0, color: COLORS.BULLISH },
@@ -160,7 +160,7 @@ const SentimentDistributionCard = ({ stats }) => {
             <Zap className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
           </div>
           <h2 className="text-lg sm:text-xl md:text-2xl font-bold bg-gradient-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent">
-            Sentiment Distribution
+            Media Sentiment Distribution
           </h2>
         </div>
 
@@ -263,13 +263,13 @@ export const Dashboard = () => {
 
   // Get sentiment info for hero
   const getSentimentHero = (score) => {
-    if (score >= 70) {
+    if (score >= 71) {
       return {
         mood: 'Bullish',
         color: 'text-bullish-600 dark:text-bullish-400',
         bgColor: 'from-bullish-500/20 to-bullish-400/20',
         icon: TrendingUp,
-        description: 'Strong positive sentiment detected in the crypto market',
+        description: 'Strong positive sentiment detected in crypto media coverage',
       };
     } else if (score <= 30) {
       return {
@@ -277,7 +277,7 @@ export const Dashboard = () => {
         color: 'text-bearish-600 dark:text-bearish-400',
         bgColor: 'from-bearish-500/20 to-bearish-400/20',
         icon: TrendingDown,
-        description: 'Cautious sentiment prevails across crypto news',
+        description: 'Cautious sentiment prevails across crypto news coverage',
       };
     } else {
       return {
@@ -285,7 +285,7 @@ export const Dashboard = () => {
         color: 'text-slate-600 dark:text-slate-400',
         bgColor: 'from-slate-500/20 to-gray-500/20',
         icon: Activity,
-        description: 'Balanced sentiment across the crypto market',
+        description: 'Balanced sentiment across crypto media coverage',
       };
     }
   };
@@ -321,8 +321,8 @@ export const Dashboard = () => {
     <div className="min-h-screen bg-gradient-to-br from-primary-50 via-secondary-50 to-primary-100 dark:from-dark-bg dark:via-neutral-900 dark:to-dark-bg transition-colors duration-300 overflow-x-hidden">
       <SEO
         title="Dashboard"
-        description="View comprehensive cryptocurrency sentiment analytics, market trends, and the latest news analysis in one dashboard."
-        keywords="crypto dashboard, sentiment analytics, market trends, crypto statistics, real-time analysis"
+        description="View comprehensive cryptocurrency media sentiment analytics from news coverage. Track how crypto is portrayed in the media with AI-powered analysis."
+        keywords="crypto media sentiment, news sentiment analytics, crypto news analysis, media coverage trends, sentiment dashboard"
       />
 
       <Navigation />
@@ -355,7 +355,7 @@ export const Dashboard = () => {
                     {sentimentHero.mood}
                   </h1>
                   <p className="text-sm text-gray-600 dark:text-dark-muted">
-                    Market Sentiment
+                    Media Sentiment
                   </p>
                 </div>
               </div>

@@ -23,24 +23,24 @@ export const QuickInsights = ({ stats, className = '' }) => {
     const bearishPercent = (data.BEARISH / data.total) * 100;
     const neutralPercent = (data.NEUTRAL / data.total) * 100;
 
-    // Insight 1: Overall market sentiment
-    if (bullishPercent > 50) {
+    // Insight 1: Overall media sentiment
+    if (bullishPercent > 75) {
       insights.push({
         type: 'bullish',
         icon: TrendingUp,
-        message: `Strong bullish sentiment detected with ${Math.round(bullishPercent)}% positive articles`,
+        message: `Strong positive media coverage with ${Math.round(bullishPercent)}% bullish articles`,
       });
-    } else if (bearishPercent > 50) {
+    } else if (bearishPercent > 25) {
       insights.push({
         type: 'bearish',
         icon: TrendingDown,
-        message: `Bearish sentiment dominates with ${Math.round(bearishPercent)}% negative articles`,
+        message: `Negative media coverage dominates with ${Math.round(bearishPercent)}% bearish articles`,
       });
     } else {
       insights.push({
         type: 'neutral',
         icon: CheckCircle,
-        message: `Market sentiment is balanced with ${Math.round(neutralPercent)}% neutral coverage`,
+        message: `Media coverage is balanced with ${Math.round(neutralPercent)}% neutral articles`,
       });
     }
 
@@ -65,19 +65,19 @@ export const QuickInsights = ({ stats, className = '' }) => {
       insights.push({
         type: 'neutral',
         icon: CheckCircle,
-        message: 'Bullish and bearish sentiments are nearly equal - market is indecisive',
+        message: 'Bullish and bearish coverage are nearly equal - media is divided',
       });
-    } else if (bullishPercent > bearishPercent + 20) {
+    } else if (bullishPercent > bearishPercent + 50) {
       insights.push({
         type: 'bullish',
         icon: TrendingUp,
-        message: 'Bullish sentiment significantly outweighs bearish - positive market outlook',
+        message: 'Bullish coverage significantly outweighs bearish - positive media narrative',
       });
-    } else if (bearishPercent > bullishPercent + 20) {
+    } else if (bearishPercent > bullishPercent + 50) {
       insights.push({
         type: 'bearish',
         icon: TrendingDown,
-        message: 'Bearish sentiment significantly outweighs bullish - cautious market outlook',
+        message: 'Bearish coverage significantly outweighs bullish - cautious media narrative',
       });
     }
 
