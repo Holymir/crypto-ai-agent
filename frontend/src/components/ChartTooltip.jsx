@@ -37,37 +37,23 @@ export const PieChartTooltip = ({ active, payload }) => {
 export const TrendChartTooltip = ({ active, payload, label }) => {
   if (!active || !payload || !payload.length) return null;
 
-  // Format the label for better display
+  // Format the label for better display in user's local timezone
   const formatLabel = (dateStr) => {
     // Check if it's an hourly format (contains time)
     if (dateStr.includes(':')) {
       // Parse hourly format: "YYYY-MM-DD HH:00"
-      const parts = dateStr.match(/(\d{4})-(\d{2})-(\d{2}) (\d{2}):00/);
-      if (!parts) return dateStr;
+      const date = new Date(dateStr);
 
-      const year = parts[1];
-      const month = parseInt(parts[2], 10);
-      const day = parseInt(parts[3], 10);
-      const hour = parseInt(parts[4], 10);
+      if (isNaN(date.getTime())) return dateStr;
 
-      // Format month name
-      const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-                          'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-      const monthName = monthNames[month - 1];
-
-      // Convert to 12-hour format
-      let hour12 = hour;
-      let ampm = 'AM';
-      if (hour === 0) {
-        hour12 = 12;
-      } else if (hour === 12) {
-        ampm = 'PM';
-      } else if (hour > 12) {
-        hour12 = hour - 12;
-        ampm = 'PM';
-      }
-
-      return `${monthName} ${day}, ${hour12}:00 ${ampm}`;
+      // Format in user's local timezone with 24-hour format
+      return date.toLocaleString([], {
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false
+      });
     }
 
     // Daily format: "YYYY-MM-DD"

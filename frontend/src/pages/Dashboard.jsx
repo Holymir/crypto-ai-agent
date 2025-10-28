@@ -76,7 +76,14 @@ const SentimentTrendCard = ({ selectedPeriod = 7 }) => {
                 className="dark:opacity-50"
                 tickFormatter={(value) => {
                   if (granularity === 'hourly') {
-                    return value.split(' ')[1];
+                    // Parse the date string (format: "YYYY-MM-DD HH:00")
+                    const date = new Date(value);
+                    // Format in user's local timezone with 24-hour format
+                    return date.toLocaleTimeString([], {
+                      hour: '2-digit',
+                      minute: '2-digit',
+                      hour12: false
+                    });
                   }
                   const [, month, day] = value.split('-');
                   return `${month}/${day}`;
