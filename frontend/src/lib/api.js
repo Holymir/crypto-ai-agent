@@ -31,6 +31,12 @@ export const api = {
     return apiClient.get(`/stats/trend?${params.toString()}`);
   },
   getTopSources: (days = 7, limit = 5) => apiClient.get('/stats/sources', { params: { days, limit } }),
+
+  // Extended AI Analysis Stats
+  getAssetStats: (days = 7, limit = 10) => apiClient.get('/stats/assets', { params: { days, limit } }),
+  getCategoryStats: (days = 7, limit = 10) => apiClient.get('/stats/categories', { params: { days, limit } }),
+  getChainStats: (days = 7, limit = 10) => apiClient.get('/stats/chains', { params: { days, limit } }),
+  getTrendingKeywords: (days = 7, limit = 10) => apiClient.get('/stats/keywords', { params: { days, limit } }),
 };
 
 export default apiClient;

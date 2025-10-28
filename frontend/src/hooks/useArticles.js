@@ -65,3 +65,43 @@ export const useTopSources = (days = 7, limit = 5) => {
     },
   });
 };
+
+export const useAssetStats = (days = 7, limit = 10) => {
+  return useQuery({
+    queryKey: ['stats', 'assets', days, limit],
+    queryFn: async () => {
+      const response = await api.getAssetStats(days, limit);
+      return response.data;
+    },
+  });
+};
+
+export const useCategoryStats = (days = 7, limit = 10) => {
+  return useQuery({
+    queryKey: ['stats', 'categories', days, limit],
+    queryFn: async () => {
+      const response = await api.getCategoryStats(days, limit);
+      return response.data;
+    },
+  });
+};
+
+export const useChainStats = (days = 7, limit = 10) => {
+  return useQuery({
+    queryKey: ['stats', 'chains', days, limit],
+    queryFn: async () => {
+      const response = await api.getChainStats(days, limit);
+      return response.data;
+    },
+  });
+};
+
+export const useTrendingKeywords = (days = 7, limit = 10) => {
+  return useQuery({
+    queryKey: ['stats', 'keywords', days, limit],
+    queryFn: async () => {
+      const response = await api.getTrendingKeywords(days, limit);
+      return response.data;
+    },
+  });
+};

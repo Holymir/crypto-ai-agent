@@ -11,6 +11,7 @@ import { StatsOverview } from '../components/StatsOverview';
 import { SentimentGauge } from '../components/SentimentGauge';
 import { TopSources } from '../components/TopSources';
 import { QuickInsights } from '../components/QuickInsights';
+import { AIInsights } from '../components/AIInsights';
 import { SEO } from '../components/SEO';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, AreaChart, Area, XAxis, YAxis, CartesianGrid } from 'recharts';
 import { PieChartTooltip, TrendChartTooltip } from '../components/ChartTooltip';
@@ -446,6 +447,9 @@ export const Dashboard = () => {
 
         {/* INSIGHTS SECTION */}
         <QuickInsights stats={stats} className="mb-6 sm:mb-8" />
+
+        {/* AI INSIGHTS SECTION */}
+        <AIInsights period={selectedPeriod} className="mb-6 sm:mb-8" />
 
         {/* LATEST ARTICLES SECTION */}
         <div className="glass-strong rounded-2xl p-4 sm:p-6 shadow-2xl">

@@ -101,4 +101,112 @@ router.get(
   }
 );
 
+/**
+ * GET /api/stats/assets
+ * Get top assets (cryptocurrencies) by article count
+ * Query params:
+ *   - days: number of days to look back (default: 7)
+ *   - limit: number of assets to return (default: 10)
+ */
+router.get(
+  '/assets',
+  [
+    query('days').optional().isInt({ min: 1, max: 365 }).toInt(),
+    query('limit').optional().isInt({ min: 1, max: 50 }).toInt(),
+  ],
+  validate,
+  async (req, res, next) => {
+    try {
+      const days = req.query.days ? parseInt(req.query.days) : 7;
+      const limit = req.query.limit ? parseInt(req.query.limit) : 10;
+
+      const assets = await articleService.getAssetStats(days, limit);
+      res.json({ assets });
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+/**
+ * GET /api/stats/categories
+ * Get top categories by article count
+ * Query params:
+ *   - days: number of days to look back (default: 7)
+ *   - limit: number of categories to return (default: 10)
+ */
+router.get(
+  '/categories',
+  [
+    query('days').optional().isInt({ min: 1, max: 365 }).toInt(),
+    query('limit').optional().isInt({ min: 1, max: 50 }).toInt(),
+  ],
+  validate,
+  async (req, res, next) => {
+    try {
+      const days = req.query.days ? parseInt(req.query.days) : 7;
+      const limit = req.query.limit ? parseInt(req.query.limit) : 10;
+
+      const categories = await articleService.getCategoryStats(days, limit);
+      res.json({ categories });
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+/**
+ * GET /api/stats/chains
+ * Get top blockchain chains by article count
+ * Query params:
+ *   - days: number of days to look back (default: 7)
+ *   - limit: number of chains to return (default: 10)
+ */
+router.get(
+  '/chains',
+  [
+    query('days').optional().isInt({ min: 1, max: 365 }).toInt(),
+    query('limit').optional().isInt({ min: 1, max: 50 }).toInt(),
+  ],
+  validate,
+  async (req, res, next) => {
+    try {
+      const days = req.query.days ? parseInt(req.query.days) : 7;
+      const limit = req.query.limit ? parseInt(req.query.limit) : 10;
+
+      const chains = await articleService.getChainStats(days, limit);
+      res.json({ chains });
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+/**
+ * GET /api/stats/keywords
+ * Get trending keywords
+ * Query params:
+ *   - days: number of days to look back (default: 7)
+ *   - limit: number of keywords to return (default: 10)
+ */
+router.get(
+  '/keywords',
+  [
+    query('days').optional().isInt({ min: 1, max: 365 }).toInt(),
+    query('limit').optional().isInt({ min: 1, max: 50 }).toInt(),
+  ],
+  validate,
+  async (req, res, next) => {
+    try {
+      const days = req.query.days ? parseInt(req.query.days) : 7;
+      const limit = req.query.limit ? parseInt(req.query.limit) : 10;
+
+      const keywords = await articleService.getTrendingKeywords(days, limit);
+      res.json({ keywords });
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
 module.exports = router;

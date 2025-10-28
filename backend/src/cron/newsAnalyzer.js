@@ -29,16 +29,21 @@ async function processNews() {
           continue;
         }
 
-        // Analyze sentiment
-        const sentiment = await analyzeSentiment(item.title + '\n\n' + item.content);
+        // Analyze sentiment and extract comprehensive AI analysis
+        const analysis = await analyzeSentiment(item.title + '\n\n' + item.content);
 
-        // Save to database
+        // Save to database with all AI analysis fields
         await articleService.createArticle({
           ...item,
-          sentiment,
+          sentiment: analysis.sentiment,
+          asset: analysis.asset,
+          category: analysis.category,
+          chain: analysis.chain,
+          bullishValue: analysis.bullishValue,
+          keywords: analysis.keywords,
         });
 
-        console.log(`[NEWS] ${sentiment.padEnd(8)} → ${item.title.substring(0, 80)}...`);
+        console.log(`[NEWS] ${analysis.sentiment.padEnd(8)} [${analysis.bullishValue}/100] ${analysis.asset} → ${item.title.substring(0, 60)}...`);
         newArticles++;
 
       } catch (err) {

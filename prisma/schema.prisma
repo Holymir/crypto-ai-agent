@@ -10,7 +10,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite"
   url      = env("DATABASE_URL")
 }
 
@@ -22,19 +22,29 @@ enum Sentiment {
 }
 
 model Article {
-  id          String    @id @default(uuid())
-  title       String    @unique
-  content     String
-  source      String
-  sentiment   Sentiment @default(NEUTRAL)
-  url         String?
-  publishedAt DateTime  @default(now())
-  analyzedAt  DateTime  @default(now())
-  createdAt   DateTime  @default(now())
+  id           String    @id @default(uuid())
+  title        String    @unique
+  content      String
+  source       String
+  sentiment    Sentiment @default(NEUTRAL)
+  url          String?
+  publishedAt  DateTime  @default(now())
+  analyzedAt   DateTime  @default(now())
+  createdAt    DateTime  @default(now())
+
+  // New AI analysis fields
+  asset        String?   // e.g., "BTC", "ETH", "SOL", "MULTIPLE", "GENERAL"
+  category     String?   // e.g., "DeFi", "NFT", "Regulation", "Price", "Technology"
+  chain        String?   // e.g., "Bitcoin", "Ethereum", "Solana", "MULTIPLE", "GENERAL"
+  bullishValue Int?      // Range: 1-100 (1=most bearish, 100=most bullish)
+  keywords     String?   // Comma-separated crypto-related keywords (1-3 words)
 
   @@index([sentiment])
   @@index([publishedAt])
   @@index([source])
+  @@index([asset])
+  @@index([category])
+  @@index([chain])
   @@map("articles")
 }
 

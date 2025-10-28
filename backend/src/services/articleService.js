@@ -14,6 +14,12 @@ class ArticleService {
         url: data.url,
         publishedAt: data.publishedAt || new Date(),
         analyzedAt: new Date(),
+        // New AI analysis fields
+        asset: data.asset,
+        category: data.category,
+        chain: data.chain,
+        bullishValue: data.bullishValue,
+        keywords: data.keywords,
       },
     });
   }
@@ -38,6 +44,9 @@ class ArticleService {
       source,
       search,
       days,
+      asset,
+      category,
+      chain,
       orderBy = 'publishedAt',
       order = 'desc',
     } = options;
@@ -54,6 +63,18 @@ class ArticleService {
 
     if (source) {
       where.source = source;
+    }
+
+    if (asset) {
+      where.asset = asset;
+    }
+
+    if (category) {
+      where.category = category;
+    }
+
+    if (chain) {
+      where.chain = chain;
     }
 
     if (search) {
@@ -278,6 +299,230 @@ class ArticleService {
     return sources
       .sort((a, b) => b.count - a.count)
       .slice(0, limit);
+  }
+
+  /**
+   * Get statistics by asset (cryptocurrency)
+   * @param {number} days - Number of days to look back
+   * @param {number} limit - Number of assets to return
+   */
+  async getAssetStats(days = 7, limit = 10) {
+    const startDate = new Date();
+    startDate.setDate(startDate.getDate() - days);
+
+    const articles = await prisma.article.findMany({
+      where: {
+        publishedAt: { gte: startDate },
+        asset: { not: null },
+      },
+      select: {
+        asset: true,
+        sentiment: true,
+        bullishValue: true,
+      },
+    });
+
+    const assetMap = {};
+
+    articles.forEach((article) => {
+      if (!assetMap[article.asset]) {
+        assetMap[article.asset] = {
+          name: article.asset,
+          count: 0,
+          bullishValues: [],
+          sentiments: { BULLISH: 0, BEARISH: 0, NEUTRAL: 0, ERROR: 0 },
+        };
+      }
+
+      assetMap[article.asset].count++;
+      assetMap[article.asset].sentiments[article.sentiment]++;
+      if (article.bullishValue) {
+        assetMap[article.asset].bullishValues.push(article.bullishValue);
+      }
+    });
+
+    // Calculate average bullish value and dominant sentiment
+    const assets = Object.values(assetMap).map((asset) => {
+      const avgBullishValue = asset.bullishValues.length > 0
+        ? Math.round(asset.bullishValues.reduce((a, b) => a + b, 0) / asset.bullishValues.length)
+        : 50;
+
+      const { BULLISH, BEARISH, NEUTRAL } = asset.sentiments;
+      let dominantSentiment = 'NEUTRAL';
+      if (BULLISH > BEARISH && BULLISH > NEUTRAL) dominantSentiment = 'BULLISH';
+      else if (BEARISH > BULLISH && BEARISH > NEUTRAL) dominantSentiment = 'BEARISH';
+
+      return {
+        name: asset.name,
+        count: asset.count,
+        avgBullishValue,
+        sentiment: dominantSentiment,
+      };
+    });
+
+    return assets.sort((a, b) => b.count - a.count).slice(0, limit);
+  }
+
+  /**
+   * Get statistics by category
+   * @param {number} days - Number of days to look back
+   * @param {number} limit - Number of categories to return
+   */
+  async getCategoryStats(days = 7, limit = 10) {
+    const startDate = new Date();
+    startDate.setDate(startDate.getDate() - days);
+
+    const articles = await prisma.article.findMany({
+      where: {
+        publishedAt: { gte: startDate },
+        category: { not: null },
+      },
+      select: {
+        category: true,
+        sentiment: true,
+        bullishValue: true,
+      },
+    });
+
+    const categoryMap = {};
+
+    articles.forEach((article) => {
+      if (!categoryMap[article.category]) {
+        categoryMap[article.category] = {
+          name: article.category,
+          count: 0,
+          bullishValues: [],
+          sentiments: { BULLISH: 0, BEARISH: 0, NEUTRAL: 0, ERROR: 0 },
+        };
+      }
+
+      categoryMap[article.category].count++;
+      categoryMap[article.category].sentiments[article.sentiment]++;
+      if (article.bullishValue) {
+        categoryMap[article.category].bullishValues.push(article.bullishValue);
+      }
+    });
+
+    const categories = Object.values(categoryMap).map((category) => {
+      const avgBullishValue = category.bullishValues.length > 0
+        ? Math.round(category.bullishValues.reduce((a, b) => a + b, 0) / category.bullishValues.length)
+        : 50;
+
+      const { BULLISH, BEARISH, NEUTRAL } = category.sentiments;
+      let dominantSentiment = 'NEUTRAL';
+      if (BULLISH > BEARISH && BULLISH > NEUTRAL) dominantSentiment = 'BULLISH';
+      else if (BEARISH > BULLISH && BEARISH > NEUTRAL) dominantSentiment = 'BEARISH';
+
+      return {
+        name: category.name,
+        count: category.count,
+        avgBullishValue,
+        sentiment: dominantSentiment,
+      };
+    });
+
+    return categories.sort((a, b) => b.count - a.count).slice(0, limit);
+  }
+
+  /**
+   * Get statistics by blockchain
+   * @param {number} days - Number of days to look back
+   * @param {number} limit - Number of chains to return
+   */
+  async getChainStats(days = 7, limit = 10) {
+    const startDate = new Date();
+    startDate.setDate(startDate.getDate() - days);
+
+    const articles = await prisma.article.findMany({
+      where: {
+        publishedAt: { gte: startDate },
+        chain: { not: null },
+      },
+      select: {
+        chain: true,
+        sentiment: true,
+        bullishValue: true,
+      },
+    });
+
+    const chainMap = {};
+
+    articles.forEach((article) => {
+      if (!chainMap[article.chain]) {
+        chainMap[article.chain] = {
+          name: article.chain,
+          count: 0,
+          bullishValues: [],
+          sentiments: { BULLISH: 0, BEARISH: 0, NEUTRAL: 0, ERROR: 0 },
+        };
+      }
+
+      chainMap[article.chain].count++;
+      chainMap[article.chain].sentiments[article.sentiment]++;
+      if (article.bullishValue) {
+        chainMap[article.chain].bullishValues.push(article.bullishValue);
+      }
+    });
+
+    const chains = Object.values(chainMap).map((chain) => {
+      const avgBullishValue = chain.bullishValues.length > 0
+        ? Math.round(chain.bullishValues.reduce((a, b) => a + b, 0) / chain.bullishValues.length)
+        : 50;
+
+      const { BULLISH, BEARISH, NEUTRAL } = chain.sentiments;
+      let dominantSentiment = 'NEUTRAL';
+      if (BULLISH > BEARISH && BULLISH > NEUTRAL) dominantSentiment = 'BULLISH';
+      else if (BEARISH > BULLISH && BEARISH > NEUTRAL) dominantSentiment = 'BEARISH';
+
+      return {
+        name: chain.name,
+        count: chain.count,
+        avgBullishValue,
+        sentiment: dominantSentiment,
+      };
+    });
+
+    return chains.sort((a, b) => b.count - a.count).slice(0, limit);
+  }
+
+  /**
+   * Get trending keywords
+   * @param {number} days - Number of days to look back
+   * @param {number} limit - Number of keywords to return
+   */
+  async getTrendingKeywords(days = 7, limit = 10) {
+    const startDate = new Date();
+    startDate.setDate(startDate.getDate() - days);
+
+    const articles = await prisma.article.findMany({
+      where: {
+        publishedAt: { gte: startDate },
+        keywords: { not: null },
+      },
+      select: {
+        keywords: true,
+      },
+    });
+
+    const keywordMap = {};
+
+    articles.forEach((article) => {
+      if (article.keywords) {
+        const keywords = article.keywords.split(',').map(k => k.trim());
+        keywords.forEach((keyword) => {
+          if (keyword) {
+            keywordMap[keyword] = (keywordMap[keyword] || 0) + 1;
+          }
+        });
+      }
+    });
+
+    const keywords = Object.entries(keywordMap)
+      .map(([keyword, count]) => ({ keyword, count }))
+      .sort((a, b) => b.count - a.count)
+      .slice(0, limit);
+
+    return keywords;
   }
 }
 
