@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { Search, TrendingUp, TrendingDown, Minus, Calendar, BarChart3, ArrowUpCircle, Loader2 } from 'lucide-react';
+import { useSearchParams } from 'react-router-dom';
+import { Search, TrendingUp, TrendingDown, Minus, Calendar, BarChart3, ArrowUpCircle, Loader2, X } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useInfiniteArticles } from '../hooks/useArticles';
 import { useCountUp } from '../hooks/useCountUp';
@@ -12,8 +13,14 @@ import { FilterButtonGroup } from '../components/FilterButtonGroup';
 import { DATE_FILTERS } from '../constants/filters';
 
 export const Articles = () => {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedSentiment, setSelectedSentiment] = useState('');
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  // Initialize state from URL params
+  const [searchTerm, setSearchTerm] = useState(searchParams.get('search') || '');
+  const [selectedSentiment, setSelectedSentiment] = useState(searchParams.get('sentiment') || '');
+  const [selectedAsset, setSelectedAsset] = useState(searchParams.get('asset') || '');
+  const [selectedCategory, setSelectedCategory] = useState(searchParams.get('category') || '');
+  const [selectedChain, setSelectedChain] = useState(searchParams.get('chain') || '');
   const [selectedDateRange, setSelectedDateRange] = useState(null);
   const [showBackToTop, setShowBackToTop] = useState(false);
 
@@ -25,6 +32,9 @@ export const Articles = () => {
     limit: 20,
     ...(searchTerm && { search: searchTerm }),
     ...(selectedSentiment && { sentiment: selectedSentiment }),
+    ...(selectedAsset && { asset: selectedAsset }),
+    ...(selectedCategory && { category: selectedCategory }),
+    ...(selectedChain && { chain: selectedChain }),
     ...(selectedDateRange && { days: selectedDateRange }),
     orderBy: 'publishedAt',
     order: 'desc',
@@ -266,28 +276,106 @@ export const Articles = () => {
               </div>
 
               {/* Active Filters Badge */}
-              {(selectedSentiment || searchTerm) && (
+              {(selectedSentiment || searchTerm || selectedAsset || selectedCategory || selectedChain) && (
                 <div className="flex flex-wrap items-center gap-2 text-sm">
                   <span className="text-gray-600 dark:text-dark-muted font-medium">Filtered by:</span>
+
                   {selectedSentiment && (
-                    <span className="px-3 py-1 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400 rounded-full font-medium">
-                      {selectedSentiment}
-                    </span>
+                    <motion.span
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      className="flex items-center gap-1 px-3 py-1 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400 rounded-full font-medium"
+                    >
+                      Sentiment: {selectedSentiment}
+                      <button
+                        onClick={() => setSelectedSentiment('')}
+                        className="ml-1 hover:text-purple-900 dark:hover:text-purple-200"
+                      >
+                        <X className="w-3 h-3" />
+                      </button>
+                    </motion.span>
                   )}
+
                   {searchTerm && (
-                    <span className="px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 rounded-full font-medium">
-                      &quot;{searchTerm}&quot;
-                    </span>
+                    <motion.span
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      className="flex items-center gap-1 px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 rounded-full font-medium"
+                    >
+                      Search: &quot;{searchTerm}&quot;
+                      <button
+                        onClick={() => setSearchTerm('')}
+                        className="ml-1 hover:text-blue-900 dark:hover:text-blue-200"
+                      >
+                        <X className="w-3 h-3" />
+                      </button>
+                    </motion.span>
                   )}
-                  <button
+
+                  {selectedAsset && (
+                    <motion.span
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      className="flex items-center gap-1 px-3 py-1 bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400 rounded-full font-medium"
+                    >
+                      Asset: {selectedAsset}
+                      <button
+                        onClick={() => setSelectedAsset('')}
+                        className="ml-1 hover:text-yellow-900 dark:hover:text-yellow-200"
+                      >
+                        <X className="w-3 h-3" />
+                      </button>
+                    </motion.span>
+                  )}
+
+                  {selectedCategory && (
+                    <motion.span
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      className="flex items-center gap-1 px-3 py-1 bg-cyan-100 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-400 rounded-full font-medium"
+                    >
+                      Category: {selectedCategory}
+                      <button
+                        onClick={() => setSelectedCategory('')}
+                        className="ml-1 hover:text-cyan-900 dark:hover:text-cyan-200"
+                      >
+                        <X className="w-3 h-3" />
+                      </button>
+                    </motion.span>
+                  )}
+
+                  {selectedChain && (
+                    <motion.span
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      className="flex items-center gap-1 px-3 py-1 bg-pink-100 dark:bg-pink-900/30 text-pink-700 dark:text-pink-400 rounded-full font-medium"
+                    >
+                      Chain: {selectedChain}
+                      <button
+                        onClick={() => setSelectedChain('')}
+                        className="ml-1 hover:text-pink-900 dark:hover:text-pink-200"
+                      >
+                        <X className="w-3 h-3" />
+                      </button>
+                    </motion.span>
+                  )}
+
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
                     onClick={() => {
                       setSearchTerm('');
                       setSelectedSentiment('');
+                      setSelectedAsset('');
+                      setSelectedCategory('');
+                      setSelectedChain('');
+                      setSearchParams({});
                     }}
-                    className="text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 font-medium ml-2"
+                    className="flex items-center gap-1 px-3 py-1 bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 hover:bg-red-200 dark:hover:bg-red-900/50 rounded-full font-medium transition-colors"
                   >
+                    <X className="w-3 h-3" />
                     Clear all
-                  </button>
+                  </motion.button>
                 </div>
               )}
             </div>

@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, Coins, Layers, Network, Tag, TrendingUp, TrendingDown, Minus, BarChart3, Info, HelpCircle } from 'lucide-react';
-import { useAssetStats, useCategoryStats, useChainStats, useTrendingKeywords } from '../hooks/useArticles';
+import { useNavigate } from 'react-router-dom';
+import { Sparkles, Coins, Layers, Network, Tag, TrendingUp, TrendingDown, Minus, BarChart3, Info, HelpCircle, ExternalLink, ArrowRight } from 'lucide-react';
+import { useAssetStats, useCategoryStats, useChainStats, useTrendingKeywords, useArticles } from '../hooks/useArticles';
 import { ScrollReveal } from './ScrollReveal';
 
 const getSentimentColor = (sentiment) => {
@@ -54,7 +55,7 @@ const InfoTooltip = ({ content, className = '' }) => {
           e.stopPropagation();
           setIsVisible(!isVisible);
         }}
-        className="p-1 rounded-full hover:bg-primary-100 dark:hover:bg-primary-900/30 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
+        className="relative z-[100] p-1 rounded-full hover:bg-primary-100 dark:hover:bg-primary-900/30 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
         whileHover={{ scale: 1.1, rotate: 15 }}
         whileTap={{ scale: 0.95 }}
         aria-label="More information"
@@ -70,7 +71,7 @@ const InfoTooltip = ({ content, className = '' }) => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 z-40 bg-black/20 backdrop-blur-sm sm:hidden"
+              className="fixed inset-0 z-[9998] bg-black/20 backdrop-blur-sm sm:hidden"
               onClick={() => setIsVisible(false)}
             />
 
@@ -79,7 +80,7 @@ const InfoTooltip = ({ content, className = '' }) => {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 10 }}
               transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-              className="absolute z-50 w-72 sm:w-80 p-4 mt-2 right-0 sm:right-auto glass-strong rounded-xl shadow-2xl border border-primary-200 dark:border-primary-800"
+              className="absolute z-[9999] w-72 sm:w-80 p-4 mt-2 right-0 sm:right-auto glass-strong rounded-xl shadow-2xl border border-primary-200 dark:border-primary-800"
               onMouseEnter={() => setIsVisible(true)}
               onMouseLeave={() => setIsVisible(false)}
             >
@@ -87,7 +88,7 @@ const InfoTooltip = ({ content, className = '' }) => {
                 {content}
               </div>
               {/* Arrow pointer */}
-              <div className="absolute -top-2 right-4 w-4 h-4 bg-white dark:bg-gray-800 border-l border-t border-primary-200 dark:border-primary-800 transform rotate-45"></div>
+              <div className="absolute -top-2 right-4 w-4 h-4 bg-white dark:bg-gray-800 border-l border-t border-primary-200 dark:border-primary-800 transform rotate-45 z-[9999]"></div>
             </motion.div>
           </>
         )}
@@ -96,9 +97,194 @@ const InfoTooltip = ({ content, className = '' }) => {
   );
 };
 
-const StatItem = ({ item, icon: Icon, showBullishValue = true, index }) => {
+// Article Preview Tooltip - shows quick preview on hover with clickable articles
+const ArticlePreviewTooltip = ({ filterType, filterValue, children }) => {
+  const [isVisible, setIsVisible] = useState(false);
+  const navigate = useNavigate();
+
+  // Build filter params based on type
+  const getFilterParams = () => {
+    const params = { limit: 5, orderBy: 'publishedAt', order: 'desc' };
+
+    switch (filterType) {
+      case 'asset':
+        params.asset = filterValue;
+        break;
+      case 'category':
+        params.category = filterValue;
+        break;
+      case 'chain':
+        params.chain = filterValue;
+        break;
+      case 'keyword':
+        params.search = filterValue;
+        break;
+      default:
+        break;
+    }
+
+    return params;
+  };
+
+  const { data: articlesData, isLoading } = useArticles(getFilterParams());
+  const articles = articlesData?.articles || [];
+
+  const handleViewAll = (e) => {
+    e.stopPropagation();
+    const filterParam = filterType === 'keyword' ? 'search' : filterType;
+    navigate(`/articles?${filterParam}=${encodeURIComponent(filterValue)}`);
+    setIsVisible(false);
+  };
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffInHours = Math.floor((now - date) / (1000 * 60 * 60));
+
+    if (diffInHours < 1) return 'Just now';
+    if (diffInHours < 24) return `${diffInHours}h ago`;
+    const diffInDays = Math.floor(diffInHours / 24);
+    if (diffInDays < 7) return `${diffInDays}d ago`;
+    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  };
+
+  return (
+    <div className="relative inline-block">
+      <div
+        onMouseEnter={() => setIsVisible(true)}
+        onMouseLeave={() => setIsVisible(false)}
+      >
+        {children}
+      </div>
+
+      <AnimatePresence>
+        {isVisible && (
+          <>
+            {/* Backdrop overlay for mobile */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-[9998] bg-black/20 backdrop-blur-sm sm:hidden"
+              onClick={() => setIsVisible(false)}
+            />
+
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 10 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 10 }}
+              transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+              className="absolute z-[9999] w-80 sm:w-96 p-4 mt-2 left-0 glass-strong rounded-xl shadow-2xl border border-primary-200 dark:border-primary-800"
+              onMouseEnter={() => setIsVisible(true)}
+              onMouseLeave={() => setIsVisible(false)}
+            >
+              {/* Header */}
+              <div className="flex items-center justify-between mb-3 pb-2 border-b border-gray-200 dark:border-gray-700">
+                <h3 className="text-sm font-bold text-gray-900 dark:text-dark-text">
+                  Quick Preview
+                </h3>
+                <span className="text-xs text-gray-500 dark:text-gray-400">
+                  {articles.length} recent articles
+                </span>
+              </div>
+
+              {/* Loading State */}
+              {isLoading && (
+                <div className="flex items-center justify-center py-8">
+                  <div className="animate-spin rounded-full h-8 w-8 border-2 border-primary-200 border-t-primary-600"></div>
+                </div>
+              )}
+
+              {/* Articles List */}
+              {!isLoading && articles.length > 0 && (
+                <div className="space-y-2 mb-3 max-h-80 overflow-y-auto">
+                  {articles.map((article, index) => (
+                    <motion.a
+                      key={article.id}
+                      href={article.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: index * 0.05 }}
+                      onClick={(e) => e.stopPropagation()}
+                      className="block p-3 rounded-lg bg-white dark:bg-gray-800/50 hover:bg-gray-50 dark:hover:bg-gray-700/50 border border-gray-200 dark:border-gray-700 hover:border-primary-300 dark:hover:border-primary-700 transition-all group"
+                    >
+                      <div className="flex items-start gap-2">
+                        <div className="flex-1 min-w-0">
+                          <h4 className="text-xs font-semibold text-gray-900 dark:text-dark-text line-clamp-2 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
+                            {article.title}
+                          </h4>
+                          <div className="flex items-center gap-2 mt-1.5">
+                            <span className="text-xs text-gray-500 dark:text-gray-400">
+                              {formatDate(article.publishedAt)}
+                            </span>
+                            {article.sentiment && (
+                              <>
+                                <span className="text-xs text-gray-300 dark:text-gray-600">•</span>
+                                <span className={`text-xs font-semibold ${getSentimentColor(article.sentiment).split(' ')[0]}`}>
+                                  {article.sentiment}
+                                </span>
+                              </>
+                            )}
+                          </div>
+                        </div>
+                        <ExternalLink className="w-3.5 h-3.5 text-gray-400 group-hover:text-primary-600 dark:group-hover:text-primary-400 flex-shrink-0 transition-colors" />
+                      </div>
+                    </motion.a>
+                  ))}
+                </div>
+              )}
+
+              {/* Empty State */}
+              {!isLoading && articles.length === 0 && (
+                <div className="py-8 text-center">
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                    No articles found for this filter
+                  </p>
+                </div>
+              )}
+
+              {/* View All Button */}
+              {!isLoading && articles.length > 0 && (
+                <motion.button
+                  onClick={handleViewAll}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="w-full py-2.5 px-4 bg-gradient-to-r from-primary-500 to-secondary-500 hover:from-primary-600 hover:to-secondary-600 text-white rounded-lg font-semibold text-sm flex items-center justify-center gap-2 transition-all shadow-md hover:shadow-lg"
+                >
+                  View All Articles
+                  <ArrowRight className="w-4 h-4" />
+                </motion.button>
+              )}
+
+              {/* Arrow pointer */}
+              <div className="absolute -top-2 left-4 w-4 h-4 bg-white dark:bg-gray-800 border-l border-t border-primary-200 dark:border-primary-800 transform rotate-45 z-[9999]"></div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+};
+
+const StatItem = ({ item, icon: Icon, showBullishValue = true, index, filterType }) => {
+  const navigate = useNavigate();
   const SentimentIcon = getSentimentIcon(item.sentiment);
   const isGeneralOrMultiple = item.name === 'GENERAL' || item.name === 'MULTIPLE';
+
+  const handleClick = () => {
+    // Navigate to articles page with appropriate filter
+    const filterParam = {
+      asset: 'asset',
+      category: 'category',
+      chain: 'chain'
+    }[filterType];
+
+    if (filterParam) {
+      navigate(`/articles?${filterParam}=${encodeURIComponent(item.name)}`);
+    }
+  };
 
   const getTooltipContent = (name) => {
     if (name === 'GENERAL') {
@@ -121,13 +307,15 @@ const StatItem = ({ item, icon: Icon, showBullishValue = true, index }) => {
   };
 
   return (
-    <motion.div
-      initial={{ opacity: 0, x: -20 }}
-      animate={{ opacity: 1, x: 0 }}
-      transition={{ duration: 0.3, delay: index * 0.05 }}
-      whileHover={{ scale: 1.02, x: 4 }}
-      className="relative overflow-hidden p-4 rounded-xl glass hover:shadow-xl smooth-transition group cursor-pointer border border-transparent hover:border-primary-200 dark:hover:border-primary-800"
-    >
+    <ArticlePreviewTooltip filterType={filterType} filterValue={item.name}>
+      <motion.div
+        initial={{ opacity: 0, x: -20 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.3, delay: index * 0.05 }}
+        whileHover={{ scale: 1.02, x: 4 }}
+        onClick={handleClick}
+        className="relative overflow-hidden p-4 rounded-xl glass hover:shadow-xl smooth-transition group cursor-pointer border border-transparent hover:border-primary-300 dark:hover:border-primary-700"
+      >
       {/* Animated gradient background on hover */}
       <motion.div
         className="absolute inset-0 bg-gradient-to-r from-primary-500/5 to-secondary-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
@@ -209,20 +397,36 @@ const StatItem = ({ item, icon: Icon, showBullishValue = true, index }) => {
         )}
       </div>
 
-      {/* Rank badge */}
-      <motion.div
-        className="absolute top-2 right-2 w-6 h-6 rounded-full bg-gradient-to-br from-primary-500/20 to-secondary-500/20 flex items-center justify-center text-xs font-bold text-primary-600 dark:text-primary-400"
-        whileHover={{ scale: 1.2, rotate: 360 }}
-        transition={{ duration: 0.4 }}
-      >
-        {index + 1}
+      {/* Rank badge and click indicator */}
+      <div className="absolute top-2 right-2 flex items-center gap-2">
+        <motion.div
+          className="opacity-0 group-hover:opacity-100 transition-opacity"
+          initial={{ x: 10 }}
+          whileHover={{ x: 0 }}
+        >
+          <ExternalLink className="w-4 h-4 text-primary-600 dark:text-primary-400" />
+        </motion.div>
+        <motion.div
+          className="w-6 h-6 rounded-full bg-gradient-to-br from-primary-500/20 to-secondary-500/20 flex items-center justify-center text-xs font-bold text-primary-600 dark:text-primary-400"
+          whileHover={{ scale: 1.2, rotate: 360 }}
+          transition={{ duration: 0.4 }}
+        >
+          {index + 1}
+        </motion.div>
+      </div>
       </motion.div>
-    </motion.div>
+    </ArticlePreviewTooltip>
   );
 };
 
 const KeywordCloud = ({ keywords }) => {
+  const navigate = useNavigate();
   const maxCount = Math.max(...keywords.map(k => k.count), 1);
+
+  const handleKeywordClick = (keyword) => {
+    // Navigate to articles page with search filter for this keyword
+    navigate(`/articles?search=${encodeURIComponent(keyword)}`);
+  };
 
   return (
     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
@@ -231,21 +435,22 @@ const KeywordCloud = ({ keywords }) => {
         const isTopKeyword = index < 3;
 
         return (
-          <motion.div
-            key={keyword.keyword}
-            initial={{ opacity: 0, scale: 0.8, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            transition={{ duration: 0.4, delay: index * 0.03 }}
-            whileHover={{ scale: 1.05, y: -4 }}
-            className={`
-              relative overflow-hidden p-4 rounded-xl cursor-pointer
-              ${isTopKeyword
-                ? 'bg-gradient-to-br from-primary-500/20 to-secondary-500/20 border-2 border-primary-300 dark:border-primary-700'
-                : 'glass border border-primary-200/50 dark:border-primary-800/50'
-              }
-              hover:shadow-lg smooth-transition group
-            `}
-          >
+          <ArticlePreviewTooltip key={keyword.keyword} filterType="keyword" filterValue={keyword.keyword}>
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: index * 0.03 }}
+              whileHover={{ scale: 1.05, y: -4 }}
+              onClick={() => handleKeywordClick(keyword.keyword)}
+              className={`
+                relative overflow-hidden p-4 rounded-xl cursor-pointer
+                ${isTopKeyword
+                  ? 'bg-gradient-to-br from-primary-500/20 to-secondary-500/20 border-2 border-primary-300 dark:border-primary-700'
+                  : 'glass border border-primary-200/50 dark:border-primary-800/50'
+                }
+                hover:shadow-lg smooth-transition group
+              `}
+            >
             {/* Animated gradient background on hover */}
             <motion.div
               className="absolute inset-0 bg-gradient-to-br from-primary-500/10 to-secondary-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
@@ -305,8 +510,17 @@ const KeywordCloud = ({ keywords }) => {
                   <TrendingUp className="w-4 h-4 text-bullish-500" />
                 </motion.div>
               )}
+
+              {/* Click indicator */}
+              <motion.div
+                className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity"
+                whileHover={{ scale: 1.2 }}
+              >
+                <ExternalLink className="w-3.5 h-3.5 text-primary-600 dark:text-primary-400" />
+              </motion.div>
             </div>
-          </motion.div>
+            </motion.div>
+          </ArticlePreviewTooltip>
         );
       })}
     </div>
@@ -403,7 +617,7 @@ export const AIInsights = ({ period = 7, className = '' }) => {
           >
             {assets.length > 0 ? (
               assets.map((asset, index) => (
-                <StatItem key={asset.name} item={asset} icon={Coins} index={index} />
+                <StatItem key={asset.name} item={asset} icon={Coins} index={index} filterType="asset" />
               ))
             ) : (
               <EmptyState message="No cryptocurrency data available for this period" />
@@ -423,7 +637,7 @@ export const AIInsights = ({ period = 7, className = '' }) => {
           >
             {categories.length > 0 ? (
               categories.map((category, index) => (
-                <StatItem key={category.name} item={category} icon={Layers} index={index} />
+                <StatItem key={category.name} item={category} icon={Layers} index={index} filterType="category" />
               ))
             ) : (
               <EmptyState message="No category data available for this period" />
@@ -443,7 +657,7 @@ export const AIInsights = ({ period = 7, className = '' }) => {
           >
             {chains.length > 0 ? (
               chains.map((chain, index) => (
-                <StatItem key={chain.name} item={chain} icon={Network} index={index} />
+                <StatItem key={chain.name} item={chain} icon={Network} index={index} filterType="chain" />
               ))
             ) : (
               <EmptyState message="No blockchain data available for this period" />
