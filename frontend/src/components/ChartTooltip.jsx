@@ -39,20 +39,41 @@ export const TrendChartTooltip = ({ active, payload, label }) => {
 
   // Format the label for better display
   const formatLabel = (dateStr) => {
-    const date = new Date(dateStr);
-    if (isNaN(date.getTime())) return dateStr;
-
     // Check if it's an hourly format (contains time)
     if (dateStr.includes(':')) {
-      return date.toLocaleString('en-US', {
-        month: 'short',
-        day: 'numeric',
-        hour: 'numeric',
-        minute: '2-digit',
-        hour12: true
-      });
+      // Parse hourly format: "YYYY-MM-DD HH:00"
+      const parts = dateStr.match(/(\d{4})-(\d{2})-(\d{2}) (\d{2}):00/);
+      if (!parts) return dateStr;
+
+      const year = parts[1];
+      const month = parseInt(parts[2], 10);
+      const day = parseInt(parts[3], 10);
+      const hour = parseInt(parts[4], 10);
+
+      // Format month name
+      const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+                          'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      const monthName = monthNames[month - 1];
+
+      // Convert to 12-hour format
+      let hour12 = hour;
+      let ampm = 'AM';
+      if (hour === 0) {
+        hour12 = 12;
+      } else if (hour === 12) {
+        ampm = 'PM';
+      } else if (hour > 12) {
+        hour12 = hour - 12;
+        ampm = 'PM';
+      }
+
+      return `${monthName} ${day}, ${hour12}:00 ${ampm}`;
     }
-    // Daily format
+
+    // Daily format: "YYYY-MM-DD"
+    const date = new Date(dateStr + 'T00:00:00');
+    if (isNaN(date.getTime())) return dateStr;
+
     return date.toLocaleDateString('en-US', {
       month: 'short',
       day: 'numeric',

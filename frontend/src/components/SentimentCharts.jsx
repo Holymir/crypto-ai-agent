@@ -138,23 +138,24 @@ export const SentimentCharts = ({ stats, selectedPeriod = 7, className = '' }) =
                 height={60}
                 tickFormatter={(value) => {
                   if (granularity === 'hourly') {
-                    // Parse the date string and convert to user's local time
+                    // Parse the date string directly without timezone conversion
                     // Format from backend: "YYYY-MM-DD HH:00"
-                    const date = new Date(value);
-
-                    // Check if date is valid
-                    if (isNaN(date.getTime())) {
+                    const parts = value.match(/(\d{4})-(\d{2})-(\d{2}) (\d{2}):00/);
+                    if (!parts) {
+                      // Fallback: just show the hour part
                       return value.split(' ')[1] || '';
                     }
 
-                    // Format in user's local time with 12-hour format
-                    return date.toLocaleTimeString('en-US', {
-                      hour: 'numeric',
-                      hour12: true
-                    });
+                    const hour = parseInt(parts[4], 10);
+
+                    // Convert to 12-hour format
+                    if (hour === 0) return '12 AM';
+                    if (hour < 12) return `${hour} AM`;
+                    if (hour === 12) return '12 PM';
+                    return `${hour - 12} PM`;
                   }
                   // For daily view, format as "MMM DD"
-                  const date = new Date(value);
+                  const date = new Date(value + 'T00:00:00');
                   if (isNaN(date.getTime())) {
                     // Fallback to old format if parsing fails
                     const [, month, day] = value.split('-');
