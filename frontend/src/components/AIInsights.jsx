@@ -170,10 +170,11 @@ const StatItem = ({ item, icon: Icon, showBullishValue = true, index, filterType
       transition={{ duration: 0.3, delay: index * 0.05 }}
       className="relative overflow-hidden rounded-xl glass hover:shadow-xl smooth-transition border border-transparent hover:border-primary-300 dark:hover:border-primary-700"
     >
+      {/* Clickable Header Only */}
       <motion.div
         whileHover={{ scale: 1.01, x: 2 }}
         onClick={handleCardClick}
-        className="p-4 sm:p-5 cursor-pointer group"
+        className="p-4 sm:p-5 cursor-pointer group relative"
       >
       {/* Animated gradient background on hover */}
       <motion.div
@@ -202,7 +203,7 @@ const StatItem = ({ item, icon: Icon, showBullishValue = true, index, filterType
 
                 {/* Info icon for GENERAL and MULTIPLE - only show when expanded */}
                 {isGeneralOrMultiple && isExpanded && (
-                  <div className="flex-shrink-0">
+                  <div className="flex-shrink-0" onClick={(e) => e.stopPropagation()}>
                     <InfoTooltip content={getTooltipContent(item.name)} />
                   </div>
                 )}
@@ -296,6 +297,7 @@ const StatItem = ({ item, icon: Icon, showBullishValue = true, index, filterType
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.3 }}
+            onClick={(e) => e.stopPropagation()}
             className="border-t border-gray-200 dark:border-gray-700 px-4 sm:px-5 pb-4"
           >
             {/* Loading State */}
@@ -392,7 +394,10 @@ const StatItem = ({ item, icon: Icon, showBullishValue = true, index, filterType
 
                 {/* Show All Button */}
                 <motion.button
-                  onClick={handleShowAll}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleShowAll(e);
+                  }}
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   className="w-full py-3 px-4 rounded-lg bg-gradient-to-r from-primary-500 to-secondary-500 hover:from-primary-600 hover:to-secondary-600 text-white font-semibold text-sm flex items-center justify-center gap-2 transition-all shadow-md hover:shadow-lg"
