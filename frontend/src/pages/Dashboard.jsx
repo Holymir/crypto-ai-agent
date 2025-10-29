@@ -385,117 +385,117 @@ export const Dashboard = () => {
             </div>
           </div>
 
-          {/* Compact Quick Stats Bar */}
-          <div className={`glass-strong rounded-xl p-4 bg-gradient-to-r ${sentimentHero.bgColor} border border-white/20 dark:border-white/10`}>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
-              <StatsCard
-                icon={Activity}
-                label="Score"
-                value={`${sentimentScore}/100`}
-                iconColor={sentimentHero.bgColor}
-                textColor={sentimentHero.color}
-                delay={0.1}
-                className="p-2"
-              />
-              <StatsCard
-                icon={Calendar}
-                label="Articles"
-                value={stats?.total || 0}
-                iconColor="from-primary-500/20 to-secondary-500/20"
-                delay={0.15}
-                className="p-2"
-              />
-              <StatsCard
-                icon={TrendingUp}
-                label="Bullish"
-                value={stats?.BULLISH || 0}
-                iconColor="from-bullish-500/20 to-bullish-400/20"
-                textColor="text-bullish-600 dark:text-bullish-400"
-                delay={0.2}
-                className="p-2"
-              />
-              <StatsCard
-                icon={Clock}
-                label="Updated"
-                value={currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                iconColor="from-blue-500/20 to-indigo-500/20"
-                delay={0.25}
-                className="p-2"
-              />
-            </div>
-          </div>
         </motion.div>
 
-        {/* PRIMARY SECTION: Sentiment Gauge & Trend */}
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-4 sm:gap-6 mb-6 sm:mb-8">
-          {/* Sentiment Gauge - Left Side */}
-          <div className="lg:col-span-2">
-            <SentimentGauge score={sentimentScore} />
+        {/* HERO SECTION: Media Sentiment Score - Wide & Narrow */}
+        <ScrollReveal>
+          <div className="mb-4 relative isolate">
+            {/* Sentiment-based blurry glow effect */}
+            <div className="absolute -inset-8 opacity-60 blur-[100px] pointer-events-none z-0">
+              <div
+                className={`absolute inset-0 rounded-full ${
+                  sentimentScore >= 71
+                    ? 'bg-gradient-to-r from-bullish-500 to-bullish-400'
+                    : sentimentScore <= 30
+                    ? 'bg-gradient-to-r from-bearish-500 to-bearish-400'
+                    : 'bg-gradient-to-r from-slate-500 to-gray-500'
+                }`}
+              />
+            </div>
+            <div className="relative z-10">
+              <SentimentGauge score={sentimentScore} />
+            </div>
           </div>
+        </ScrollReveal>
 
-          {/* Sentiment Trend - Right Side */}
-          <div className="lg:col-span-3">
-            <SentimentTrendCard selectedPeriod={selectedPeriod} />
-          </div>
+        {/* HERO SECTION: Media Sentiment Trend - Wide */}
+        <div className="mb-6 sm:mb-8">
+          <SentimentTrendCard selectedPeriod={selectedPeriod} />
         </div>
 
-        {/* SECONDARY SECTION: Stats Overview */}
-        <StatsOverview stats={stats} previousStats={previousStats} period={selectedPeriod} className="mb-6 sm:mb-8" />
-
-        {/* TERTIARY SECTION: Distribution Chart & Top Sources */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
-          <div className="lg:col-span-2">
-            <SentimentDistributionCard stats={stats} />
-          </div>
-          <div className="lg:col-span-1">
-            <TopSources period={selectedPeriod} />
-          </div>
+        {/* PRIMARY SECTION: AI-POWERED INSIGHTS - Most Important */}
+        <div className="mb-6 sm:mb-8 hover-glow">
+          <AIInsights period={selectedPeriod} />
         </div>
 
-        {/* INSIGHTS SECTION */}
-        <QuickInsights stats={stats} className="mb-6 sm:mb-8" />
+        {/* SECONDARY SECTION: Quick Insights */}
+        <div className="mb-6 sm:mb-8 hover-glow">
+          <QuickInsights stats={stats} />
+        </div>
 
-        {/* AI INSIGHTS SECTION */}
-        <AIInsights period={selectedPeriod} className="mb-6 sm:mb-8" />
-
-        {/* LATEST ARTICLES SECTION */}
-        <div className="glass-strong rounded-2xl p-4 sm:p-6 shadow-2xl">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-4">
-            <h2 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent">
-              Latest Articles
-            </h2>
-            <Link
-              to="/articles"
-              className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold bg-gradient-to-r from-primary-500 to-secondary-500 text-white hover:shadow-lg hover:shadow-primary-500/50 transition-all hover-lift"
-            >
-              View All <ArrowRight className="w-4 h-4" />
-            </Link>
+        {/* PLACEHOLDER: Mainstream Finance News Sentiment (Coming Soon) */}
+        <ScrollReveal>
+          <div className="glass-strong rounded-2xl p-6 sm:p-8 shadow-2xl hover-lift hover-glow mb-6 sm:mb-8 border-2 border-dashed border-primary-300 dark:border-primary-700 relative overflow-hidden">
+            <div className="absolute top-0 right-0 px-3 py-1 bg-gradient-to-r from-primary-500 to-secondary-500 text-white text-xs font-bold rounded-bl-lg">
+              Coming Soon
+            </div>
+            <div className="flex items-center gap-3 mb-4">
+              <div className="p-3 bg-gradient-to-br from-blue-500 to-indigo-500 rounded-lg">
+                <TrendingUp className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <h2 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+                  Mainstream Finance News Sentiment
+                </h2>
+                <p className="text-sm text-gray-600 dark:text-gray-400">
+                  Track sentiment from Bloomberg, CNBC, WSJ and other major finance outlets
+                </p>
+              </div>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 opacity-50">
+              <div className="glass rounded-xl p-4 h-32 flex items-center justify-center">
+                <span className="text-gray-500 dark:text-gray-400">Bloomberg Analysis</span>
+              </div>
+              <div className="glass rounded-xl p-4 h-32 flex items-center justify-center">
+                <span className="text-gray-500 dark:text-gray-400">CNBC Coverage</span>
+              </div>
+              <div className="glass rounded-xl p-4 h-32 flex items-center justify-center">
+                <span className="text-gray-500 dark:text-gray-400">WSJ Insights</span>
+              </div>
+            </div>
           </div>
-          <div className="space-y-3">
-            {latestData?.articles?.map((article) => (
-              <motion.div
-                key={article.id}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-3 sm:p-4 glass rounded-xl hover-lift smooth-transition"
+        </ScrollReveal>
+
+        {/* LATEST CRYPTO ARTICLES */}
+        <ScrollReveal>
+          <div className="glass-strong rounded-2xl p-4 sm:p-6 shadow-2xl hover-lift hover-glow-secondary">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-4">
+              <h2 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent">
+                Latest Crypto News
+              </h2>
+              <Link
+                to="/articles"
+                className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold bg-gradient-to-r from-primary-500 to-secondary-500 text-white hover:shadow-lg hover:shadow-primary-500/50 transition-all hover-lift"
               >
-                <div className="flex-1 min-w-0 w-full sm:w-auto">
-                  <h3 className="font-semibold text-gray-900 dark:text-dark-text text-sm sm:text-base mb-2 line-clamp-2">
-                    {article.title}
-                  </h3>
-                  <div className="flex items-center gap-2 text-xs text-gray-600 dark:text-dark-muted flex-wrap">
-                    <span className="font-medium truncate max-w-[150px]">{article.source}</span>
-                    <span>•</span>
-                    <span>{new Date(article.publishedAt).toLocaleDateString()}</span>
+                View All <ArrowRight className="w-4 h-4" />
+              </Link>
+            </div>
+            <div className="space-y-3">
+              {latestData?.articles?.slice(0, 5).map((article) => (
+                <motion.div
+                  key={article.id}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-3 sm:p-4 glass rounded-xl hover-lift smooth-transition"
+                >
+                  <div className="flex-1 min-w-0 w-full sm:w-auto">
+                    <h3 className="font-semibold text-gray-900 dark:text-dark-text text-sm sm:text-base mb-2 line-clamp-2">
+                      {article.title}
+                    </h3>
+                    <div className="flex items-center gap-2 text-xs text-gray-600 dark:text-dark-muted flex-wrap">
+                      <span className="font-medium truncate max-w-[150px]">{article.source}</span>
+                      <span>•</span>
+                      <span>{new Date(article.publishedAt).toLocaleDateString()}</span>
+                    </div>
                   </div>
-                </div>
-                <div className="flex-shrink-0 self-start sm:self-center">
-                  <SentimentBadge sentiment={article.sentiment} />
-                </div>
-              </motion.div>
-            ))}
+                  <div className="flex-shrink-0 self-start sm:self-center">
+                    <SentimentBadge sentiment={article.sentiment} />
+                  </div>
+                </motion.div>
+              ))}
+            </div>
           </div>
-        </div>
+        </ScrollReveal>
       </div>
     </div>
   );
