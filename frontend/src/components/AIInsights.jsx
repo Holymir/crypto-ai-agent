@@ -61,27 +61,29 @@ const InfoTooltip = ({ content, className = '' }) => {
     }
   }, [isVisible]);
 
-  const tooltipContent = isVisible && (
+  const tooltipContent = (
     <AnimatePresence>
-      <motion.div
-        initial={{ opacity: 0, scale: 0.95, y: 10 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
-        exit={{ opacity: 0, scale: 0.95, y: 10 }}
-        transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-        style={{
-          position: 'fixed',
-          top: `${position.top}px`,
-          left: `${position.left}px`,
-          zIndex: 99999,
-        }}
-        className="w-72 sm:w-80 p-4 glass-strong rounded-xl shadow-2xl border border-primary-200 dark:border-primary-800"
-        onMouseEnter={() => setIsVisible(true)}
-        onMouseLeave={() => setIsVisible(false)}
-      >
-        <div className="text-sm text-gray-700 dark:text-gray-300">
-          {content}
-        </div>
-      </motion.div>
+      {isVisible && (
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95, y: 10 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          exit={{ opacity: 0, scale: 0.95, y: 10 }}
+          transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+          style={{
+            position: 'fixed',
+            top: `${position.top}px`,
+            left: `${position.left}px`,
+            zIndex: 99999,
+          }}
+          className="w-72 sm:w-80 p-4 glass-strong rounded-xl shadow-2xl border border-primary-200 dark:border-primary-800"
+          onMouseEnter={() => setIsVisible(true)}
+          onMouseLeave={() => setIsVisible(false)}
+        >
+          <div className="text-sm text-gray-700 dark:text-gray-300">
+            {content}
+          </div>
+        </motion.div>
+      )}
     </AnimatePresence>
   );
 
@@ -103,7 +105,7 @@ const InfoTooltip = ({ content, className = '' }) => {
         <Info className="w-4 h-4 text-primary-600 dark:text-primary-400" />
       </motion.button>
 
-      {isVisible && createPortal(tooltipContent, document.body)}
+      {createPortal(tooltipContent, document.body)}
     </div>
   );
 };
@@ -173,25 +175,26 @@ const ArticlePreviewTooltip = ({ filterType, filterValue, children }) => {
     }
   }, [isVisible]);
 
-  const tooltipContent = isVisible && (
+  const tooltipContent = (
     <AnimatePresence>
-      <motion.div
-        initial={{ opacity: 0, scale: 0.95, y: 10 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
-        exit={{ opacity: 0, scale: 0.95, y: 10 }}
-        transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-        style={{
-          position: 'fixed',
-          top: `${position.top}px`,
-          left: `${position.left}px`,
-          zIndex: 99999,
-          maxHeight: 'calc(100vh - 100px)',
-          overflowY: 'auto',
-        }}
-        className="w-80 sm:w-96 p-4 glass-strong rounded-xl shadow-2xl border border-primary-200 dark:border-primary-800"
-        onMouseEnter={() => setIsVisible(true)}
-        onMouseLeave={() => setIsVisible(false)}
-      >
+      {isVisible && (
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95, y: 10 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          exit={{ opacity: 0, scale: 0.95, y: 10 }}
+          transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+          style={{
+            position: 'fixed',
+            top: `${position.top}px`,
+            left: `${position.left}px`,
+            zIndex: 99999,
+            maxHeight: 'calc(100vh - 100px)',
+            overflowY: 'auto',
+          }}
+          className="w-80 sm:w-96 p-4 glass-strong rounded-xl shadow-2xl border border-primary-200 dark:border-primary-800"
+          onMouseEnter={() => setIsVisible(true)}
+          onMouseLeave={() => setIsVisible(false)}
+        >
               {/* Header with View All button */}
               <div className="flex items-center justify-between mb-3 pb-2 border-b border-gray-200 dark:border-gray-700">
                 <div className="flex items-center gap-2">
@@ -271,7 +274,8 @@ const ArticlePreviewTooltip = ({ filterType, filterValue, children }) => {
                   </p>
                 </div>
               )}
-      </motion.div>
+        </motion.div>
+      )}
     </AnimatePresence>
   );
 
@@ -283,7 +287,7 @@ const ArticlePreviewTooltip = ({ filterType, filterValue, children }) => {
       onMouseLeave={() => setIsVisible(false)}
     >
       {children}
-      {isVisible && createPortal(tooltipContent, document.body)}
+      {createPortal(tooltipContent, document.body)}
     </div>
   );
 };
