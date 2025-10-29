@@ -200,8 +200,8 @@ const StatItem = ({ item, icon: Icon, showBullishValue = true, index, filterType
                   {item.name}
                 </span>
 
-                {/* Info icon for GENERAL and MULTIPLE with extra spacing */}
-                {isGeneralOrMultiple && (
+                {/* Info icon for GENERAL and MULTIPLE - only show when expanded */}
+                {isGeneralOrMultiple && isExpanded && (
                   <div className="flex-shrink-0">
                     <InfoTooltip content={getTooltipContent(item.name)} />
                   </div>
@@ -438,21 +438,10 @@ const KeywordCloud = ({ keywords }) => {
 };
 
 const KeywordCard = ({ keyword, index, maxCount, navigate }) => {
-  const [isExpanded, setIsExpanded] = useState(false);
   const relativeSize = keyword.count / maxCount;
   const isTopKeyword = index < 3;
 
-  const { data: articlesData, isLoading } = useArticles(
-    isExpanded ? { limit: 5, orderBy: 'publishedAt', order: 'desc', search: keyword.keyword } : null
-  );
-  const articles = articlesData?.articles || [];
-
   const handleCardClick = () => {
-    setIsExpanded(!isExpanded);
-  };
-
-  const handleShowAll = (e) => {
-    e.stopPropagation();
     navigate(`/articles?search=${encodeURIComponent(keyword.keyword)}`);
   };
 
@@ -461,20 +450,17 @@ const KeywordCard = ({ keyword, index, maxCount, navigate }) => {
       initial={{ opacity: 0, scale: 0.8, y: 20 }}
       animate={{ opacity: 1, scale: 1, y: 0 }}
       transition={{ duration: 0.4, delay: index * 0.03 }}
+      whileHover={{ scale: 1.05, y: -4 }}
+      onClick={handleCardClick}
       className={`
-        relative overflow-hidden rounded-xl cursor-pointer
+        relative overflow-hidden p-4 rounded-xl cursor-pointer
         ${isTopKeyword
           ? 'bg-gradient-to-br from-primary-500/20 to-secondary-500/20 border-2 border-primary-300 dark:border-primary-700'
           : 'glass border border-primary-200/50 dark:border-primary-800/50'
         }
-        hover:shadow-lg smooth-transition
+        hover:shadow-lg smooth-transition group
       `}
     >
-      <motion.div
-        whileHover={{ scale: 1.02, y: -2 }}
-        onClick={handleCardClick}
-        className="p-4 group"
-      >
         {/* Animated gradient background on hover */}
         <motion.div
           className="absolute inset-0 bg-gradient-to-br from-primary-500/10 to-secondary-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
@@ -538,142 +524,11 @@ const KeywordCard = ({ keyword, index, maxCount, navigate }) => {
           {/* Click indicator */}
           <motion.div
             className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity"
+            whileHover={{ scale: 1.2 }}
           >
-            {isExpanded ? (
-              <Minus className="w-3.5 h-3.5 text-primary-600 dark:text-primary-400" />
-            ) : (
-              <ExternalLink className="w-3.5 h-3.5 text-primary-600 dark:text-primary-400" />
-            )}
+            <ExternalLink className="w-3.5 h-3.5 text-primary-600 dark:text-primary-400" />
           </motion.div>
         </div>
-      </motion.div>
-
-      {/* Expanded Articles Section */}
-      <AnimatePresence>
-        {isExpanded && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.3 }}
-            className="border-t border-gray-200 dark:border-gray-700 px-4 pb-4"
-          >
-            {/* Loading State */}
-            {isLoading && (
-              <div className="flex items-center justify-center py-8">
-                <div className="animate-spin rounded-full h-8 w-8 border-2 border-primary-200 border-t-primary-600"></div>
-              </div>
-            )}
-
-            {/* Articles List */}
-            {!isLoading && articles.length > 0 && (
-              <div className="space-y-3 mt-4">
-                {articles.map((article) => (
-                  <motion.a
-                    key={article.id}
-                    href={article.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    initial={{ opacity: 0, x: -10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    className="block p-3 rounded-lg bg-gray-50 dark:bg-gray-800/50 hover:bg-gray-100 dark:hover:bg-gray-700/50 border border-gray-200 dark:border-gray-700 hover:border-primary-300 dark:hover:border-primary-700 transition-all group"
-                  >
-                    <div className="flex items-start gap-2">
-                      <div className="flex-1 min-w-0">
-                        <h4 className="text-sm font-semibold text-gray-900 dark:text-dark-text line-clamp-2 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors mb-2">
-                          {article.title}
-                        </h4>
-
-                        {/* Metadata row 1: Date, Sentiment, Score */}
-                        <div className="flex items-center gap-2 flex-wrap mb-1.5">
-                          <span className="text-xs text-gray-500 dark:text-gray-400">
-                            {formatDate(article.publishedAt)}
-                          </span>
-                          {article.sentiment && (
-                            <>
-                              <span className="text-xs text-gray-300 dark:text-gray-600">•</span>
-                              <span className={`text-xs font-semibold ${getSentimentColor(article.sentiment).split(' ')[0]}`}>
-                                {article.sentiment}
-                              </span>
-                            </>
-                          )}
-                          {article.bullishValue !== null && article.bullishValue !== undefined && (
-                            <>
-                              <span className="text-xs text-gray-300 dark:text-gray-600">•</span>
-                              <span className={`text-xs font-bold ${getBullishColor(article.bullishValue)}`}>
-                                {article.bullishValue}/100
-                              </span>
-                            </>
-                          )}
-                        </div>
-
-                        {/* Metadata row 2: Assets, Categories, Chains, Keywords */}
-                        <div className="flex items-center gap-1.5 flex-wrap">
-                          {article.asset && article.asset !== 'GENERAL' && article.asset !== 'MULTIPLE' && (
-                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400">
-                              <Coins className="w-3 h-3" />
-                              {article.asset}
-                            </span>
-                          )}
-                          {article.category && article.category !== 'GENERAL' && article.category !== 'MULTIPLE' && (
-                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400">
-                              <Layers className="w-3 h-3" />
-                              {article.category}
-                            </span>
-                          )}
-                          {article.chain && article.chain !== 'GENERAL' && article.chain !== 'MULTIPLE' && (
-                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400">
-                              <Network className="w-3 h-3" />
-                              {article.chain}
-                            </span>
-                          )}
-                          {article.keywords && (() => {
-                            // Handle keywords - could be array or comma-separated string
-                            const keywordsArray = Array.isArray(article.keywords)
-                              ? article.keywords
-                              : (typeof article.keywords === 'string' ? article.keywords.split(',').map(k => k.trim()).filter(k => k) : []);
-
-                            if (keywordsArray.length === 0) return null;
-
-                            return (
-                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400">
-                                <Tag className="w-3 h-3" />
-                                {keywordsArray.slice(0, 2).join(', ')}
-                                {keywordsArray.length > 2 && ` +${keywordsArray.length - 2}`}
-                              </span>
-                            );
-                          })()}
-                        </div>
-                      </div>
-                      <ExternalLink className="w-4 h-4 text-gray-400 group-hover:text-primary-600 dark:group-hover:text-primary-400 flex-shrink-0 transition-colors" />
-                    </div>
-                  </motion.a>
-                ))}
-
-                {/* Show All Button */}
-                <motion.button
-                  onClick={handleShowAll}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="w-full py-3 px-4 rounded-lg bg-gradient-to-r from-primary-500 to-secondary-500 hover:from-primary-600 hover:to-secondary-600 text-white font-semibold text-sm flex items-center justify-center gap-2 transition-all shadow-md hover:shadow-lg"
-                >
-                  Show All Articles
-                  <ArrowRight className="w-4 h-4" />
-                </motion.button>
-              </div>
-            )}
-
-            {/* Empty State */}
-            {!isLoading && articles.length === 0 && (
-              <div className="py-8 text-center">
-                <p className="text-sm text-gray-500 dark:text-gray-400">
-                  No articles found
-                </p>
-              </div>
-            )}
-          </motion.div>
-        )}
-      </AnimatePresence>
     </motion.div>
   );
 };
