@@ -11,6 +11,7 @@ export const ApiDocs = () => {
   const [activeSection, setActiveSection] = useState('articles');
   const [expandedCategories, setExpandedCategories] = useState({ sentiment: true });
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
+  const [isSidebarVisible, setIsSidebarVisible] = useState(false);
   const sectionRefs = useRef({});
 
   const copyToClipboard = (text, id) => {
@@ -40,6 +41,17 @@ export const ApiDocs = () => {
       [category]: !prev[category]
     }));
   };
+
+  // Check window width for sidebar visibility
+  useEffect(() => {
+    const handleResize = () => {
+      setIsSidebarVisible(window.innerWidth >= 1024);
+    };
+
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   // Intersection observer for active section highlighting
   useEffect(() => {
@@ -267,6 +279,14 @@ print(f"Bullish: {data['BULLISH']}")
 print(f"Bearish: {data['BEARISH']}")
 print(f"Average score: {data['averageBullishValue']}")`;
 
+  const curlExample = `# Get sentiment statistics
+curl -X GET "${baseUrl}/api/sentiment/stats?days=7" \\
+  -H "Content-Type: application/json"
+
+# Get recent bullish articles
+curl -X GET "${baseUrl}/api/articles?limit=5&sentiment=BULLISH" \\
+  -H "Content-Type: application/json"`;
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary-50 via-secondary-50 to-primary-100 dark:from-dark-bg dark:via-neutral-900 dark:to-dark-bg transition-colors duration-300">
       <SEO
@@ -290,12 +310,12 @@ print(f"Average score: {data['averageBullishValue']}")`;
 
         {/* API Tree Navigation Sidebar */}
         <AnimatePresence>
-          {(isMobileNavOpen || window.innerWidth >= 1024) && (
+          {(isMobileNavOpen || isSidebarVisible) && (
             <motion.aside
               initial={{ x: -300, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
               exit={{ x: -300, opacity: 0 }}
-              className="fixed left-0 top-24 bottom-0 w-72 glass-strong border-r border-gray-200 dark:border-gray-800 overflow-y-auto z-40 lg:sticky lg:top-24 lg:h-[calc(100vh-6rem)]"
+              className="fixed left-0 top-24 bottom-0 w-72 glass-strong border-r border-gray-200 dark:border-gray-800 overflow-y-auto z-40 lg:sticky lg:top-24 lg:h-[calc(100vh-6rem)] shadow-2xl lg:shadow-none"
             >
               <div className="p-6">
                 <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
@@ -412,14 +432,21 @@ print(f"Average score: {data['averageBullishValue']}")`;
 
         {/* Quick Info Cards */}
         <ScrollReveal>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-16">
-            <div className="glass-strong rounded-xl p-6 text-center hover-lift">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              className="glass-strong rounded-xl p-6 text-center hover-lift cursor-pointer"
+              onClick={() => copyToClipboard(baseUrl, 'base-url')}
+            >
               <Zap className="w-8 h-8 mx-auto mb-3 text-yellow-500" />
               <div className="text-sm text-gray-600 dark:text-gray-400 mb-1">Base URL</div>
               <div className="text-xs font-mono text-primary-600 dark:text-primary-400 break-all">
                 {baseUrl}
               </div>
-            </div>
+              {copiedEndpoint === 'base-url' && (
+                <div className="text-xs text-green-500 mt-2 font-semibold">Copied!</div>
+              )}
+            </motion.div>
             <div className="glass-strong rounded-xl p-6 text-center hover-lift">
               <Code className="w-8 h-8 mx-auto mb-3 text-blue-500" />
               <div className="text-sm text-gray-600 dark:text-gray-400 mb-1">Format</div>
@@ -438,15 +465,72 @@ print(f"Average score: {data['averageBullishValue']}")`;
           </div>
         </ScrollReveal>
 
+        {/* Introduction */}
+        <ScrollReveal>
+          <div className="glass-strong rounded-2xl p-8 mb-16 shadow-xl border-l-4 border-primary-500">
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Getting Started</h2>
+            <div className="space-y-4 text-gray-600 dark:text-gray-400">
+              <p>
+                The SentiFi API provides programmatic access to real-time cryptocurrency sentiment analysis.
+                All endpoints return JSON responses and are publicly accessible (no authentication required).
+              </p>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+                <div className="flex items-start gap-3">
+                  <div className="w-8 h-8 rounded-lg bg-green-500/10 flex items-center justify-center flex-shrink-0">
+                    <Check className="w-5 h-5 text-green-500" />
+                  </div>
+                  <div>
+                    <div className="font-semibold text-gray-900 dark:text-white mb-1">No API Key Required</div>
+                    <div className="text-sm">Start using immediately without registration</div>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <div className="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center flex-shrink-0">
+                    <Zap className="w-5 h-5 text-blue-500" />
+                  </div>
+                  <div>
+                    <div className="font-semibold text-gray-900 dark:text-white mb-1">Real-Time Data</div>
+                    <div className="text-sm">Updated 12x daily with latest sentiment</div>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <div className="w-8 h-8 rounded-lg bg-purple-500/10 flex items-center justify-center flex-shrink-0">
+                    <Database className="w-5 h-5 text-purple-500" />
+                  </div>
+                  <div>
+                    <div className="font-semibold text-gray-900 dark:text-white mb-1">Comprehensive Coverage</div>
+                    <div className="text-sm">50+ sources, 10K+ articles analyzed</div>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <div className="w-8 h-8 rounded-lg bg-amber-500/10 flex items-center justify-center flex-shrink-0">
+                    <Code className="w-5 h-5 text-amber-500" />
+                  </div>
+                  <div>
+                    <div className="font-semibold text-gray-900 dark:text-white mb-1">Simple Integration</div>
+                    <div className="text-sm">RESTful design with clear responses</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ScrollReveal>
+
         {/* Quick Start */}
         <ScrollReveal>
           <div className="glass-strong rounded-2xl p-8 mb-16 shadow-xl">
             <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-6">Quick Start</h2>
+            <p className="text-gray-600 dark:text-gray-400 mb-6">
+              Get started with our API in seconds. Choose your preferred language below:
+            </p>
 
             <div className="space-y-6">
               <div>
                 <div className="flex items-center justify-between mb-3">
-                  <h3 className="text-lg font-bold text-gray-900 dark:text-white">Node.js / JavaScript</h3>
+                  <h3 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                    <span className="px-2 py-1 bg-yellow-500 text-black text-xs font-bold rounded">JS</span>
+                    Node.js / JavaScript
+                  </h3>
                   <button
                     onClick={() => copyToClipboard(quickStart, 'quickstart-js')}
                     className="flex items-center gap-2 px-3 py-1.5 glass rounded-lg hover:bg-primary-100 dark:hover:bg-primary-900/30 transition-colors"
@@ -458,14 +542,17 @@ print(f"Average score: {data['averageBullishValue']}")`;
                     )}
                   </button>
                 </div>
-                <pre className="bg-gray-900 dark:bg-black text-green-400 p-6 rounded-xl overflow-x-auto text-sm font-mono">
+                <pre className="bg-gray-900 dark:bg-black text-green-400 p-6 rounded-xl overflow-x-auto text-sm font-mono border-2 border-gray-700">
                   {quickStart}
                 </pre>
               </div>
 
               <div>
                 <div className="flex items-center justify-between mb-3">
-                  <h3 className="text-lg font-bold text-gray-900 dark:text-white">Python</h3>
+                  <h3 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                    <span className="px-2 py-1 bg-blue-500 text-white text-xs font-bold rounded">PY</span>
+                    Python
+                  </h3>
                   <button
                     onClick={() => copyToClipboard(pythonExample, 'quickstart-py')}
                     className="flex items-center gap-2 px-3 py-1.5 glass rounded-lg hover:bg-primary-100 dark:hover:bg-primary-900/30 transition-colors"
@@ -477,8 +564,30 @@ print(f"Average score: {data['averageBullishValue']}")`;
                     )}
                   </button>
                 </div>
-                <pre className="bg-gray-900 dark:bg-black text-green-400 p-6 rounded-xl overflow-x-auto text-sm font-mono">
+                <pre className="bg-gray-900 dark:bg-black text-green-400 p-6 rounded-xl overflow-x-auto text-sm font-mono border-2 border-gray-700">
                   {pythonExample}
+                </pre>
+              </div>
+
+              <div>
+                <div className="flex items-center justify-between mb-3">
+                  <h3 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                    <span className="px-2 py-1 bg-gray-500 text-white text-xs font-bold rounded">cURL</span>
+                    Command Line
+                  </h3>
+                  <button
+                    onClick={() => copyToClipboard(curlExample, 'quickstart-curl')}
+                    className="flex items-center gap-2 px-3 py-1.5 glass rounded-lg hover:bg-primary-100 dark:hover:bg-primary-900/30 transition-colors"
+                  >
+                    {copiedEndpoint === 'quickstart-curl' ? (
+                      <><Check className="w-4 h-4 text-green-500" /> Copied!</>
+                    ) : (
+                      <><Copy className="w-4 h-4" /> Copy</>
+                    )}
+                  </button>
+                </div>
+                <pre className="bg-gray-900 dark:bg-black text-green-400 p-6 rounded-xl overflow-x-auto text-sm font-mono border-2 border-gray-700">
+                  {curlExample}
                 </pre>
               </div>
             </div>
@@ -504,17 +613,28 @@ print(f"Average score: {data['averageBullishValue']}")`;
                 className="glass-strong rounded-2xl p-8 shadow-xl hover-lift"
               >
                 {/* Endpoint Header */}
-                <div className="flex flex-wrap items-center gap-3 mb-4">
-                  <span className={`px-3 py-1 rounded-lg font-mono font-bold text-sm ${
-                    endpoint.method === 'GET' ? 'bg-blue-500 text-white' :
-                    endpoint.method === 'POST' ? 'bg-green-500 text-white' :
-                    'bg-gray-500 text-white'
-                  }`}>
-                    {endpoint.method}
-                  </span>
-                  <code className="text-lg font-mono text-gray-900 dark:text-white">
-                    {endpoint.path}
-                  </code>
+                <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
+                  <div className="flex flex-wrap items-center gap-3">
+                    <span className={`px-3 py-1 rounded-lg font-mono font-bold text-sm ${
+                      endpoint.method === 'GET' ? 'bg-blue-500 text-white' :
+                      endpoint.method === 'POST' ? 'bg-green-500 text-white' :
+                      'bg-gray-500 text-white'
+                    }`}>
+                      {endpoint.method}
+                    </span>
+                    <code className="text-base sm:text-lg font-mono text-gray-900 dark:text-white break-all">
+                      {endpoint.path}
+                    </code>
+                  </div>
+                  <a
+                    href={endpoint.example}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-primary-600 to-secondary-600 text-white rounded-lg text-sm font-semibold hover:shadow-lg transition-all hover-lift"
+                  >
+                    <Zap className="w-4 h-4" />
+                    Try It
+                  </a>
                 </div>
 
                 <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
@@ -568,15 +688,22 @@ print(f"Average score: {data['averageBullishValue']}")`;
                       )}
                     </button>
                   </div>
-                  <pre className="bg-gray-900 dark:bg-black text-green-400 p-4 rounded-xl overflow-x-auto text-xs font-mono">
-                    {endpoint.example}
-                  </pre>
+                  <div className="relative">
+                    <pre className="bg-gray-900 dark:bg-black text-green-400 p-4 rounded-xl overflow-x-auto text-xs font-mono border-2 border-gray-700 hover:border-primary-500 transition-colors">
+                      {endpoint.example}
+                    </pre>
+                  </div>
                 </div>
 
                 {/* Example Response */}
-                <div>
+                <div className="mb-6">
                   <div className="flex items-center justify-between mb-3">
-                    <h4 className="text-lg font-bold text-gray-900 dark:text-white">Example Response</h4>
+                    <div className="flex items-center gap-3">
+                      <h4 className="text-lg font-bold text-gray-900 dark:text-white">Example Response</h4>
+                      <span className="px-2 py-1 bg-green-500 text-white text-xs font-bold rounded">
+                        200 OK
+                      </span>
+                    </div>
                     <button
                       onClick={() => copyToClipboard(JSON.stringify(endpoint.response, null, 2), `response-${index}`)}
                       className="flex items-center gap-2 px-3 py-1.5 glass rounded-lg hover:bg-primary-100 dark:hover:bg-primary-900/30 transition-colors text-sm"
@@ -588,9 +715,51 @@ print(f"Average score: {data['averageBullishValue']}")`;
                       )}
                     </button>
                   </div>
-                  <pre className="bg-gray-900 dark:bg-black text-blue-400 p-4 rounded-xl overflow-x-auto text-xs font-mono max-h-96">
-                    {JSON.stringify(endpoint.response, null, 2)}
-                  </pre>
+                  <div className="relative">
+                    <pre className="bg-gray-900 dark:bg-black text-blue-400 p-4 rounded-xl overflow-x-auto text-xs font-mono max-h-96 border-2 border-gray-700 hover:border-primary-500 transition-colors">
+                      {JSON.stringify(endpoint.response, null, 2)}
+                    </pre>
+                  </div>
+                </div>
+
+                {/* Error Responses */}
+                <div>
+                  <h4 className="text-lg font-bold text-gray-900 dark:text-white mb-3">Error Responses</h4>
+                  <div className="glass rounded-xl p-4 space-y-3">
+                    <div className="border-b border-gray-200 dark:border-gray-700 pb-3">
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="px-2 py-1 bg-red-500 text-white text-xs font-bold rounded">
+                          400
+                        </span>
+                        <span className="text-sm font-semibold text-gray-900 dark:text-white">Bad Request</span>
+                      </div>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">
+                        Invalid parameters or malformed request
+                      </p>
+                    </div>
+                    <div className="border-b border-gray-200 dark:border-gray-700 pb-3">
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="px-2 py-1 bg-amber-500 text-white text-xs font-bold rounded">
+                          429
+                        </span>
+                        <span className="text-sm font-semibold text-gray-900 dark:text-white">Too Many Requests</span>
+                      </div>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">
+                        Rate limit exceeded (100 requests/minute)
+                      </p>
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="px-2 py-1 bg-gray-500 text-white text-xs font-bold rounded">
+                          500
+                        </span>
+                        <span className="text-sm font-semibold text-gray-900 dark:text-white">Internal Server Error</span>
+                      </div>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">
+                        Something went wrong on our end
+                      </p>
+                    </div>
+                  </div>
                 </div>
               </motion.div>
             </ScrollReveal>
