@@ -40,7 +40,7 @@ app.use((req, res, next) => {
 
 // Routes
 app.use('/api/articles', articlesRouter);
-app.use('/api/stats', statsRouter);
+app.use('/api/sentiment', statsRouter);
 
 // Health check
 app.get('/api/health', (req, res) => {

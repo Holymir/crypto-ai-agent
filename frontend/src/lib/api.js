@@ -18,8 +18,8 @@ export const api = {
   getLatestArticles: (limit = 10) => apiClient.get(`/articles/latest?limit=${limit}`),
   getArticleById: (id) => apiClient.get(`/articles/${id}`),
 
-  // Stats
-  getSentimentStats: (params) => apiClient.get('/stats/sentiment', { params }),
+  // Sentiment Analysis
+  getSentimentStats: (params) => apiClient.get('/sentiment/stats', { params }),
   getSentimentTrend: (hours = null, days = 7, granularity = 'daily') => {
     const params = new URLSearchParams();
     if (hours !== null) {
@@ -28,15 +28,15 @@ export const api = {
       params.append('days', days);
     }
     params.append('granularity', granularity);
-    return apiClient.get(`/stats/trend?${params.toString()}`);
+    return apiClient.get(`/sentiment/trend?${params.toString()}`);
   },
-  getTopSources: (days = 7, limit = 5) => apiClient.get('/stats/sources', { params: { days, limit } }),
+  getTopSources: (days = 7, limit = 5) => apiClient.get('/sentiment/sources', { params: { days, limit } }),
 
   // Extended AI Analysis Stats
-  getAssetStats: (days = 7, limit = 10) => apiClient.get('/stats/assets', { params: { days, limit } }),
-  getCategoryStats: (days = 7, limit = 10) => apiClient.get('/stats/categories', { params: { days, limit } }),
-  getChainStats: (days = 7, limit = 10) => apiClient.get('/stats/chains', { params: { days, limit } }),
-  getTrendingKeywords: (days = 7, limit = 10) => apiClient.get('/stats/keywords', { params: { days, limit } }),
+  getAssetStats: (days = 7, limit = 10) => apiClient.get('/sentiment/assets', { params: { days, limit } }),
+  getCategoryStats: (days = 7, limit = 10) => apiClient.get('/sentiment/categories', { params: { days, limit } }),
+  getChainStats: (days = 7, limit = 10) => apiClient.get('/sentiment/chains', { params: { days, limit } }),
+  getTrendingKeywords: (days = 7, limit = 10) => apiClient.get('/sentiment/keywords', { params: { days, limit } }),
 };
 
 export default apiClient;

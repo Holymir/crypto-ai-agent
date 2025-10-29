@@ -1,4 +1,4 @@
-import { Code, Database, Zap, Lock, BookOpen, Copy, Check, ChevronDown, ChevronRight, Menu, X, FileText, TrendingUp, BarChart3, Hash } from 'lucide-react';
+import { Code, Database, Zap, Lock, BookOpen, Copy, Check, ChevronDown, ChevronRight, FileText, TrendingUp, BarChart3, Hash } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Navigation } from '../components/Navigation';
@@ -7,10 +7,9 @@ import { SEO } from '../components/SEO';
 
 export const ApiDocs = () => {
   const [copiedEndpoint, setCopiedEndpoint] = useState(null);
-  const [activeSection, setActiveSection] = useState('articles');
+  const [activeSection, setActiveSection] = useState('getting-started');
   const [expandedCategories, setExpandedCategories] = useState({ sentiment: true });
-  const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
-  const [isSidebarVisible, setIsSidebarVisible] = useState(false);
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
   const sectionRefs = useRef({});
 
   const copyToClipboard = (text, id) => {
@@ -25,13 +24,26 @@ export const ApiDocs = () => {
   const scrollToSection = (id) => {
     const element = sectionRefs.current[id];
     if (element) {
-      const offset = 100;
+      const offset = 120;
       const top = element.getBoundingClientRect().top + window.scrollY - offset;
       window.scrollTo({ top, behavior: 'smooth' });
       setActiveSection(id);
-      setIsMobileNavOpen(false);
     }
   };
+
+  // Scroll to top on mount and reset active section
+  useEffect(() => {
+    // Force scroll to top immediately
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+
+    // Reset active section and allow intersection observer to work after a delay
+    const timer = setTimeout(() => {
+      setActiveSection('getting-started');
+      setIsInitialLoad(false);
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   // Toggle category expansion
   const toggleCategory = (category) => {
@@ -41,23 +53,15 @@ export const ApiDocs = () => {
     }));
   };
 
-  // Check window width for sidebar visibility
-  useEffect(() => {
-    const handleResize = () => {
-      setIsSidebarVisible(window.innerWidth >= 1024);
-    };
-
-    handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
   // Intersection observer for active section highlighting
   useEffect(() => {
+    // Don't set up observer during initial load
+    if (isInitialLoad) return;
+
     const observers = [];
     const options = {
       root: null,
-      rootMargin: '-150px 0px -50%',
+      rootMargin: '-120px 0px -60%',
       threshold: 0
     };
 
@@ -76,7 +80,7 @@ export const ApiDocs = () => {
     });
 
     return () => observers.forEach(observer => observer.disconnect());
-  }, []);
+  }, [isInitialLoad]);
 
   const getEndpointIcon = (id) => {
     const icons = {
@@ -92,22 +96,27 @@ export const ApiDocs = () => {
 
   const apiTree = [
     {
+      id: 'getting-started',
+      label: 'Getting Started',
+      icon: BookOpen,
+    },
+    {
       id: 'articles',
       label: 'Articles',
+      icon: FileText,
       path: '/api/articles',
       method: 'GET',
-      description: 'Get paginated articles'
     },
     {
       id: 'sentiment',
-      label: 'Sentiment Analysis',
+      label: 'Sentiment',
       isCategory: true,
       children: [
-        { id: 'stats', label: 'Statistics', path: '/api/sentiment/stats', method: 'GET', description: 'Overall sentiment stats' },
-        { id: 'trend', label: 'Trend', path: '/api/sentiment/trend', method: 'GET', description: 'Sentiment over time' },
-        { id: 'assets', label: 'Assets', path: '/api/sentiment/assets', method: 'GET', description: 'By cryptocurrency' },
-        { id: 'categories', label: 'Categories', path: '/api/sentiment/categories', method: 'GET', description: 'By article type' },
-        { id: 'keywords', label: 'Keywords', path: '/api/sentiment/keywords', method: 'GET', description: 'Trending keywords' }
+        { id: 'stats', label: 'Statistics', path: '/api/sentiment/stats', method: 'GET' },
+        { id: 'trend', label: 'Trend', path: '/api/sentiment/trend', method: 'GET' },
+        { id: 'assets', label: 'Assets', path: '/api/sentiment/assets', method: 'GET' },
+        { id: 'categories', label: 'Categories', path: '/api/sentiment/categories', method: 'GET' },
+        { id: 'keywords', label: 'Keywords', path: '/api/sentiment/keywords', method: 'GET' }
       ]
     }
   ];
@@ -309,69 +318,21 @@ curl -X GET "${baseUrl}/api/articles?limit=5&sentiment=BULLISH" \\
 
       <Navigation />
 
-      {/* Compact Layout Container */}
-      <div className="flex min-h-screen">
-        {/* Sidebar Navigation */}
-        <AnimatePresence>
-          {(isMobileNavOpen || isSidebarVisible) && (
-            <motion.aside
-              initial={{ x: -300, opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              exit={{ x: -300, opacity: 0 }}
-              transition={{ duration: 0.2 }}
-              className="fixed left-0 top-0 bottom-0 w-72 glass-strong border-r border-gray-200 dark:border-gray-800 overflow-y-auto z-50 lg:sticky lg:top-0 lg:h-screen shadow-2xl lg:shadow-none pt-20"
-            >
-              <div className="p-6">
-                {/* Sidebar Header */}
-                <div className="mb-6">
-                  <div className="flex items-center gap-2 mb-2">
-                    <BookOpen className="w-5 h-5 text-primary-600 dark:text-primary-400" />
-                    <h3 className="text-lg font-bold text-gray-900 dark:text-white">
-                      API Reference
-                    </h3>
-                  </div>
-                  <p className="text-xs text-gray-600 dark:text-gray-400">
-                    6 endpoints • RESTful • JSON
-                  </p>
+      {/* Main Container with Fixed Sidebar */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-12">
+        <div className="flex gap-8">
+          {/* Sticky Sidebar - Hidden on mobile */}
+          <aside className="hidden lg:block w-64 flex-shrink-0">
+            <div className="sticky top-24">
+              <div className="glass-strong rounded-2xl p-4 shadow-xl mb-4">
+                <div className="flex items-center gap-2 mb-3">
+                  <BookOpen className="w-5 h-5 text-primary-600 dark:text-primary-400" />
+                  <h3 className="text-sm font-bold text-gray-900 dark:text-white">
+                    Navigation
+                  </h3>
                 </div>
 
-                {/* Quick Actions */}
-                <div className="mb-6 space-y-2">
-                  <motion.div
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    onClick={() => copyToClipboard(baseUrl, 'sidebar-base-url')}
-                    className="glass rounded-lg p-3 cursor-pointer hover:bg-primary-100 dark:hover:bg-primary-900/30 transition-colors"
-                  >
-                    <div className="flex items-center gap-2 mb-1">
-                      <Zap className="w-4 h-4 text-yellow-500" />
-                      <span className="text-xs font-semibold text-gray-700 dark:text-gray-300">Base URL</span>
-                    </div>
-                    <code className="text-xs text-primary-600 dark:text-primary-400 break-all">
-                      {baseUrl}
-                    </code>
-                    {copiedEndpoint === 'sidebar-base-url' && (
-                      <div className="text-xs text-green-500 mt-1 font-semibold">Copied!</div>
-                    )}
-                  </motion.div>
-
-                  <div className="grid grid-cols-3 gap-2">
-                    <div className="glass rounded-lg p-2 text-center">
-                      <Code className="w-4 h-4 mx-auto mb-1 text-blue-500" />
-                      <div className="text-xs font-bold text-gray-900 dark:text-white">JSON</div>
-                    </div>
-                    <div className="glass rounded-lg p-2 text-center">
-                      <Lock className="w-4 h-4 mx-auto mb-1 text-green-500" />
-                      <div className="text-xs font-bold text-gray-900 dark:text-white">Public</div>
-                    </div>
-                    <div className="glass rounded-lg p-2 text-center">
-                      <Database className="w-4 h-4 mx-auto mb-1 text-purple-500" />
-                      <div className="text-xs font-bold text-gray-900 dark:text-white">100/m</div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* API Tree Navigation */}
+                {/* Navigation Tree */}
                 <nav className="space-y-1">
                   {apiTree.map((item) => (
                     <div key={item.id}>
@@ -379,21 +340,18 @@ curl -X GET "${baseUrl}/api/articles?limit=5&sentiment=BULLISH" \\
                         <>
                           <button
                             onClick={() => toggleCategory(item.id)}
-                            className="w-full flex items-center justify-between px-3 py-2.5 rounded-lg hover:bg-primary-100 dark:hover:bg-primary-900/30 transition-colors text-left group"
+                            className="w-full flex items-center justify-between px-3 py-2 rounded-lg hover:bg-primary-100 dark:hover:bg-primary-900/30 transition-colors text-left group"
                           >
                             <div className="flex items-center gap-2">
                               {expandedCategories[item.id] ? (
-                                <ChevronDown className="w-4 h-4 text-gray-500 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors" />
+                                <ChevronDown className="w-4 h-4 text-gray-500" />
                               ) : (
-                                <ChevronRight className="w-4 h-4 text-gray-500 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors" />
+                                <ChevronRight className="w-4 h-4 text-gray-500" />
                               )}
                               <span className="font-semibold text-sm text-gray-900 dark:text-white">
                                 {item.label}
                               </span>
                             </div>
-                            <span className="text-xs text-gray-500 dark:text-gray-400">
-                              {item.children.length}
-                            </span>
                           </button>
 
                           <AnimatePresence>
@@ -402,8 +360,7 @@ curl -X GET "${baseUrl}/api/articles?limit=5&sentiment=BULLISH" \\
                                 initial={{ height: 0, opacity: 0 }}
                                 animate={{ height: 'auto', opacity: 1 }}
                                 exit={{ height: 0, opacity: 0 }}
-                                transition={{ duration: 0.2 }}
-                                className="ml-3 border-l-2 border-gray-200 dark:border-gray-700 pl-3 space-y-1 overflow-hidden"
+                                className="ml-6 space-y-1 overflow-hidden"
                               >
                                 {item.children.map((child) => {
                                   const Icon = getEndpointIcon(child.id);
@@ -411,40 +368,14 @@ curl -X GET "${baseUrl}/api/articles?limit=5&sentiment=BULLISH" \\
                                     <button
                                       key={child.id}
                                       onClick={() => scrollToSection(child.id)}
-                                      className={`w-full flex items-start gap-2 px-3 py-2 rounded-lg transition-all text-left group ${
+                                      className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg transition-all text-left text-sm ${
                                         activeSection === child.id
-                                          ? 'bg-gradient-to-r from-primary-500 to-secondary-500 text-white shadow-lg'
+                                          ? 'bg-gradient-to-r from-primary-500 to-secondary-500 text-white'
                                           : 'hover:bg-primary-50 dark:hover:bg-primary-900/20 text-gray-700 dark:text-gray-300'
                                       }`}
                                     >
-                                      <Icon className={`w-4 h-4 mt-0.5 flex-shrink-0 ${
-                                        activeSection === child.id
-                                          ? 'text-white'
-                                          : 'text-gray-400 group-hover:text-primary-600 dark:group-hover:text-primary-400'
-                                      }`} />
-                                      <div className="flex-1 min-w-0">
-                                        <div className="flex items-center gap-2 mb-0.5">
-                                          <span className={`text-xs font-bold truncate ${
-                                            activeSection === child.id ? 'text-white' : ''
-                                          }`}>
-                                            {child.label}
-                                          </span>
-                                          <span className={`px-1.5 py-0.5 rounded text-[10px] font-mono font-bold flex-shrink-0 ${
-                                            activeSection === child.id
-                                              ? 'bg-white/20 text-white'
-                                              : 'bg-blue-500 text-white'
-                                          }`}>
-                                            {child.method}
-                                          </span>
-                                        </div>
-                                        <p className={`text-[10px] leading-tight ${
-                                          activeSection === child.id
-                                            ? 'text-white/90'
-                                            : 'text-gray-500 dark:text-gray-400'
-                                        }`}>
-                                          {child.description}
-                                        </p>
-                                      </div>
+                                      <Icon className="w-4 h-4" />
+                                      {child.label}
                                     </button>
                                   );
                                 })}
@@ -455,68 +386,45 @@ curl -X GET "${baseUrl}/api/articles?limit=5&sentiment=BULLISH" \\
                       ) : (
                         <button
                           onClick={() => scrollToSection(item.id)}
-                          className={`w-full flex items-start gap-2 px-3 py-2.5 rounded-lg transition-all text-left group ${
+                          className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg transition-all text-left text-sm ${
                             activeSection === item.id
-                              ? 'bg-gradient-to-r from-primary-500 to-secondary-500 text-white shadow-lg'
+                              ? 'bg-gradient-to-r from-primary-500 to-secondary-500 text-white'
                               : 'hover:bg-primary-50 dark:hover:bg-primary-900/20 text-gray-700 dark:text-gray-300'
                           }`}
                         >
-                          {(() => {
-                            const Icon = getEndpointIcon(item.id);
-                            return <Icon className={`w-4 h-4 mt-0.5 flex-shrink-0 ${
-                              activeSection === item.id
-                                ? 'text-white'
-                                : 'text-gray-400 group-hover:text-primary-600 dark:group-hover:text-primary-400'
-                            }`} />;
-                          })()}
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-center gap-2 mb-0.5">
-                              <span className={`text-xs font-bold truncate ${
-                                activeSection === item.id ? 'text-white' : ''
-                              }`}>
-                                {item.label}
-                              </span>
-                              <span className={`px-1.5 py-0.5 rounded text-[10px] font-mono font-bold flex-shrink-0 ${
-                                activeSection === item.id
-                                  ? 'bg-white/20 text-white'
-                                  : 'bg-blue-500 text-white'
-                              }`}>
-                                {item.method}
-                              </span>
-                            </div>
-                            <p className={`text-[10px] leading-tight ${
-                              activeSection === item.id
-                                ? 'text-white/90'
-                                : 'text-gray-500 dark:text-gray-400'
-                            }`}>
-                              {item.description}
-                            </p>
-                          </div>
+                          {item.icon && <item.icon className="w-4 h-4" />}
+                          {item.label}
                         </button>
                       )}
                     </div>
                   ))}
                 </nav>
               </div>
-            </motion.aside>
-          )}
-        </AnimatePresence>
 
-        {/* Mobile Navigation Toggle */}
-        <motion.button
-          onClick={() => setIsMobileNavOpen(!isMobileNavOpen)}
-          className="lg:hidden fixed bottom-6 right-6 z-50 p-4 bg-gradient-to-r from-primary-600 to-secondary-600 text-white rounded-full shadow-2xl"
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-        >
-          {isMobileNavOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-        </motion.button>
+              {/* Quick Info */}
+              <div className="glass-strong rounded-2xl p-4 shadow-xl">
+                <div className="space-y-3 text-xs">
+                  <div className="flex items-center gap-2">
+                    <Code className="w-4 h-4 text-blue-500" />
+                    <span className="text-gray-700 dark:text-gray-300">JSON REST API</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Lock className="w-4 h-4 text-green-500" />
+                    <span className="text-gray-700 dark:text-gray-300">No Auth Required</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Database className="w-4 h-4 text-purple-500" />
+                    <span className="text-gray-700 dark:text-gray-300">100 req/min</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </aside>
 
-        {/* Main Content */}
-        <div className="flex-1 lg:ml-0">
-          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            {/* Compact Header */}
-            <div className="mb-8">
+          {/* Main Content */}
+          <main className="flex-1 min-w-0">
+            {/* Header */}
+            <div ref={(el) => (sectionRefs.current['getting-started'] = el)} className="mb-12">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -528,18 +436,18 @@ curl -X GET "${baseUrl}/api/articles?limit=5&sentiment=BULLISH" \\
                 </span>
               </motion.div>
 
-              <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-3">
-                Build with{' '}
+              <h1 className="text-4xl sm:text-5xl font-bold text-gray-900 dark:text-white mb-4">
+                SentiFi{' '}
                 <span className="bg-gradient-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent">
-                  SentiFi API
+                  API
                 </span>
               </h1>
 
-              <p className="text-base text-gray-600 dark:text-gray-400 mb-6">
+              <p className="text-lg text-gray-600 dark:text-gray-400 mb-6">
                 Access real-time crypto sentiment data programmatically. Simple REST API with comprehensive documentation.
               </p>
 
-              {/* Key Features Inline */}
+              {/* Key Features */}
               <div className="flex flex-wrap gap-3">
                 <div className="flex items-center gap-2 glass rounded-lg px-3 py-2">
                   <Check className="w-4 h-4 text-green-500" />
@@ -560,20 +468,40 @@ curl -X GET "${baseUrl}/api/articles?limit=5&sentiment=BULLISH" \\
               </div>
             </div>
 
-            {/* Quick Start */}
+            {/* Base URL */}
             <div className="glass-strong rounded-2xl p-6 mb-8 shadow-xl">
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Quick Start</h2>
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-3">Base URL</h2>
+              <div className="flex items-center justify-between glass rounded-xl p-4">
+                <code className="text-sm font-mono text-primary-600 dark:text-primary-400">
+                  {baseUrl}
+                </code>
+                <button
+                  onClick={() => copyToClipboard(baseUrl, 'base-url')}
+                  className="flex items-center gap-2 px-3 py-1.5 glass rounded-lg hover:bg-primary-100 dark:hover:bg-primary-900/30 transition-colors text-xs"
+                >
+                  {copiedEndpoint === 'base-url' ? (
+                    <><Check className="w-4 h-4 text-green-500" /> Copied!</>
+                  ) : (
+                    <><Copy className="w-4 h-4" /> Copy</>
+                  )}
+                </button>
+              </div>
+            </div>
 
-              <div className="space-y-4">
+            {/* Quick Start */}
+            <div className="glass-strong rounded-2xl p-6 mb-12 shadow-xl">
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Quick Start</h2>
+
+              <div className="space-y-6">
                 <div>
-                  <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center justify-between mb-3">
                     <h3 className="text-sm font-bold text-gray-900 dark:text-white flex items-center gap-2">
                       <span className="px-2 py-0.5 bg-yellow-500 text-black text-xs font-bold rounded">JS</span>
                       Node.js / JavaScript
                     </h3>
                     <button
                       onClick={() => copyToClipboard(quickStart, 'quickstart-js')}
-                      className="flex items-center gap-1.5 px-2.5 py-1.5 glass rounded-lg hover:bg-primary-100 dark:hover:bg-primary-900/30 transition-colors text-xs"
+                      className="flex items-center gap-1.5 px-3 py-1.5 glass rounded-lg hover:bg-primary-100 dark:hover:bg-primary-900/30 transition-colors text-xs"
                     >
                       {copiedEndpoint === 'quickstart-js' ? (
                         <><Check className="w-3.5 h-3.5 text-green-500" /> Copied!</>
@@ -582,20 +510,20 @@ curl -X GET "${baseUrl}/api/articles?limit=5&sentiment=BULLISH" \\
                       )}
                     </button>
                   </div>
-                  <pre className="bg-gray-900 dark:bg-black text-green-400 p-4 rounded-xl overflow-x-auto text-xs font-mono border-2 border-gray-700">
+                  <pre className="bg-gray-900 dark:bg-black text-green-400 p-4 rounded-xl overflow-x-auto text-sm font-mono">
                     {quickStart}
                   </pre>
                 </div>
 
                 <div>
-                  <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center justify-between mb-3">
                     <h3 className="text-sm font-bold text-gray-900 dark:text-white flex items-center gap-2">
                       <span className="px-2 py-0.5 bg-blue-500 text-white text-xs font-bold rounded">PY</span>
                       Python
                     </h3>
                     <button
                       onClick={() => copyToClipboard(pythonExample, 'quickstart-py')}
-                      className="flex items-center gap-1.5 px-2.5 py-1.5 glass rounded-lg hover:bg-primary-100 dark:hover:bg-primary-900/30 transition-colors text-xs"
+                      className="flex items-center gap-1.5 px-3 py-1.5 glass rounded-lg hover:bg-primary-100 dark:hover:bg-primary-900/30 transition-colors text-xs"
                     >
                       {copiedEndpoint === 'quickstart-py' ? (
                         <><Check className="w-3.5 h-3.5 text-green-500" /> Copied!</>
@@ -604,20 +532,20 @@ curl -X GET "${baseUrl}/api/articles?limit=5&sentiment=BULLISH" \\
                       )}
                     </button>
                   </div>
-                  <pre className="bg-gray-900 dark:bg-black text-green-400 p-4 rounded-xl overflow-x-auto text-xs font-mono border-2 border-gray-700">
+                  <pre className="bg-gray-900 dark:bg-black text-green-400 p-4 rounded-xl overflow-x-auto text-sm font-mono">
                     {pythonExample}
                   </pre>
                 </div>
 
                 <div>
-                  <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center justify-between mb-3">
                     <h3 className="text-sm font-bold text-gray-900 dark:text-white flex items-center gap-2">
                       <span className="px-2 py-0.5 bg-gray-500 text-white text-xs font-bold rounded">cURL</span>
                       Command Line
                     </h3>
                     <button
                       onClick={() => copyToClipboard(curlExample, 'quickstart-curl')}
-                      className="flex items-center gap-1.5 px-2.5 py-1.5 glass rounded-lg hover:bg-primary-100 dark:hover:bg-primary-900/30 transition-colors text-xs"
+                      className="flex items-center gap-1.5 px-3 py-1.5 glass rounded-lg hover:bg-primary-100 dark:hover:bg-primary-900/30 transition-colors text-xs"
                     >
                       {copiedEndpoint === 'quickstart-curl' ? (
                         <><Check className="w-3.5 h-3.5 text-green-500" /> Copied!</>
@@ -626,7 +554,7 @@ curl -X GET "${baseUrl}/api/articles?limit=5&sentiment=BULLISH" \\
                       )}
                     </button>
                   </div>
-                  <pre className="bg-gray-900 dark:bg-black text-green-400 p-4 rounded-xl overflow-x-auto text-xs font-mono border-2 border-gray-700">
+                  <pre className="bg-gray-900 dark:bg-black text-green-400 p-4 rounded-xl overflow-x-auto text-sm font-mono">
                     {curlExample}
                   </pre>
                 </div>
@@ -634,70 +562,70 @@ curl -X GET "${baseUrl}/api/articles?limit=5&sentiment=BULLISH" \\
             </div>
 
             {/* API Endpoints */}
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-6">
               API Endpoints
             </h2>
 
-            <div className="space-y-6">
-              {endpoints.map((endpoint, index) => (
+            <div className="space-y-8">
+              {endpoints.map((endpoint) => (
                 <motion.div
                   key={endpoint.id}
                   ref={(el) => (sectionRefs.current[endpoint.id] = el)}
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: index * 0.05 }}
-                  className="glass-strong rounded-2xl p-6 shadow-xl hover-lift"
+                  viewport={{ once: true, margin: "-100px" }}
+                  className="glass-strong rounded-2xl p-6 shadow-xl"
                 >
                   {/* Endpoint Header */}
-                  <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <span className="px-2.5 py-1 rounded-lg font-mono font-bold text-xs bg-blue-500 text-white">
-                        {endpoint.method}
-                      </span>
-                      <code className="text-sm font-mono text-gray-900 dark:text-white break-all">
-                        {endpoint.path}
-                      </code>
+                  <div className="flex flex-wrap items-start justify-between gap-3 mb-4">
+                    <div>
+                      <div className="flex flex-wrap items-center gap-2 mb-2">
+                        <span className="px-3 py-1 rounded-lg font-mono font-bold text-sm bg-blue-500 text-white">
+                          {endpoint.method}
+                        </span>
+                        <code className="text-sm font-mono text-gray-900 dark:text-white">
+                          {endpoint.path}
+                        </code>
+                      </div>
+                      <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+                        {endpoint.title}
+                      </h3>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">
+                        {endpoint.description}
+                      </p>
                     </div>
                     <a
                       href={endpoint.example}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-primary-600 to-secondary-600 text-white rounded-lg text-xs font-semibold hover:shadow-lg transition-all hover-lift"
+                      className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-primary-600 to-secondary-600 text-white rounded-xl text-sm font-semibold hover:shadow-lg transition-all"
                     >
-                      <Zap className="w-3.5 h-3.5" />
-                      Try It
+                      <Zap className="w-4 h-4" />
+                      Try It Live
                     </a>
                   </div>
 
-                  <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
-                    {endpoint.title}
-                  </h3>
-                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
-                    {endpoint.description}
-                  </p>
-
                   {/* Parameters */}
                   {endpoint.params && endpoint.params.length > 0 && (
-                    <div className="mb-4">
-                      <h4 className="text-sm font-bold text-gray-900 dark:text-white mb-2">Parameters</h4>
-                      <div className="glass rounded-xl p-3 space-y-2">
+                    <div className="mb-6">
+                      <h4 className="text-sm font-bold text-gray-900 dark:text-white mb-3">Query Parameters</h4>
+                      <div className="glass rounded-xl p-4 space-y-3">
                         {endpoint.params.map((param) => (
-                          <div key={param.name} className="border-b border-gray-200 dark:border-gray-700 last:border-0 pb-2 last:pb-0">
+                          <div key={param.name} className="border-b border-gray-200 dark:border-gray-700 last:border-0 pb-3 last:pb-0">
                             <div className="flex flex-wrap items-center gap-2 mb-1">
-                              <code className="font-mono text-xs font-bold text-primary-600 dark:text-primary-400">
+                              <code className="font-mono text-sm font-bold text-primary-600 dark:text-primary-400">
                                 {param.name}
                               </code>
-                              <span className="text-[10px] px-1.5 py-0.5 bg-gray-200 dark:bg-gray-700 rounded">
+                              <span className="text-xs px-2 py-0.5 bg-gray-200 dark:bg-gray-700 rounded">
                                 {param.type}
                               </span>
                               {param.default && (
-                                <span className="text-[10px] px-1.5 py-0.5 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 rounded">
+                                <span className="text-xs px-2 py-0.5 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 rounded">
                                   default: {param.default}
                                 </span>
                               )}
                             </div>
-                            <p className="text-xs text-gray-600 dark:text-gray-400">
+                            <p className="text-sm text-gray-600 dark:text-gray-400">
                               {param.description}
                             </p>
                           </div>
@@ -707,92 +635,64 @@ curl -X GET "${baseUrl}/api/articles?limit=5&sentiment=BULLISH" \\
                   )}
 
                   {/* Example Request */}
-                  <div className="mb-4">
-                    <div className="flex items-center justify-between mb-2">
+                  <div className="mb-6">
+                    <div className="flex items-center justify-between mb-3">
                       <h4 className="text-sm font-bold text-gray-900 dark:text-white">Example Request</h4>
                       <button
-                        onClick={() => copyToClipboard(endpoint.example, `example-${index}`)}
-                        className="flex items-center gap-1.5 px-2.5 py-1.5 glass rounded-lg hover:bg-primary-100 dark:hover:bg-primary-900/30 transition-colors text-xs"
+                        onClick={() => copyToClipboard(endpoint.example, `example-${endpoint.id}`)}
+                        className="flex items-center gap-2 px-3 py-1.5 glass rounded-lg hover:bg-primary-100 dark:hover:bg-primary-900/30 transition-colors text-xs"
                       >
-                        {copiedEndpoint === `example-${index}` ? (
-                          <><Check className="w-3.5 h-3.5 text-green-500" /> Copied!</>
+                        {copiedEndpoint === `example-${endpoint.id}` ? (
+                          <><Check className="w-4 h-4 text-green-500" /> Copied!</>
                         ) : (
-                          <><Copy className="w-3.5 h-3.5" /> Copy</>
+                          <><Copy className="w-4 h-4" /> Copy</>
                         )}
                       </button>
                     </div>
-                    <pre className="bg-gray-900 dark:bg-black text-green-400 p-3 rounded-xl overflow-x-auto text-xs font-mono border-2 border-gray-700">
+                    <pre className="bg-gray-900 dark:bg-black text-green-400 p-4 rounded-xl overflow-x-auto text-sm font-mono">
                       {endpoint.example}
                     </pre>
                   </div>
 
                   {/* Example Response */}
-                  <div className="mb-4">
-                    <div className="flex items-center justify-between mb-2">
+                  <div>
+                    <div className="flex items-center justify-between mb-3">
                       <div className="flex items-center gap-2">
                         <h4 className="text-sm font-bold text-gray-900 dark:text-white">Example Response</h4>
-                        <span className="px-2 py-0.5 bg-green-500 text-white text-[10px] font-bold rounded">
+                        <span className="px-2 py-0.5 bg-green-500 text-white text-xs font-bold rounded">
                           200 OK
                         </span>
                       </div>
                       <button
-                        onClick={() => copyToClipboard(JSON.stringify(endpoint.response, null, 2), `response-${index}`)}
-                        className="flex items-center gap-1.5 px-2.5 py-1.5 glass rounded-lg hover:bg-primary-100 dark:hover:bg-primary-900/30 transition-colors text-xs"
+                        onClick={() => copyToClipboard(JSON.stringify(endpoint.response, null, 2), `response-${endpoint.id}`)}
+                        className="flex items-center gap-2 px-3 py-1.5 glass rounded-lg hover:bg-primary-100 dark:hover:bg-primary-900/30 transition-colors text-xs"
                       >
-                        {copiedEndpoint === `response-${index}` ? (
-                          <><Check className="w-3.5 h-3.5 text-green-500" /> Copied!</>
+                        {copiedEndpoint === `response-${endpoint.id}` ? (
+                          <><Check className="w-4 h-4 text-green-500" /> Copied!</>
                         ) : (
-                          <><Copy className="w-3.5 h-3.5" /> Copy</>
+                          <><Copy className="w-4 h-4" /> Copy</>
                         )}
                       </button>
                     </div>
-                    <pre className="bg-gray-900 dark:bg-black text-blue-400 p-3 rounded-xl overflow-x-auto text-xs font-mono max-h-64 border-2 border-gray-700">
+                    <pre className="bg-gray-900 dark:bg-black text-blue-400 p-4 rounded-xl overflow-x-auto text-sm font-mono max-h-96">
                       {JSON.stringify(endpoint.response, null, 2)}
                     </pre>
-                  </div>
-
-                  {/* Error Responses */}
-                  <div>
-                    <h4 className="text-sm font-bold text-gray-900 dark:text-white mb-2">Error Responses</h4>
-                    <div className="glass rounded-xl p-3 space-y-2">
-                      <div className="flex items-start gap-2 text-xs">
-                        <span className="px-2 py-0.5 bg-red-500 text-white font-bold rounded flex-shrink-0">400</span>
-                        <div>
-                          <div className="font-semibold text-gray-900 dark:text-white">Bad Request</div>
-                          <div className="text-gray-600 dark:text-gray-400">Invalid parameters</div>
-                        </div>
-                      </div>
-                      <div className="flex items-start gap-2 text-xs">
-                        <span className="px-2 py-0.5 bg-amber-500 text-white font-bold rounded flex-shrink-0">429</span>
-                        <div>
-                          <div className="font-semibold text-gray-900 dark:text-white">Too Many Requests</div>
-                          <div className="text-gray-600 dark:text-gray-400">Rate limit exceeded</div>
-                        </div>
-                      </div>
-                      <div className="flex items-start gap-2 text-xs">
-                        <span className="px-2 py-0.5 bg-gray-500 text-white font-bold rounded flex-shrink-0">500</span>
-                        <div>
-                          <div className="font-semibold text-gray-900 dark:text-white">Internal Server Error</div>
-                          <div className="text-gray-600 dark:text-gray-400">Server error</div>
-                        </div>
-                      </div>
-                    </div>
                   </div>
                 </motion.div>
               ))}
             </div>
 
             {/* Rate Limiting */}
-            <div className="glass-strong rounded-2xl p-6 mt-8 shadow-xl border-2 border-amber-500/30">
-              <div className="flex items-center gap-3 mb-3">
-                <Lock className="w-5 h-5 text-amber-500" />
-                <h2 className="text-xl font-bold text-gray-900 dark:text-white">Rate Limiting</h2>
+            <div className="glass-strong rounded-2xl p-6 mt-12 shadow-xl border-2 border-amber-500/30">
+              <div className="flex items-center gap-3 mb-4">
+                <Lock className="w-6 h-6 text-amber-500" />
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Rate Limiting</h2>
               </div>
-              <div className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
+              <div className="space-y-3 text-sm text-gray-600 dark:text-gray-400">
                 <p>
                   To ensure fair usage, our API implements rate limiting:
                 </p>
-                <ul className="space-y-1.5 ml-4">
+                <ul className="space-y-2 ml-4">
                   <li className="flex gap-2"><span>•</span><span><strong className="text-gray-900 dark:text-white">100 requests per minute</strong> per IP address</span></li>
                   <li className="flex gap-2"><span>•</span><span>Rate limit headers included in all responses</span></li>
                   <li className="flex gap-2"><span>•</span><span>HTTP 429 status code when limit exceeded</span></li>
@@ -802,7 +702,7 @@ curl -X GET "${baseUrl}/api/articles?limit=5&sentiment=BULLISH" \\
             </div>
 
             {/* Support */}
-            <div className="text-center mt-8 mb-8">
+            <div className="text-center mt-12">
               <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">
                 Need Help?
               </h2>
@@ -811,13 +711,13 @@ curl -X GET "${baseUrl}/api/articles?limit=5&sentiment=BULLISH" \\
               </p>
               <a
                 href="/contact"
-                className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-primary-600 to-secondary-600 text-white rounded-xl font-semibold shadow-xl hover:shadow-2xl transition-all text-sm"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-primary-600 to-secondary-600 text-white rounded-xl font-semibold shadow-xl hover:shadow-2xl transition-all"
               >
-                <Code className="w-4 h-4" />
+                <Code className="w-5 h-5" />
                 Contact Support
               </a>
             </div>
-          </div>
+          </main>
         </div>
       </div>
 

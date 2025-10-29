@@ -6,11 +6,11 @@ const { validate } = require('../middleware/validation');
 const router = express.Router();
 
 /**
- * GET /api/stats/sentiment
+ * GET /api/sentiment/stats
  * Get sentiment statistics for a date range
  */
 router.get(
-  '/sentiment',
+  '/stats',
   [
     query('days').optional().isInt({ min: 1, max: 365 }).toInt(),
     query('startDate').optional().isISO8601().toDate(),
@@ -40,7 +40,7 @@ router.get(
 );
 
 /**
- * GET /api/stats/sources
+ * GET /api/sentiment/sources
  * Get top news sources by article count
  * Query params:
  *   - days: number of days to look back (default: 7)
@@ -67,7 +67,7 @@ router.get(
 );
 
 /**
- * GET /api/stats/trend
+ * GET /api/sentiment/trend
  * Get sentiment trend over time
  * Query params:
  *   - hours: number of hours to look back (overrides days if provided)
@@ -102,7 +102,7 @@ router.get(
 );
 
 /**
- * GET /api/stats/assets
+ * GET /api/sentiment/assets
  * Get top assets (cryptocurrencies) by article count
  * Query params:
  *   - days: number of days to look back (default: 7)
@@ -129,7 +129,7 @@ router.get(
 );
 
 /**
- * GET /api/stats/categories
+ * GET /api/sentiment/categories
  * Get top categories by article count
  * Query params:
  *   - days: number of days to look back (default: 7)
@@ -156,7 +156,7 @@ router.get(
 );
 
 /**
- * GET /api/stats/chains
+ * GET /api/sentiment/chains
  * Get top blockchain chains by article count
  * Query params:
  *   - days: number of days to look back (default: 7)
@@ -183,7 +183,7 @@ router.get(
 );
 
 /**
- * GET /api/stats/keywords
+ * GET /api/sentiment/keywords
  * Get trending keywords
  * Query params:
  *   - days: number of days to look back (default: 7)
