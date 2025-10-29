@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { Sparkles, Coins, Layers, Network, Tag, TrendingUp, TrendingDown, Minus, BarChart3, Info, HelpCircle, ExternalLink, ArrowRight } from 'lucide-react';
+import { Sparkles, Coins, Layers, Network, Tag, TrendingUp, TrendingDown, Minus, BarChart3, Info, HelpCircle, ExternalLink, ArrowRight, X } from 'lucide-react';
 import { useAssetStats, useCategoryStats, useChainStats, useTrendingKeywords, useArticles } from '../hooks/useArticles';
 import { ScrollReveal } from './ScrollReveal';
 
@@ -45,15 +45,50 @@ const getScoreLabel = (value) => {
 // Info tooltip component with improved UX
 const InfoTooltip = ({ content, className = '' }) => {
   const [isVisible, setIsVisible] = useState(false);
+  const [tooltipPosition, setTooltipPosition] = useState({ top: 0, left: 0 });
+
+  const handleButtonInteraction = (e, show) => {
+    if (show) {
+      const rect = e.currentTarget.getBoundingClientRect();
+      const viewportWidth = window.innerWidth;
+      const viewportHeight = window.innerHeight;
+      const tooltipWidth = viewportWidth < 640 ? 288 : 320; // w-72 = 288px, w-80 = 320px
+      const tooltipHeight = 200; // Approximate height
+
+      // Calculate left position
+      let left = rect.left + rect.width / 2 - tooltipWidth / 2;
+
+      // If tooltip would go off right edge
+      if (left + tooltipWidth > viewportWidth - 20) {
+        left = viewportWidth - tooltipWidth - 20;
+      }
+
+      // If tooltip would go off left edge
+      if (left < 20) {
+        left = 20;
+      }
+
+      // Calculate top position - show below button by default
+      let top = rect.bottom + window.scrollY + 8;
+
+      // If tooltip would go off bottom edge, show above button instead
+      if (rect.bottom + tooltipHeight > viewportHeight) {
+        top = rect.top + window.scrollY - tooltipHeight - 8;
+      }
+
+      setTooltipPosition({ top, left });
+    }
+    setIsVisible(show);
+  };
 
   return (
     <div className={`relative inline-block ${className}`}>
       <motion.button
-        onHoverStart={() => setIsVisible(true)}
-        onHoverEnd={() => setIsVisible(false)}
+        onMouseEnter={(e) => handleButtonInteraction(e, true)}
+        onMouseLeave={(e) => handleButtonInteraction(e, false)}
         onClick={(e) => {
           e.stopPropagation();
-          setIsVisible(!isVisible);
+          handleButtonInteraction(e, !isVisible);
         }}
         className="relative z-[100] p-1 rounded-full hover:bg-primary-100 dark:hover:bg-primary-900/30 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
         whileHover={{ scale: 1.1, rotate: 15 }}
@@ -80,15 +115,18 @@ const InfoTooltip = ({ content, className = '' }) => {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 10 }}
               transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-              className="absolute z-[9999] w-72 sm:w-80 p-4 mt-2 right-0 sm:right-auto glass-strong rounded-xl shadow-2xl border border-primary-200 dark:border-primary-800"
+              style={{
+                position: 'fixed',
+                top: `${tooltipPosition.top}px`,
+                left: `${tooltipPosition.left}px`,
+              }}
+              className="z-[9999] w-72 sm:w-80 p-4 glass-strong rounded-xl shadow-2xl border border-primary-200 dark:border-primary-800"
               onMouseEnter={() => setIsVisible(true)}
               onMouseLeave={() => setIsVisible(false)}
             >
               <div className="text-sm text-gray-700 dark:text-gray-300">
                 {content}
               </div>
-              {/* Arrow pointer */}
-              <div className="absolute -top-2 right-4 w-4 h-4 bg-white dark:bg-gray-800 border-l border-t border-primary-200 dark:border-primary-800 transform rotate-45 z-[9999]"></div>
             </motion.div>
           </>
         )}
@@ -100,6 +138,8 @@ const InfoTooltip = ({ content, className = '' }) => {
 // Article Preview Tooltip - shows quick preview on hover with clickable articles
 const ArticlePreviewTooltip = ({ filterType, filterValue, children }) => {
   const [isVisible, setIsVisible] = useState(false);
+  const [tooltipPosition, setTooltipPosition] = useState({ top: 0, left: 0 });
+  const triggerRef = useState(null)[0];
   const navigate = useNavigate();
 
   // Build filter params based on type
@@ -148,11 +188,57 @@ const ArticlePreviewTooltip = ({ filterType, filterValue, children }) => {
     return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
   };
 
+  const calculatePosition = (element) => {
+    const rect = element.getBoundingClientRect();
+    const viewportWidth = window.innerWidth;
+    const tooltipWidth = viewportWidth < 640 ? 320 : 384; // w-80 = 320px, w-96 = 384px
+
+    // Calculate left position - try to center under element, but keep on screen
+    let left = rect.left;
+
+    // If tooltip would go off right edge, align it to the right
+    if (left + tooltipWidth > viewportWidth - 20) {
+      left = viewportWidth - tooltipWidth - 20;
+    }
+
+    // If tooltip would go off left edge, align it to the left
+    if (left < 20) {
+      left = 20;
+    }
+
+    setTooltipPosition({
+      top: rect.bottom + window.scrollY + 8,
+      left: left
+    });
+  };
+
+  const handleMouseEnter = (e) => {
+    calculatePosition(e.currentTarget);
+    setIsVisible(true);
+  };
+
+  const handleTouchStart = (e) => {
+    // For mobile, show tooltip on long press (but don't block navigation click)
+    e.currentTarget.touchTimeout = setTimeout(() => {
+      calculatePosition(e.currentTarget);
+      setIsVisible(true);
+    }, 300); // Show after 300ms press
+  };
+
+  const handleTouchEnd = (e) => {
+    if (e.currentTarget.touchTimeout) {
+      clearTimeout(e.currentTarget.touchTimeout);
+    }
+  };
+
   return (
-    <div className="relative inline-block">
+    <div className="relative inline-block w-full">
       <div
-        onMouseEnter={() => setIsVisible(true)}
+        ref={triggerRef}
+        onMouseEnter={handleMouseEnter}
         onMouseLeave={() => setIsVisible(false)}
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
       >
         {children}
       </div>
@@ -174,18 +260,34 @@ const ArticlePreviewTooltip = ({ filterType, filterValue, children }) => {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 10 }}
               transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-              className="absolute z-[9999] w-80 sm:w-96 p-4 mt-2 left-0 glass-strong rounded-xl shadow-2xl border border-primary-200 dark:border-primary-800"
+              style={{
+                position: 'fixed',
+                top: `${tooltipPosition.top}px`,
+                left: `${tooltipPosition.left}px`,
+                maxHeight: 'calc(100vh - 100px)',
+                overflowY: 'auto',
+              }}
+              className="z-[9999] w-80 sm:w-96 p-4 glass-strong rounded-xl shadow-2xl border border-primary-200 dark:border-primary-800"
               onMouseEnter={() => setIsVisible(true)}
               onMouseLeave={() => setIsVisible(false)}
             >
               {/* Header */}
               <div className="flex items-center justify-between mb-3 pb-2 border-b border-gray-200 dark:border-gray-700">
-                <h3 className="text-sm font-bold text-gray-900 dark:text-dark-text">
-                  Quick Preview
-                </h3>
-                <span className="text-xs text-gray-500 dark:text-gray-400">
-                  {articles.length} recent articles
-                </span>
+                <div className="flex items-center gap-2">
+                  <h3 className="text-sm font-bold text-gray-900 dark:text-dark-text">
+                    Quick Preview
+                  </h3>
+                  <span className="text-xs text-gray-500 dark:text-gray-400">
+                    ({articles.length})
+                  </span>
+                </div>
+                <button
+                  onClick={() => setIsVisible(false)}
+                  className="sm:hidden p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors"
+                  aria-label="Close preview"
+                >
+                  <X className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+                </button>
               </div>
 
               {/* Loading State */}
@@ -197,7 +299,7 @@ const ArticlePreviewTooltip = ({ filterType, filterValue, children }) => {
 
               {/* Articles List */}
               {!isLoading && articles.length > 0 && (
-                <div className="space-y-2 mb-3 max-h-80 overflow-y-auto">
+                <div className="space-y-2 mb-3 max-h-64 overflow-y-auto custom-scrollbar">
                   {articles.map((article, index) => (
                     <motion.a
                       key={article.id}
@@ -257,9 +359,6 @@ const ArticlePreviewTooltip = ({ filterType, filterValue, children }) => {
                   <ArrowRight className="w-4 h-4" />
                 </motion.button>
               )}
-
-              {/* Arrow pointer */}
-              <div className="absolute -top-2 left-4 w-4 h-4 bg-white dark:bg-gray-800 border-l border-t border-primary-200 dark:border-primary-800 transform rotate-45 z-[9999]"></div>
             </motion.div>
           </>
         )}
@@ -314,7 +413,7 @@ const StatItem = ({ item, icon: Icon, showBullishValue = true, index, filterType
         transition={{ duration: 0.3, delay: index * 0.05 }}
         whileHover={{ scale: 1.02, x: 4 }}
         onClick={handleClick}
-        className="relative overflow-hidden p-4 rounded-xl glass hover:shadow-xl smooth-transition group cursor-pointer border border-transparent hover:border-primary-300 dark:hover:border-primary-700"
+        className="relative overflow-hidden p-4 sm:p-5 rounded-xl glass hover:shadow-xl smooth-transition group cursor-pointer border border-transparent hover:border-primary-300 dark:hover:border-primary-700"
       >
       {/* Animated gradient background on hover */}
       <motion.div
@@ -335,18 +434,22 @@ const StatItem = ({ item, icon: Icon, showBullishValue = true, index, filterType
 
           {/* Content */}
           <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2 flex-wrap">
-              <span className="font-bold text-base text-gray-900 dark:text-dark-text truncate">
-                {item.name}
-              </span>
+            <div className="flex items-center gap-3 flex-wrap mb-2">
+              <div className="flex items-center gap-2">
+                <span className="font-bold text-base text-gray-900 dark:text-dark-text">
+                  {item.name}
+                </span>
 
-              {/* Info icon for GENERAL and MULTIPLE */}
-              {isGeneralOrMultiple && (
-                <InfoTooltip content={getTooltipContent(item.name)} />
-              )}
+                {/* Info icon for GENERAL and MULTIPLE with extra spacing */}
+                {isGeneralOrMultiple && (
+                  <div className="flex-shrink-0">
+                    <InfoTooltip content={getTooltipContent(item.name)} />
+                  </div>
+                )}
+              </div>
 
               <motion.span
-                className={`px-2.5 py-1 rounded-lg text-xs font-semibold flex items-center gap-1 ${getSentimentColor(item.sentiment)}`}
+                className={`px-2.5 py-1 rounded-lg text-xs font-semibold flex items-center gap-1 flex-shrink-0 ${getSentimentColor(item.sentiment)}`}
                 whileHover={{ scale: 1.1 }}
               >
                 <SentimentIcon className="w-3.5 h-3.5" />
@@ -613,7 +716,7 @@ export const AIInsights = ({ period = 7, className = '' }) => {
             initial="hidden"
             animate="visible"
             exit="exit"
-            className="space-y-3"
+            className="space-y-4"
           >
             {assets.length > 0 ? (
               assets.map((asset, index) => (
@@ -633,7 +736,7 @@ export const AIInsights = ({ period = 7, className = '' }) => {
             initial="hidden"
             animate="visible"
             exit="exit"
-            className="space-y-3"
+            className="space-y-4"
           >
             {categories.length > 0 ? (
               categories.map((category, index) => (
@@ -653,7 +756,7 @@ export const AIInsights = ({ period = 7, className = '' }) => {
             initial="hidden"
             animate="visible"
             exit="exit"
-            className="space-y-3"
+            className="space-y-4"
           >
             {chains.length > 0 ? (
               chains.map((chain, index) => (
