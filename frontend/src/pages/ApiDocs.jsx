@@ -1,10 +1,9 @@
-import { Code, Database, Zap, Lock, BookOpen, Copy, Check, ChevronDown, ChevronRight, Menu, X } from 'lucide-react';
+import { Code, Database, Zap, Lock, BookOpen, Copy, Check, ChevronDown, ChevronRight, Menu, X, FileText, TrendingUp, BarChart3, Hash } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Navigation } from '../components/Navigation';
 import { Footer } from '../components/Footer';
 import { SEO } from '../components/SEO';
-import { ScrollReveal } from '../components/ScrollReveal';
 
 export const ApiDocs = () => {
   const [copiedEndpoint, setCopiedEndpoint] = useState(null);
@@ -58,7 +57,7 @@ export const ApiDocs = () => {
     const observers = [];
     const options = {
       root: null,
-      rootMargin: '-100px 0px -66%',
+      rootMargin: '-150px 0px -50%',
       threshold: 0
     };
 
@@ -79,23 +78,36 @@ export const ApiDocs = () => {
     return () => observers.forEach(observer => observer.disconnect());
   }, []);
 
+  const getEndpointIcon = (id) => {
+    const icons = {
+      articles: FileText,
+      stats: BarChart3,
+      trend: TrendingUp,
+      assets: Database,
+      categories: Code,
+      keywords: Hash
+    };
+    return icons[id] || Code;
+  };
+
   const apiTree = [
     {
       id: 'articles',
       label: 'Articles',
       path: '/api/articles',
-      method: 'GET'
+      method: 'GET',
+      description: 'Get paginated articles'
     },
     {
       id: 'sentiment',
-      label: 'Sentiment',
+      label: 'Sentiment Analysis',
       isCategory: true,
       children: [
-        { id: 'stats', label: 'Statistics', path: '/api/sentiment/stats', method: 'GET' },
-        { id: 'trend', label: 'Trend', path: '/api/sentiment/trend', method: 'GET' },
-        { id: 'assets', label: 'Assets', path: '/api/sentiment/assets', method: 'GET' },
-        { id: 'categories', label: 'Categories', path: '/api/sentiment/categories', method: 'GET' },
-        { id: 'keywords', label: 'Keywords', path: '/api/sentiment/keywords', method: 'GET' }
+        { id: 'stats', label: 'Statistics', path: '/api/sentiment/stats', method: 'GET', description: 'Overall sentiment stats' },
+        { id: 'trend', label: 'Trend', path: '/api/sentiment/trend', method: 'GET', description: 'Sentiment over time' },
+        { id: 'assets', label: 'Assets', path: '/api/sentiment/assets', method: 'GET', description: 'By cryptocurrency' },
+        { id: 'categories', label: 'Categories', path: '/api/sentiment/categories', method: 'GET', description: 'By article type' },
+        { id: 'keywords', label: 'Keywords', path: '/api/sentiment/keywords', method: 'GET', description: 'Trending keywords' }
       ]
     }
   ];
@@ -297,32 +309,69 @@ curl -X GET "${baseUrl}/api/articles?limit=5&sentiment=BULLISH" \\
 
       <Navigation />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
-        {/* Mobile Navigation Toggle */}
-        <motion.button
-          onClick={() => setIsMobileNavOpen(!isMobileNavOpen)}
-          className="lg:hidden fixed bottom-6 right-6 z-50 p-4 bg-gradient-to-r from-primary-600 to-secondary-600 text-white rounded-full shadow-2xl hover:shadow-3xl transition-all"
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-        >
-          {isMobileNavOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-        </motion.button>
-
-        {/* API Tree Navigation Sidebar */}
+      {/* Compact Layout Container */}
+      <div className="flex min-h-screen">
+        {/* Sidebar Navigation */}
         <AnimatePresence>
           {(isMobileNavOpen || isSidebarVisible) && (
             <motion.aside
               initial={{ x: -300, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
               exit={{ x: -300, opacity: 0 }}
-              className="fixed left-0 top-24 bottom-0 w-72 glass-strong border-r border-gray-200 dark:border-gray-800 overflow-y-auto z-40 lg:sticky lg:top-24 lg:h-[calc(100vh-6rem)] shadow-2xl lg:shadow-none"
+              transition={{ duration: 0.2 }}
+              className="fixed left-0 top-0 bottom-0 w-72 glass-strong border-r border-gray-200 dark:border-gray-800 overflow-y-auto z-50 lg:sticky lg:top-0 lg:h-screen shadow-2xl lg:shadow-none pt-20"
             >
               <div className="p-6">
-                <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-                  <Code className="w-5 h-5 text-primary-600 dark:text-primary-400" />
-                  API Reference
-                </h3>
+                {/* Sidebar Header */}
+                <div className="mb-6">
+                  <div className="flex items-center gap-2 mb-2">
+                    <BookOpen className="w-5 h-5 text-primary-600 dark:text-primary-400" />
+                    <h3 className="text-lg font-bold text-gray-900 dark:text-white">
+                      API Reference
+                    </h3>
+                  </div>
+                  <p className="text-xs text-gray-600 dark:text-gray-400">
+                    6 endpoints • RESTful • JSON
+                  </p>
+                </div>
 
+                {/* Quick Actions */}
+                <div className="mb-6 space-y-2">
+                  <motion.div
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={() => copyToClipboard(baseUrl, 'sidebar-base-url')}
+                    className="glass rounded-lg p-3 cursor-pointer hover:bg-primary-100 dark:hover:bg-primary-900/30 transition-colors"
+                  >
+                    <div className="flex items-center gap-2 mb-1">
+                      <Zap className="w-4 h-4 text-yellow-500" />
+                      <span className="text-xs font-semibold text-gray-700 dark:text-gray-300">Base URL</span>
+                    </div>
+                    <code className="text-xs text-primary-600 dark:text-primary-400 break-all">
+                      {baseUrl}
+                    </code>
+                    {copiedEndpoint === 'sidebar-base-url' && (
+                      <div className="text-xs text-green-500 mt-1 font-semibold">Copied!</div>
+                    )}
+                  </motion.div>
+
+                  <div className="grid grid-cols-3 gap-2">
+                    <div className="glass rounded-lg p-2 text-center">
+                      <Code className="w-4 h-4 mx-auto mb-1 text-blue-500" />
+                      <div className="text-xs font-bold text-gray-900 dark:text-white">JSON</div>
+                    </div>
+                    <div className="glass rounded-lg p-2 text-center">
+                      <Lock className="w-4 h-4 mx-auto mb-1 text-green-500" />
+                      <div className="text-xs font-bold text-gray-900 dark:text-white">Public</div>
+                    </div>
+                    <div className="glass rounded-lg p-2 text-center">
+                      <Database className="w-4 h-4 mx-auto mb-1 text-purple-500" />
+                      <div className="text-xs font-bold text-gray-900 dark:text-white">100/m</div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* API Tree Navigation */}
                 <nav className="space-y-1">
                   {apiTree.map((item) => (
                     <div key={item.id}>
@@ -330,15 +379,20 @@ curl -X GET "${baseUrl}/api/articles?limit=5&sentiment=BULLISH" \\
                         <>
                           <button
                             onClick={() => toggleCategory(item.id)}
-                            className="w-full flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-primary-100 dark:hover:bg-primary-900/30 transition-colors text-left"
+                            className="w-full flex items-center justify-between px-3 py-2.5 rounded-lg hover:bg-primary-100 dark:hover:bg-primary-900/30 transition-colors text-left group"
                           >
-                            {expandedCategories[item.id] ? (
-                              <ChevronDown className="w-4 h-4 text-gray-500" />
-                            ) : (
-                              <ChevronRight className="w-4 h-4 text-gray-500" />
-                            )}
-                            <span className="font-semibold text-gray-900 dark:text-white">
-                              {item.label}
+                            <div className="flex items-center gap-2">
+                              {expandedCategories[item.id] ? (
+                                <ChevronDown className="w-4 h-4 text-gray-500 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors" />
+                              ) : (
+                                <ChevronRight className="w-4 h-4 text-gray-500 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors" />
+                              )}
+                              <span className="font-semibold text-sm text-gray-900 dark:text-white">
+                                {item.label}
+                              </span>
+                            </div>
+                            <span className="text-xs text-gray-500 dark:text-gray-400">
+                              {item.children.length}
                             </span>
                           </button>
 
@@ -348,28 +402,52 @@ curl -X GET "${baseUrl}/api/articles?limit=5&sentiment=BULLISH" \\
                                 initial={{ height: 0, opacity: 0 }}
                                 animate={{ height: 'auto', opacity: 1 }}
                                 exit={{ height: 0, opacity: 0 }}
-                                className="ml-6 space-y-1 overflow-hidden"
+                                transition={{ duration: 0.2 }}
+                                className="ml-3 border-l-2 border-gray-200 dark:border-gray-700 pl-3 space-y-1 overflow-hidden"
                               >
-                                {item.children.map((child) => (
-                                  <button
-                                    key={child.id}
-                                    onClick={() => scrollToSection(child.id)}
-                                    className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg transition-colors text-left text-sm ${
-                                      activeSection === child.id
-                                        ? 'bg-primary-500 text-white'
-                                        : 'hover:bg-primary-100 dark:hover:bg-primary-900/30 text-gray-700 dark:text-gray-300'
-                                    }`}
-                                  >
-                                    <span className={`px-1.5 py-0.5 rounded text-xs font-mono font-bold ${
-                                      activeSection === child.id
-                                        ? 'bg-white/20 text-white'
-                                        : 'bg-blue-500 text-white'
-                                    }`}>
-                                      {child.method}
-                                    </span>
-                                    <span className="truncate">{child.label}</span>
-                                  </button>
-                                ))}
+                                {item.children.map((child) => {
+                                  const Icon = getEndpointIcon(child.id);
+                                  return (
+                                    <button
+                                      key={child.id}
+                                      onClick={() => scrollToSection(child.id)}
+                                      className={`w-full flex items-start gap-2 px-3 py-2 rounded-lg transition-all text-left group ${
+                                        activeSection === child.id
+                                          ? 'bg-gradient-to-r from-primary-500 to-secondary-500 text-white shadow-lg'
+                                          : 'hover:bg-primary-50 dark:hover:bg-primary-900/20 text-gray-700 dark:text-gray-300'
+                                      }`}
+                                    >
+                                      <Icon className={`w-4 h-4 mt-0.5 flex-shrink-0 ${
+                                        activeSection === child.id
+                                          ? 'text-white'
+                                          : 'text-gray-400 group-hover:text-primary-600 dark:group-hover:text-primary-400'
+                                      }`} />
+                                      <div className="flex-1 min-w-0">
+                                        <div className="flex items-center gap-2 mb-0.5">
+                                          <span className={`text-xs font-bold truncate ${
+                                            activeSection === child.id ? 'text-white' : ''
+                                          }`}>
+                                            {child.label}
+                                          </span>
+                                          <span className={`px-1.5 py-0.5 rounded text-[10px] font-mono font-bold flex-shrink-0 ${
+                                            activeSection === child.id
+                                              ? 'bg-white/20 text-white'
+                                              : 'bg-blue-500 text-white'
+                                          }`}>
+                                            {child.method}
+                                          </span>
+                                        </div>
+                                        <p className={`text-[10px] leading-tight ${
+                                          activeSection === child.id
+                                            ? 'text-white/90'
+                                            : 'text-gray-500 dark:text-gray-400'
+                                        }`}>
+                                          {child.description}
+                                        </p>
+                                      </div>
+                                    </button>
+                                  );
+                                })}
                               </motion.div>
                             )}
                           </AnimatePresence>
@@ -377,20 +455,43 @@ curl -X GET "${baseUrl}/api/articles?limit=5&sentiment=BULLISH" \\
                       ) : (
                         <button
                           onClick={() => scrollToSection(item.id)}
-                          className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg transition-colors text-left ${
+                          className={`w-full flex items-start gap-2 px-3 py-2.5 rounded-lg transition-all text-left group ${
                             activeSection === item.id
-                              ? 'bg-primary-500 text-white'
-                              : 'hover:bg-primary-100 dark:hover:bg-primary-900/30 text-gray-700 dark:text-gray-300'
+                              ? 'bg-gradient-to-r from-primary-500 to-secondary-500 text-white shadow-lg'
+                              : 'hover:bg-primary-50 dark:hover:bg-primary-900/20 text-gray-700 dark:text-gray-300'
                           }`}
                         >
-                          <span className={`px-1.5 py-0.5 rounded text-xs font-mono font-bold ${
-                            activeSection === item.id
-                              ? 'bg-white/20 text-white'
-                              : 'bg-blue-500 text-white'
-                          }`}>
-                            {item.method}
-                          </span>
-                          <span className="truncate">{item.label}</span>
+                          {(() => {
+                            const Icon = getEndpointIcon(item.id);
+                            return <Icon className={`w-4 h-4 mt-0.5 flex-shrink-0 ${
+                              activeSection === item.id
+                                ? 'text-white'
+                                : 'text-gray-400 group-hover:text-primary-600 dark:group-hover:text-primary-400'
+                            }`} />;
+                          })()}
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2 mb-0.5">
+                              <span className={`text-xs font-bold truncate ${
+                                activeSection === item.id ? 'text-white' : ''
+                              }`}>
+                                {item.label}
+                              </span>
+                              <span className={`px-1.5 py-0.5 rounded text-[10px] font-mono font-bold flex-shrink-0 ${
+                                activeSection === item.id
+                                  ? 'bg-white/20 text-white'
+                                  : 'bg-blue-500 text-white'
+                              }`}>
+                                {item.method}
+                              </span>
+                            </div>
+                            <p className={`text-[10px] leading-tight ${
+                              activeSection === item.id
+                                ? 'text-white/90'
+                                : 'text-gray-500 dark:text-gray-400'
+                            }`}>
+                              {item.description}
+                            </p>
+                          </div>
                         </button>
                       )}
                     </div>
@@ -401,412 +502,323 @@ curl -X GET "${baseUrl}/api/articles?limit=5&sentiment=BULLISH" \\
           )}
         </AnimatePresence>
 
+        {/* Mobile Navigation Toggle */}
+        <motion.button
+          onClick={() => setIsMobileNavOpen(!isMobileNavOpen)}
+          className="lg:hidden fixed bottom-6 right-6 z-50 p-4 bg-gradient-to-r from-primary-600 to-secondary-600 text-white rounded-full shadow-2xl"
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+        >
+          {isMobileNavOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+        </motion.button>
+
         {/* Main Content */}
-        <div className="lg:ml-80">
-        {/* Header */}
-        <ScrollReveal>
-          <div className="text-center mb-16">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="inline-flex items-center gap-2 px-4 py-2 glass-strong rounded-full mb-6"
-            >
-              <BookOpen className="w-4 h-4 text-primary-600 dark:text-primary-400" />
-              <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">
-                API Documentation
-              </span>
-            </motion.div>
-
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-white mb-6">
-              Build with{' '}
-              <span className="bg-gradient-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent">
-                SentiFi API
-              </span>
-            </h1>
-
-            <p className="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
-              Access real-time crypto sentiment data programmatically. Simple REST API with comprehensive documentation.
-            </p>
-          </div>
-        </ScrollReveal>
-
-        {/* Quick Info Cards */}
-        <ScrollReveal>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              className="glass-strong rounded-xl p-6 text-center hover-lift cursor-pointer"
-              onClick={() => copyToClipboard(baseUrl, 'base-url')}
-            >
-              <Zap className="w-8 h-8 mx-auto mb-3 text-yellow-500" />
-              <div className="text-sm text-gray-600 dark:text-gray-400 mb-1">Base URL</div>
-              <div className="text-xs font-mono text-primary-600 dark:text-primary-400 break-all">
-                {baseUrl}
-              </div>
-              {copiedEndpoint === 'base-url' && (
-                <div className="text-xs text-green-500 mt-2 font-semibold">Copied!</div>
-              )}
-            </motion.div>
-            <div className="glass-strong rounded-xl p-6 text-center hover-lift">
-              <Code className="w-8 h-8 mx-auto mb-3 text-blue-500" />
-              <div className="text-sm text-gray-600 dark:text-gray-400 mb-1">Format</div>
-              <div className="text-lg font-bold text-gray-900 dark:text-white">JSON</div>
-            </div>
-            <div className="glass-strong rounded-xl p-6 text-center hover-lift">
-              <Lock className="w-8 h-8 mx-auto mb-3 text-green-500" />
-              <div className="text-sm text-gray-600 dark:text-gray-400 mb-1">Auth</div>
-              <div className="text-lg font-bold text-gray-900 dark:text-white">Public</div>
-            </div>
-            <div className="glass-strong rounded-xl p-6 text-center hover-lift">
-              <Database className="w-8 h-8 mx-auto mb-3 text-purple-500" />
-              <div className="text-sm text-gray-600 dark:text-gray-400 mb-1">Rate Limit</div>
-              <div className="text-lg font-bold text-gray-900 dark:text-white">100/min</div>
-            </div>
-          </div>
-        </ScrollReveal>
-
-        {/* Introduction */}
-        <ScrollReveal>
-          <div className="glass-strong rounded-2xl p-8 mb-16 shadow-xl border-l-4 border-primary-500">
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Getting Started</h2>
-            <div className="space-y-4 text-gray-600 dark:text-gray-400">
-              <p>
-                The SentiFi API provides programmatic access to real-time cryptocurrency sentiment analysis.
-                All endpoints return JSON responses and are publicly accessible (no authentication required).
-              </p>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
-                <div className="flex items-start gap-3">
-                  <div className="w-8 h-8 rounded-lg bg-green-500/10 flex items-center justify-center flex-shrink-0">
-                    <Check className="w-5 h-5 text-green-500" />
-                  </div>
-                  <div>
-                    <div className="font-semibold text-gray-900 dark:text-white mb-1">No API Key Required</div>
-                    <div className="text-sm">Start using immediately without registration</div>
-                  </div>
-                </div>
-                <div className="flex items-start gap-3">
-                  <div className="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center flex-shrink-0">
-                    <Zap className="w-5 h-5 text-blue-500" />
-                  </div>
-                  <div>
-                    <div className="font-semibold text-gray-900 dark:text-white mb-1">Real-Time Data</div>
-                    <div className="text-sm">Updated 12x daily with latest sentiment</div>
-                  </div>
-                </div>
-                <div className="flex items-start gap-3">
-                  <div className="w-8 h-8 rounded-lg bg-purple-500/10 flex items-center justify-center flex-shrink-0">
-                    <Database className="w-5 h-5 text-purple-500" />
-                  </div>
-                  <div>
-                    <div className="font-semibold text-gray-900 dark:text-white mb-1">Comprehensive Coverage</div>
-                    <div className="text-sm">50+ sources, 10K+ articles analyzed</div>
-                  </div>
-                </div>
-                <div className="flex items-start gap-3">
-                  <div className="w-8 h-8 rounded-lg bg-amber-500/10 flex items-center justify-center flex-shrink-0">
-                    <Code className="w-5 h-5 text-amber-500" />
-                  </div>
-                  <div>
-                    <div className="font-semibold text-gray-900 dark:text-white mb-1">Simple Integration</div>
-                    <div className="text-sm">RESTful design with clear responses</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </ScrollReveal>
-
-        {/* Quick Start */}
-        <ScrollReveal>
-          <div className="glass-strong rounded-2xl p-8 mb-16 shadow-xl">
-            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-6">Quick Start</h2>
-            <p className="text-gray-600 dark:text-gray-400 mb-6">
-              Get started with our API in seconds. Choose your preferred language below:
-            </p>
-
-            <div className="space-y-6">
-              <div>
-                <div className="flex items-center justify-between mb-3">
-                  <h3 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                    <span className="px-2 py-1 bg-yellow-500 text-black text-xs font-bold rounded">JS</span>
-                    Node.js / JavaScript
-                  </h3>
-                  <button
-                    onClick={() => copyToClipboard(quickStart, 'quickstart-js')}
-                    className="flex items-center gap-2 px-3 py-1.5 glass rounded-lg hover:bg-primary-100 dark:hover:bg-primary-900/30 transition-colors"
-                  >
-                    {copiedEndpoint === 'quickstart-js' ? (
-                      <><Check className="w-4 h-4 text-green-500" /> Copied!</>
-                    ) : (
-                      <><Copy className="w-4 h-4" /> Copy</>
-                    )}
-                  </button>
-                </div>
-                <pre className="bg-gray-900 dark:bg-black text-green-400 p-6 rounded-xl overflow-x-auto text-sm font-mono border-2 border-gray-700">
-                  {quickStart}
-                </pre>
-              </div>
-
-              <div>
-                <div className="flex items-center justify-between mb-3">
-                  <h3 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                    <span className="px-2 py-1 bg-blue-500 text-white text-xs font-bold rounded">PY</span>
-                    Python
-                  </h3>
-                  <button
-                    onClick={() => copyToClipboard(pythonExample, 'quickstart-py')}
-                    className="flex items-center gap-2 px-3 py-1.5 glass rounded-lg hover:bg-primary-100 dark:hover:bg-primary-900/30 transition-colors"
-                  >
-                    {copiedEndpoint === 'quickstart-py' ? (
-                      <><Check className="w-4 h-4 text-green-500" /> Copied!</>
-                    ) : (
-                      <><Copy className="w-4 h-4" /> Copy</>
-                    )}
-                  </button>
-                </div>
-                <pre className="bg-gray-900 dark:bg-black text-green-400 p-6 rounded-xl overflow-x-auto text-sm font-mono border-2 border-gray-700">
-                  {pythonExample}
-                </pre>
-              </div>
-
-              <div>
-                <div className="flex items-center justify-between mb-3">
-                  <h3 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                    <span className="px-2 py-1 bg-gray-500 text-white text-xs font-bold rounded">cURL</span>
-                    Command Line
-                  </h3>
-                  <button
-                    onClick={() => copyToClipboard(curlExample, 'quickstart-curl')}
-                    className="flex items-center gap-2 px-3 py-1.5 glass rounded-lg hover:bg-primary-100 dark:hover:bg-primary-900/30 transition-colors"
-                  >
-                    {copiedEndpoint === 'quickstart-curl' ? (
-                      <><Check className="w-4 h-4 text-green-500" /> Copied!</>
-                    ) : (
-                      <><Copy className="w-4 h-4" /> Copy</>
-                    )}
-                  </button>
-                </div>
-                <pre className="bg-gray-900 dark:bg-black text-green-400 p-6 rounded-xl overflow-x-auto text-sm font-mono border-2 border-gray-700">
-                  {curlExample}
-                </pre>
-              </div>
-            </div>
-          </div>
-        </ScrollReveal>
-
-        {/* API Endpoints */}
-        <ScrollReveal>
-          <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-8 text-center">
-            API Endpoints
-          </h2>
-        </ScrollReveal>
-
-        <div className="space-y-8">
-          {endpoints.map((endpoint, index) => (
-            <ScrollReveal key={endpoint.path}>
+        <div className="flex-1 lg:ml-0">
+          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            {/* Compact Header */}
+            <div className="mb-8">
               <motion.div
-                ref={(el) => (sectionRefs.current[endpoint.id] = el)}
                 initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
-                className="glass-strong rounded-2xl p-8 shadow-xl hover-lift"
+                animate={{ opacity: 1, y: 0 }}
+                className="inline-flex items-center gap-2 px-3 py-1.5 glass-strong rounded-full mb-4"
               >
-                {/* Endpoint Header */}
-                <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
-                  <div className="flex flex-wrap items-center gap-3">
-                    <span className={`px-3 py-1 rounded-lg font-mono font-bold text-sm ${
-                      endpoint.method === 'GET' ? 'bg-blue-500 text-white' :
-                      endpoint.method === 'POST' ? 'bg-green-500 text-white' :
-                      'bg-gray-500 text-white'
-                    }`}>
-                      {endpoint.method}
-                    </span>
-                    <code className="text-base sm:text-lg font-mono text-gray-900 dark:text-white break-all">
-                      {endpoint.path}
-                    </code>
-                  </div>
-                  <a
-                    href={endpoint.example}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-primary-600 to-secondary-600 text-white rounded-lg text-sm font-semibold hover:shadow-lg transition-all hover-lift"
-                  >
-                    <Zap className="w-4 h-4" />
-                    Try It
-                  </a>
+                <BookOpen className="w-3.5 h-3.5 text-primary-600 dark:text-primary-400" />
+                <span className="text-xs font-semibold text-gray-700 dark:text-gray-300">
+                  API Documentation
+                </span>
+              </motion.div>
+
+              <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-3">
+                Build with{' '}
+                <span className="bg-gradient-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent">
+                  SentiFi API
+                </span>
+              </h1>
+
+              <p className="text-base text-gray-600 dark:text-gray-400 mb-6">
+                Access real-time crypto sentiment data programmatically. Simple REST API with comprehensive documentation.
+              </p>
+
+              {/* Key Features Inline */}
+              <div className="flex flex-wrap gap-3">
+                <div className="flex items-center gap-2 glass rounded-lg px-3 py-2">
+                  <Check className="w-4 h-4 text-green-500" />
+                  <span className="text-sm text-gray-700 dark:text-gray-300">No API Key</span>
                 </div>
+                <div className="flex items-center gap-2 glass rounded-lg px-3 py-2">
+                  <Zap className="w-4 h-4 text-yellow-500" />
+                  <span className="text-sm text-gray-700 dark:text-gray-300">Real-Time</span>
+                </div>
+                <div className="flex items-center gap-2 glass rounded-lg px-3 py-2">
+                  <Database className="w-4 h-4 text-purple-500" />
+                  <span className="text-sm text-gray-700 dark:text-gray-300">50+ Sources</span>
+                </div>
+                <div className="flex items-center gap-2 glass rounded-lg px-3 py-2">
+                  <Code className="w-4 h-4 text-blue-500" />
+                  <span className="text-sm text-gray-700 dark:text-gray-300">RESTful</span>
+                </div>
+              </div>
+            </div>
 
-                <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-                  {endpoint.title}
-                </h3>
-                <p className="text-gray-600 dark:text-gray-400 mb-6">
-                  {endpoint.description}
-                </p>
+            {/* Quick Start */}
+            <div className="glass-strong rounded-2xl p-6 mb-8 shadow-xl">
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Quick Start</h2>
 
-                {/* Parameters */}
-                {endpoint.params && endpoint.params.length > 0 && (
-                  <div className="mb-6">
-                    <h4 className="text-lg font-bold text-gray-900 dark:text-white mb-3">Parameters</h4>
-                    <div className="glass rounded-xl p-4 space-y-3">
-                      {endpoint.params.map((param) => (
-                        <div key={param.name} className="border-b border-gray-200 dark:border-gray-700 last:border-0 pb-3 last:pb-0">
-                          <div className="flex flex-wrap items-center gap-2 mb-1">
-                            <code className="font-mono text-sm font-bold text-primary-600 dark:text-primary-400">
-                              {param.name}
-                            </code>
-                            <span className="text-xs px-2 py-0.5 bg-gray-200 dark:bg-gray-700 rounded">
-                              {param.type}
-                            </span>
-                            {param.default && (
-                              <span className="text-xs px-2 py-0.5 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 rounded">
-                                default: {param.default}
-                              </span>
-                            )}
-                          </div>
-                          <p className="text-sm text-gray-600 dark:text-gray-400">
-                            {param.description}
-                          </p>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* Example Request */}
-                <div className="mb-6">
-                  <div className="flex items-center justify-between mb-3">
-                    <h4 className="text-lg font-bold text-gray-900 dark:text-white">Example Request</h4>
+              <div className="space-y-4">
+                <div>
+                  <div className="flex items-center justify-between mb-2">
+                    <h3 className="text-sm font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                      <span className="px-2 py-0.5 bg-yellow-500 text-black text-xs font-bold rounded">JS</span>
+                      Node.js / JavaScript
+                    </h3>
                     <button
-                      onClick={() => copyToClipboard(endpoint.example, `example-${index}`)}
-                      className="flex items-center gap-2 px-3 py-1.5 glass rounded-lg hover:bg-primary-100 dark:hover:bg-primary-900/30 transition-colors text-sm"
+                      onClick={() => copyToClipboard(quickStart, 'quickstart-js')}
+                      className="flex items-center gap-1.5 px-2.5 py-1.5 glass rounded-lg hover:bg-primary-100 dark:hover:bg-primary-900/30 transition-colors text-xs"
                     >
-                      {copiedEndpoint === `example-${index}` ? (
-                        <><Check className="w-4 h-4 text-green-500" /> Copied!</>
+                      {copiedEndpoint === 'quickstart-js' ? (
+                        <><Check className="w-3.5 h-3.5 text-green-500" /> Copied!</>
                       ) : (
-                        <><Copy className="w-4 h-4" /> Copy</>
+                        <><Copy className="w-3.5 h-3.5" /> Copy</>
                       )}
                     </button>
                   </div>
-                  <div className="relative">
-                    <pre className="bg-gray-900 dark:bg-black text-green-400 p-4 rounded-xl overflow-x-auto text-xs font-mono border-2 border-gray-700 hover:border-primary-500 transition-colors">
+                  <pre className="bg-gray-900 dark:bg-black text-green-400 p-4 rounded-xl overflow-x-auto text-xs font-mono border-2 border-gray-700">
+                    {quickStart}
+                  </pre>
+                </div>
+
+                <div>
+                  <div className="flex items-center justify-between mb-2">
+                    <h3 className="text-sm font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                      <span className="px-2 py-0.5 bg-blue-500 text-white text-xs font-bold rounded">PY</span>
+                      Python
+                    </h3>
+                    <button
+                      onClick={() => copyToClipboard(pythonExample, 'quickstart-py')}
+                      className="flex items-center gap-1.5 px-2.5 py-1.5 glass rounded-lg hover:bg-primary-100 dark:hover:bg-primary-900/30 transition-colors text-xs"
+                    >
+                      {copiedEndpoint === 'quickstart-py' ? (
+                        <><Check className="w-3.5 h-3.5 text-green-500" /> Copied!</>
+                      ) : (
+                        <><Copy className="w-3.5 h-3.5" /> Copy</>
+                      )}
+                    </button>
+                  </div>
+                  <pre className="bg-gray-900 dark:bg-black text-green-400 p-4 rounded-xl overflow-x-auto text-xs font-mono border-2 border-gray-700">
+                    {pythonExample}
+                  </pre>
+                </div>
+
+                <div>
+                  <div className="flex items-center justify-between mb-2">
+                    <h3 className="text-sm font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                      <span className="px-2 py-0.5 bg-gray-500 text-white text-xs font-bold rounded">cURL</span>
+                      Command Line
+                    </h3>
+                    <button
+                      onClick={() => copyToClipboard(curlExample, 'quickstart-curl')}
+                      className="flex items-center gap-1.5 px-2.5 py-1.5 glass rounded-lg hover:bg-primary-100 dark:hover:bg-primary-900/30 transition-colors text-xs"
+                    >
+                      {copiedEndpoint === 'quickstart-curl' ? (
+                        <><Check className="w-3.5 h-3.5 text-green-500" /> Copied!</>
+                      ) : (
+                        <><Copy className="w-3.5 h-3.5" /> Copy</>
+                      )}
+                    </button>
+                  </div>
+                  <pre className="bg-gray-900 dark:bg-black text-green-400 p-4 rounded-xl overflow-x-auto text-xs font-mono border-2 border-gray-700">
+                    {curlExample}
+                  </pre>
+                </div>
+              </div>
+            </div>
+
+            {/* API Endpoints */}
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
+              API Endpoints
+            </h2>
+
+            <div className="space-y-6">
+              {endpoints.map((endpoint, index) => (
+                <motion.div
+                  key={endpoint.id}
+                  ref={(el) => (sectionRefs.current[endpoint.id] = el)}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.05 }}
+                  className="glass-strong rounded-2xl p-6 shadow-xl hover-lift"
+                >
+                  {/* Endpoint Header */}
+                  <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="px-2.5 py-1 rounded-lg font-mono font-bold text-xs bg-blue-500 text-white">
+                        {endpoint.method}
+                      </span>
+                      <code className="text-sm font-mono text-gray-900 dark:text-white break-all">
+                        {endpoint.path}
+                      </code>
+                    </div>
+                    <a
+                      href={endpoint.example}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-primary-600 to-secondary-600 text-white rounded-lg text-xs font-semibold hover:shadow-lg transition-all hover-lift"
+                    >
+                      <Zap className="w-3.5 h-3.5" />
+                      Try It
+                    </a>
+                  </div>
+
+                  <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+                    {endpoint.title}
+                  </h3>
+                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                    {endpoint.description}
+                  </p>
+
+                  {/* Parameters */}
+                  {endpoint.params && endpoint.params.length > 0 && (
+                    <div className="mb-4">
+                      <h4 className="text-sm font-bold text-gray-900 dark:text-white mb-2">Parameters</h4>
+                      <div className="glass rounded-xl p-3 space-y-2">
+                        {endpoint.params.map((param) => (
+                          <div key={param.name} className="border-b border-gray-200 dark:border-gray-700 last:border-0 pb-2 last:pb-0">
+                            <div className="flex flex-wrap items-center gap-2 mb-1">
+                              <code className="font-mono text-xs font-bold text-primary-600 dark:text-primary-400">
+                                {param.name}
+                              </code>
+                              <span className="text-[10px] px-1.5 py-0.5 bg-gray-200 dark:bg-gray-700 rounded">
+                                {param.type}
+                              </span>
+                              {param.default && (
+                                <span className="text-[10px] px-1.5 py-0.5 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 rounded">
+                                  default: {param.default}
+                                </span>
+                              )}
+                            </div>
+                            <p className="text-xs text-gray-600 dark:text-gray-400">
+                              {param.description}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Example Request */}
+                  <div className="mb-4">
+                    <div className="flex items-center justify-between mb-2">
+                      <h4 className="text-sm font-bold text-gray-900 dark:text-white">Example Request</h4>
+                      <button
+                        onClick={() => copyToClipboard(endpoint.example, `example-${index}`)}
+                        className="flex items-center gap-1.5 px-2.5 py-1.5 glass rounded-lg hover:bg-primary-100 dark:hover:bg-primary-900/30 transition-colors text-xs"
+                      >
+                        {copiedEndpoint === `example-${index}` ? (
+                          <><Check className="w-3.5 h-3.5 text-green-500" /> Copied!</>
+                        ) : (
+                          <><Copy className="w-3.5 h-3.5" /> Copy</>
+                        )}
+                      </button>
+                    </div>
+                    <pre className="bg-gray-900 dark:bg-black text-green-400 p-3 rounded-xl overflow-x-auto text-xs font-mono border-2 border-gray-700">
                       {endpoint.example}
                     </pre>
                   </div>
-                </div>
 
-                {/* Example Response */}
-                <div className="mb-6">
-                  <div className="flex items-center justify-between mb-3">
-                    <div className="flex items-center gap-3">
-                      <h4 className="text-lg font-bold text-gray-900 dark:text-white">Example Response</h4>
-                      <span className="px-2 py-1 bg-green-500 text-white text-xs font-bold rounded">
-                        200 OK
-                      </span>
+                  {/* Example Response */}
+                  <div className="mb-4">
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center gap-2">
+                        <h4 className="text-sm font-bold text-gray-900 dark:text-white">Example Response</h4>
+                        <span className="px-2 py-0.5 bg-green-500 text-white text-[10px] font-bold rounded">
+                          200 OK
+                        </span>
+                      </div>
+                      <button
+                        onClick={() => copyToClipboard(JSON.stringify(endpoint.response, null, 2), `response-${index}`)}
+                        className="flex items-center gap-1.5 px-2.5 py-1.5 glass rounded-lg hover:bg-primary-100 dark:hover:bg-primary-900/30 transition-colors text-xs"
+                      >
+                        {copiedEndpoint === `response-${index}` ? (
+                          <><Check className="w-3.5 h-3.5 text-green-500" /> Copied!</>
+                        ) : (
+                          <><Copy className="w-3.5 h-3.5" /> Copy</>
+                        )}
+                      </button>
                     </div>
-                    <button
-                      onClick={() => copyToClipboard(JSON.stringify(endpoint.response, null, 2), `response-${index}`)}
-                      className="flex items-center gap-2 px-3 py-1.5 glass rounded-lg hover:bg-primary-100 dark:hover:bg-primary-900/30 transition-colors text-sm"
-                    >
-                      {copiedEndpoint === `response-${index}` ? (
-                        <><Check className="w-4 h-4 text-green-500" /> Copied!</>
-                      ) : (
-                        <><Copy className="w-4 h-4" /> Copy</>
-                      )}
-                    </button>
-                  </div>
-                  <div className="relative">
-                    <pre className="bg-gray-900 dark:bg-black text-blue-400 p-4 rounded-xl overflow-x-auto text-xs font-mono max-h-96 border-2 border-gray-700 hover:border-primary-500 transition-colors">
+                    <pre className="bg-gray-900 dark:bg-black text-blue-400 p-3 rounded-xl overflow-x-auto text-xs font-mono max-h-64 border-2 border-gray-700">
                       {JSON.stringify(endpoint.response, null, 2)}
                     </pre>
                   </div>
-                </div>
 
-                {/* Error Responses */}
-                <div>
-                  <h4 className="text-lg font-bold text-gray-900 dark:text-white mb-3">Error Responses</h4>
-                  <div className="glass rounded-xl p-4 space-y-3">
-                    <div className="border-b border-gray-200 dark:border-gray-700 pb-3">
-                      <div className="flex items-center gap-2 mb-2">
-                        <span className="px-2 py-1 bg-red-500 text-white text-xs font-bold rounded">
-                          400
-                        </span>
-                        <span className="text-sm font-semibold text-gray-900 dark:text-white">Bad Request</span>
+                  {/* Error Responses */}
+                  <div>
+                    <h4 className="text-sm font-bold text-gray-900 dark:text-white mb-2">Error Responses</h4>
+                    <div className="glass rounded-xl p-3 space-y-2">
+                      <div className="flex items-start gap-2 text-xs">
+                        <span className="px-2 py-0.5 bg-red-500 text-white font-bold rounded flex-shrink-0">400</span>
+                        <div>
+                          <div className="font-semibold text-gray-900 dark:text-white">Bad Request</div>
+                          <div className="text-gray-600 dark:text-gray-400">Invalid parameters</div>
+                        </div>
                       </div>
-                      <p className="text-sm text-gray-600 dark:text-gray-400">
-                        Invalid parameters or malformed request
-                      </p>
-                    </div>
-                    <div className="border-b border-gray-200 dark:border-gray-700 pb-3">
-                      <div className="flex items-center gap-2 mb-2">
-                        <span className="px-2 py-1 bg-amber-500 text-white text-xs font-bold rounded">
-                          429
-                        </span>
-                        <span className="text-sm font-semibold text-gray-900 dark:text-white">Too Many Requests</span>
+                      <div className="flex items-start gap-2 text-xs">
+                        <span className="px-2 py-0.5 bg-amber-500 text-white font-bold rounded flex-shrink-0">429</span>
+                        <div>
+                          <div className="font-semibold text-gray-900 dark:text-white">Too Many Requests</div>
+                          <div className="text-gray-600 dark:text-gray-400">Rate limit exceeded</div>
+                        </div>
                       </div>
-                      <p className="text-sm text-gray-600 dark:text-gray-400">
-                        Rate limit exceeded (100 requests/minute)
-                      </p>
-                    </div>
-                    <div>
-                      <div className="flex items-center gap-2 mb-2">
-                        <span className="px-2 py-1 bg-gray-500 text-white text-xs font-bold rounded">
-                          500
-                        </span>
-                        <span className="text-sm font-semibold text-gray-900 dark:text-white">Internal Server Error</span>
+                      <div className="flex items-start gap-2 text-xs">
+                        <span className="px-2 py-0.5 bg-gray-500 text-white font-bold rounded flex-shrink-0">500</span>
+                        <div>
+                          <div className="font-semibold text-gray-900 dark:text-white">Internal Server Error</div>
+                          <div className="text-gray-600 dark:text-gray-400">Server error</div>
+                        </div>
                       </div>
-                      <p className="text-sm text-gray-600 dark:text-gray-400">
-                        Something went wrong on our end
-                      </p>
                     </div>
                   </div>
-                </div>
-              </motion.div>
-            </ScrollReveal>
-          ))}
-        </div>
-
-        {/* Rate Limiting */}
-        <ScrollReveal>
-          <div className="glass-strong rounded-2xl p-8 mt-16 shadow-xl border-2 border-amber-500/30">
-            <div className="flex items-center gap-3 mb-4">
-              <Lock className="w-6 h-6 text-amber-500" />
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Rate Limiting</h2>
+                </motion.div>
+              ))}
             </div>
-            <div className="space-y-3 text-gray-600 dark:text-gray-400">
-              <p>
-                To ensure fair usage, our API implements rate limiting:
+
+            {/* Rate Limiting */}
+            <div className="glass-strong rounded-2xl p-6 mt-8 shadow-xl border-2 border-amber-500/30">
+              <div className="flex items-center gap-3 mb-3">
+                <Lock className="w-5 h-5 text-amber-500" />
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white">Rate Limiting</h2>
+              </div>
+              <div className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
+                <p>
+                  To ensure fair usage, our API implements rate limiting:
+                </p>
+                <ul className="space-y-1.5 ml-4">
+                  <li className="flex gap-2"><span>•</span><span><strong className="text-gray-900 dark:text-white">100 requests per minute</strong> per IP address</span></li>
+                  <li className="flex gap-2"><span>•</span><span>Rate limit headers included in all responses</span></li>
+                  <li className="flex gap-2"><span>•</span><span>HTTP 429 status code when limit exceeded</span></li>
+                  <li className="flex gap-2"><span>•</span><span>Contact us for higher rate limits</span></li>
+                </ul>
+              </div>
+            </div>
+
+            {/* Support */}
+            <div className="text-center mt-8 mb-8">
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">
+                Need Help?
+              </h2>
+              <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                Contact us if you have questions or need assistance integrating our API
               </p>
-              <ul className="space-y-2 ml-4">
-                <li className="flex gap-2"><span>•</span><span><strong className="text-gray-900 dark:text-white">100 requests per minute</strong> per IP address</span></li>
-                <li className="flex gap-2"><span>•</span><span>Rate limit headers included in all responses</span></li>
-                <li className="flex gap-2"><span>•</span><span>HTTP 429 status code when limit exceeded</span></li>
-                <li className="flex gap-2"><span>•</span><span>Contact us for higher rate limits</span></li>
-              </ul>
+              <a
+                href="/contact"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-primary-600 to-secondary-600 text-white rounded-xl font-semibold shadow-xl hover:shadow-2xl transition-all text-sm"
+              >
+                <Code className="w-4 h-4" />
+                Contact Support
+              </a>
             </div>
           </div>
-        </ScrollReveal>
-
-        {/* Support */}
-        <ScrollReveal>
-          <div className="text-center mt-16">
-            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
-              Need Help?
-            </h2>
-            <p className="text-lg text-gray-600 dark:text-gray-400 mb-6">
-              Contact us if you have questions or need assistance integrating our API
-            </p>
-            <a
-              href="/contact"
-              className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-primary-600 to-secondary-600 text-white rounded-xl font-semibold shadow-xl hover:shadow-2xl transition-all"
-            >
-              <Code className="w-5 h-5" />
-              Contact Support
-            </a>
-          </div>
-        </ScrollReveal>
         </div>
-        {/* End Main Content */}
       </div>
 
       <Footer />
