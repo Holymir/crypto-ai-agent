@@ -69,7 +69,7 @@ export const ArticleCard = ({ article, index = 0 }) => {
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3, delay: index * 0.03, ease: 'easeOut' }}
-      className="card group relative overflow-hidden hover:-translate-y-1 transition-transform duration-200 bg-white dark:bg-dark-card border-2 border-neutral-200 dark:border-dark-border"
+      className="glass-strong rounded-2xl p-6 shadow-xl hover-lift hover-glow-secondary group relative overflow-hidden"
     >
 
       <div className="relative">

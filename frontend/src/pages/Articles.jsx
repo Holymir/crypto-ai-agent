@@ -18,9 +18,6 @@ export const Articles = () => {
   // Initialize state from URL params
   const [searchTerm, setSearchTerm] = useState(searchParams.get('search') || '');
   const [selectedSentiment, setSelectedSentiment] = useState(searchParams.get('sentiment') || '');
-  const [selectedAsset, setSelectedAsset] = useState(searchParams.get('asset') || '');
-  const [selectedCategory, setSelectedCategory] = useState(searchParams.get('category') || '');
-  const [selectedChain, setSelectedChain] = useState(searchParams.get('chain') || '');
   const [selectedDateRange, setSelectedDateRange] = useState(null);
   const [showBackToTop, setShowBackToTop] = useState(false);
 
@@ -32,9 +29,6 @@ export const Articles = () => {
     limit: 20,
     ...(searchTerm && { search: searchTerm }),
     ...(selectedSentiment && { sentiment: selectedSentiment }),
-    ...(selectedAsset && { asset: selectedAsset }),
-    ...(selectedCategory && { category: selectedCategory }),
-    ...(selectedChain && { chain: selectedChain }),
     ...(selectedDateRange && { days: selectedDateRange }),
     orderBy: 'publishedAt',
     order: 'desc',
@@ -112,7 +106,7 @@ export const Articles = () => {
           className="mb-6 sm:mb-8"
         >
           {/* Stats Summary Bar */}
-          <div className="glass-strong rounded-2xl p-4 sm:p-6 mb-4 border-2 border-white/20 dark:border-white/10">
+          <div className="glass-strong rounded-2xl p-4 sm:p-6 mb-4 shadow-2xl hover-lift hover-glow-secondary">
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
               {/* Total Results */}
               <motion.div
@@ -215,7 +209,7 @@ export const Articles = () => {
 
         {/* Search and Filters */}
         <ScrollReveal direction="up" delay={0.1}>
-          <div className="glass-strong rounded-2xl card-spacing shadow-2xl mb-6 sm:mb-8">
+          <div className="glass-strong rounded-2xl card-spacing shadow-2xl hover-lift hover-glow mb-6 sm:mb-8">
             <div className="flex flex-col gap-4">
               {/* Search */}
               <div className="relative">
@@ -276,7 +270,7 @@ export const Articles = () => {
               </div>
 
               {/* Active Filters Badge */}
-              {(selectedSentiment || searchTerm || selectedAsset || selectedCategory || selectedChain) && (
+              {(selectedSentiment || searchTerm) && (
                 <div className="flex flex-wrap items-center gap-2 text-sm">
                   <span className="text-gray-600 dark:text-dark-muted font-medium">Filtered by:</span>
 
@@ -312,63 +306,12 @@ export const Articles = () => {
                     </motion.span>
                   )}
 
-                  {selectedAsset && (
-                    <motion.span
-                      initial={{ opacity: 0, scale: 0.8 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      className="flex items-center gap-1 px-3 py-1 bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400 rounded-full font-medium"
-                    >
-                      Asset: {selectedAsset}
-                      <button
-                        onClick={() => setSelectedAsset('')}
-                        className="ml-1 hover:text-yellow-900 dark:hover:text-yellow-200"
-                      >
-                        <X className="w-3 h-3" />
-                      </button>
-                    </motion.span>
-                  )}
-
-                  {selectedCategory && (
-                    <motion.span
-                      initial={{ opacity: 0, scale: 0.8 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      className="flex items-center gap-1 px-3 py-1 bg-cyan-100 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-400 rounded-full font-medium"
-                    >
-                      Category: {selectedCategory}
-                      <button
-                        onClick={() => setSelectedCategory('')}
-                        className="ml-1 hover:text-cyan-900 dark:hover:text-cyan-200"
-                      >
-                        <X className="w-3 h-3" />
-                      </button>
-                    </motion.span>
-                  )}
-
-                  {selectedChain && (
-                    <motion.span
-                      initial={{ opacity: 0, scale: 0.8 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      className="flex items-center gap-1 px-3 py-1 bg-pink-100 dark:bg-pink-900/30 text-pink-700 dark:text-pink-400 rounded-full font-medium"
-                    >
-                      Chain: {selectedChain}
-                      <button
-                        onClick={() => setSelectedChain('')}
-                        className="ml-1 hover:text-pink-900 dark:hover:text-pink-200"
-                      >
-                        <X className="w-3 h-3" />
-                      </button>
-                    </motion.span>
-                  )}
-
                   <motion.button
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={() => {
                       setSearchTerm('');
                       setSelectedSentiment('');
-                      setSelectedAsset('');
-                      setSelectedCategory('');
-                      setSelectedChain('');
                       setSearchParams({});
                     }}
                     className="flex items-center gap-1 px-3 py-1 bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 hover:bg-red-200 dark:hover:bg-red-900/50 rounded-full font-medium transition-colors"
