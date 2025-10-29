@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { Sparkles, Coins, Layers, Network, Tag, TrendingUp, TrendingDown, Minus, BarChart3, Info, HelpCircle, ExternalLink, ArrowRight } from 'lucide-react';
@@ -45,10 +46,49 @@ const getScoreLabel = (value) => {
 // Info tooltip component with improved UX
 const InfoTooltip = ({ content, className = '' }) => {
   const [isVisible, setIsVisible] = useState(false);
+  const [position, setPosition] = useState({ top: 0, left: 0 });
+  const buttonRef = useRef(null);
+
+  useEffect(() => {
+    if (isVisible && buttonRef.current) {
+      const rect = buttonRef.current.getBoundingClientRect();
+      const tooltipWidth = 288; // w-72
+
+      setPosition({
+        top: rect.bottom + window.scrollY + 8,
+        left: rect.left + rect.width / 2 - tooltipWidth / 2,
+      });
+    }
+  }, [isVisible]);
+
+  const tooltipContent = isVisible && (
+    <AnimatePresence>
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95, y: 10 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.95, y: 10 }}
+        transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+        style={{
+          position: 'fixed',
+          top: `${position.top}px`,
+          left: `${position.left}px`,
+          zIndex: 99999,
+        }}
+        className="w-72 sm:w-80 p-4 glass-strong rounded-xl shadow-2xl border border-primary-200 dark:border-primary-800"
+        onMouseEnter={() => setIsVisible(true)}
+        onMouseLeave={() => setIsVisible(false)}
+      >
+        <div className="text-sm text-gray-700 dark:text-gray-300">
+          {content}
+        </div>
+      </motion.div>
+    </AnimatePresence>
+  );
 
   return (
     <div className={`relative inline-block ${className}`}>
       <motion.button
+        ref={buttonRef}
         onMouseEnter={() => setIsVisible(true)}
         onMouseLeave={() => setIsVisible(false)}
         onClick={(e) => {
@@ -63,23 +103,7 @@ const InfoTooltip = ({ content, className = '' }) => {
         <Info className="w-4 h-4 text-primary-600 dark:text-primary-400" />
       </motion.button>
 
-      <AnimatePresence>
-        {isVisible && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95, y: 10 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: 10 }}
-            transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-            className="absolute left-1/2 -translate-x-1/2 mt-2 w-72 sm:w-80 p-4 glass-strong rounded-xl shadow-2xl border border-primary-200 dark:border-primary-800 z-[9999]"
-            onMouseEnter={() => setIsVisible(true)}
-            onMouseLeave={() => setIsVisible(false)}
-          >
-            <div className="text-sm text-gray-700 dark:text-gray-300">
-              {content}
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {isVisible && createPortal(tooltipContent, document.body)}
     </div>
   );
 };
@@ -87,6 +111,8 @@ const InfoTooltip = ({ content, className = '' }) => {
 // Article Preview Tooltip - shows quick preview on hover with clickable articles
 const ArticlePreviewTooltip = ({ filterType, filterValue, children }) => {
   const [isVisible, setIsVisible] = useState(false);
+  const [position, setPosition] = useState({ top: 0, left: 0 });
+  const triggerRef = useRef(null);
   const navigate = useNavigate();
 
   // Build filter params based on type
@@ -135,34 +161,58 @@ const ArticlePreviewTooltip = ({ filterType, filterValue, children }) => {
     return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
   };
 
-  return (
-    <div
-      className="relative w-full"
-      onMouseEnter={() => setIsVisible(true)}
-      onMouseLeave={() => setIsVisible(false)}
-    >
-      {children}
+  useEffect(() => {
+    if (isVisible && triggerRef.current) {
+      const rect = triggerRef.current.getBoundingClientRect();
+      const tooltipWidth = window.innerWidth < 640 ? 320 : 384; // w-80 or w-96
 
-      <AnimatePresence>
-        {isVisible && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95, y: 10 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: 10 }}
-            transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-            className="absolute left-0 right-0 mt-2 w-80 sm:w-96 p-4 glass-strong rounded-xl shadow-2xl border border-primary-200 dark:border-primary-800 z-[9999] max-h-[80vh] overflow-y-auto"
-            style={{ position: 'absolute' }}
-            onMouseEnter={() => setIsVisible(true)}
-            onMouseLeave={() => setIsVisible(false)}
-          >
-              {/* Header */}
+      setPosition({
+        top: rect.bottom + window.scrollY + 8,
+        left: rect.left,
+      });
+    }
+  }, [isVisible]);
+
+  const tooltipContent = isVisible && (
+    <AnimatePresence>
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95, y: 10 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.95, y: 10 }}
+        transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+        style={{
+          position: 'fixed',
+          top: `${position.top}px`,
+          left: `${position.left}px`,
+          zIndex: 99999,
+          maxHeight: 'calc(100vh - 100px)',
+          overflowY: 'auto',
+        }}
+        className="w-80 sm:w-96 p-4 glass-strong rounded-xl shadow-2xl border border-primary-200 dark:border-primary-800"
+        onMouseEnter={() => setIsVisible(true)}
+        onMouseLeave={() => setIsVisible(false)}
+      >
+              {/* Header with View All button */}
               <div className="flex items-center justify-between mb-3 pb-2 border-b border-gray-200 dark:border-gray-700">
-                <h3 className="text-sm font-bold text-gray-900 dark:text-dark-text">
-                  Quick Preview
-                </h3>
-                <span className="text-xs text-gray-500 dark:text-gray-400">
-                  {articles.length} recent
-                </span>
+                <div className="flex items-center gap-2">
+                  <h3 className="text-sm font-bold text-gray-900 dark:text-dark-text">
+                    Quick Preview
+                  </h3>
+                  <span className="text-xs text-gray-500 dark:text-gray-400">
+                    ({articles.length})
+                  </span>
+                </div>
+                {!isLoading && articles.length > 0 && (
+                  <motion.button
+                    onClick={handleViewAll}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="text-xs font-semibold text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 flex items-center gap-1 transition-colors"
+                  >
+                    View All
+                    <ArrowRight className="w-3 h-3" />
+                  </motion.button>
+                )}
               </div>
 
               {/* Loading State */}
@@ -221,22 +271,19 @@ const ArticlePreviewTooltip = ({ filterType, filterValue, children }) => {
                   </p>
                 </div>
               )}
+      </motion.div>
+    </AnimatePresence>
+  );
 
-              {/* View All Button */}
-              {!isLoading && articles.length > 0 && (
-                <motion.button
-                  onClick={handleViewAll}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="w-full py-2.5 px-4 bg-gradient-to-r from-primary-500 to-secondary-500 hover:from-primary-600 hover:to-secondary-600 text-white rounded-lg font-semibold text-sm flex items-center justify-center gap-2 transition-all shadow-md hover:shadow-lg"
-                >
-                  View All Articles
-                  <ArrowRight className="w-4 h-4" />
-                </motion.button>
-              )}
-          </motion.div>
-        )}
-      </AnimatePresence>
+  return (
+    <div
+      ref={triggerRef}
+      className="relative w-full"
+      onMouseEnter={() => setIsVisible(true)}
+      onMouseLeave={() => setIsVisible(false)}
+    >
+      {children}
+      {isVisible && createPortal(tooltipContent, document.body)}
     </div>
   );
 };
