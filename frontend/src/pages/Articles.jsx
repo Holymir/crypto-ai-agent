@@ -5,6 +5,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { useInfiniteArticles } from '../hooks/useArticles';
 import { useCountUp } from '../hooks/useCountUp';
 import { Navigation } from '../components/Navigation';
+import { Footer } from '../components/Footer';
 import { ArticleCard } from '../components/ArticleCard';
 import { ArticlesListSkeleton } from '../components/Skeleton';
 import { ScrollReveal } from '../components/ScrollReveal';
@@ -389,6 +390,8 @@ export const Articles = () => {
           )}
         </AnimatePresence>
       </div>
+
+      <Footer />
     </div>
   );
 };

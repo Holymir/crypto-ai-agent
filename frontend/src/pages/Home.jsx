@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useSentimentStats } from '../hooks/useArticles';
 import { ErrorMessage } from '../components/ErrorMessage';
 import { Navigation } from '../components/Navigation';
+import { Footer } from '../components/Footer';
 import { SEO } from '../components/SEO';
 import dashboardDemo from '../assets/dashboard-demo.png';
 import { motion } from 'framer-motion';
@@ -386,14 +387,7 @@ export const Home = () => {
         </motion.div>
       </div>
 
-      {/* Footer */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 text-center">
-        <div className="bg-gradient-to-r from-primary-100 to-secondary-100 dark:from-primary-900/20 dark:to-secondary-900/20 rounded-2xl p-6 shadow-lg">
-          <p className="text-sm sm:text-base font-semibold bg-gradient-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent">
-            Updates every 2 hours • Built with React, Tailwind CSS, and OpenAI
-          </p>
-        </div>
-      </div>
+      <Footer />
     </div>
   );
 };

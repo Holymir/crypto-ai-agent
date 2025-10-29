@@ -7,6 +7,7 @@ import { LoadingSpinner } from '../components/LoadingSpinner';
 import { ErrorMessage } from '../components/ErrorMessage';
 import { SentimentBadge } from '../components/SentimentBadge';
 import { Navigation } from '../components/Navigation';
+import { Footer } from '../components/Footer';
 import { StatsOverview } from '../components/StatsOverview';
 import { SentimentGauge } from '../components/SentimentGauge';
 import { TopSources } from '../components/TopSources';
@@ -497,6 +498,8 @@ export const Dashboard = () => {
           </div>
         </ScrollReveal>
       </div>
+
+      <Footer />
     </div>
   );
 };
