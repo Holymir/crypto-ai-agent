@@ -87,7 +87,7 @@ Return ONLY valid JSON in this exact format:
 
   try {
     const res = await openai.chat.completions.create({
-      model: "gpt-5-mini",
+      model: "gpt-5-nano",
       messages: [
         {
           role: "system",
