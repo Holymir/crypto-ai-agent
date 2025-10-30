@@ -20,6 +20,7 @@ import { ScrollReveal } from '../components/ScrollReveal';
 import { FilterButtonGroup } from '../components/FilterButtonGroup';
 import { StatsCard } from '../components/StatsCard';
 import { DATE_FILTERS } from '../constants/filters';
+import { CurrencySentimentGrid } from '../components/CurrencySentimentGrid';
 
 // Get sentiment colors from Tailwind theme - softer, more professional tones
 const COLORS = {
@@ -422,6 +423,11 @@ export const Dashboard = () => {
         {/* SECONDARY SECTION: Quick Insights */}
         <div className="mb-6 sm:mb-8 hover-glow">
           <QuickInsights stats={stats} />
+        </div>
+
+        {/* CRYPTOCURRENCY SENTIMENT HEATMAP */}
+        <div className="mb-6 sm:mb-8">
+          <CurrencySentimentGrid days={selectedPeriod} limit={20} />
         </div>
 
         {/* PLACEHOLDER: Mainstream Finance News Sentiment (Coming Soon) */}
