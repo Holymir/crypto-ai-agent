@@ -98,11 +98,20 @@ Return ONLY valid JSON in this exact format:
           content: `Analyze this cryptocurrency news article:\n\n${text}`,
         },
       ],
-      max_completion_tokens: 200,
+      max_completion_tokens: 300,
       response_format: { type: "json_object" },
     });
 
-    const rawResponse = res.choices[0].message.content.trim();
+    const rawResponse = res.choices[0]?.message?.content?.trim();
+
+    // Validate response exists and is not empty
+    if (!rawResponse) {
+      throw new Error("Empty response from OpenAI API");
+    }
+
+    // Log raw response for debugging
+    console.log("[AI Raw Response]", rawResponse);
+
     const analysis = JSON.parse(rawResponse);
 
     // Validate and normalize the response
