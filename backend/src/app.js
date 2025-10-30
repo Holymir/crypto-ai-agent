@@ -49,6 +49,8 @@ const limiter = rateLimit({
   legacyHeaders: false, // Disable the `X-RateLimit-*` headers
   // Skip rate limiting for health check
   skip: (req) => req.path === '/api/health',
+  // Validate trust proxy configuration
+  validate: { trustProxy: false },
 });
 
 // Apply rate limiting to all API routes
