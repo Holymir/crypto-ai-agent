@@ -99,7 +99,7 @@ Return ONLY valid JSON in this exact format:
         },
       ],
       temperature: 0.3,
-      max_tokens: 300,
+      max_completion_tokens: 200,
       response_format: { type: "json_object" },
     });
 
