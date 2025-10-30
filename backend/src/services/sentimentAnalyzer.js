@@ -98,7 +98,6 @@ Return ONLY valid JSON in this exact format:
           content: `Analyze this cryptocurrency news article:\n\n${text}`,
         },
       ],
-      temperature: 0.3,
       max_completion_tokens: 200,
       response_format: { type: "json_object" },
     });
