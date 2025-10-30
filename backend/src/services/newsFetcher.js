@@ -8,10 +8,10 @@ const parser = new Parser({
 
 const FEED_SOURCES = [
   { name: "CoinDesk", url: "https://www.coindesk.com/arc/outboundfeeds/rss/" },
-  { name: "CoinTelegraph", url: "https://cointelegraph.com/rss" }, // Disabled: RSS feed missing version attribute
+  // { name: "CoinTelegraph", url: "https://cointelegraph.com/rss" }, // Disabled: RSS feed missing version attribute
   { name: "The Block", url: "https://www.theblock.co/rss.xml" },
   { name: "Decrypt", url: "https://decrypt.co/feed" },
-  { name: "CryptoSlate", url: "https://cryptoslate.com/feed/" },
+  // { name: "CryptoSlate", url: "https://cryptoslate.com/feed/" }, // Disabled: Returns 403 Forbidden
   { name: "NewsBTC", url: "https://www.newsbtc.com/feed/" },
   { name: "Bitcoinist", url: "https://bitcoinist.com/feed/" },
   { name: "BeInCrypto", url: "https://beincrypto.com/feed/" },

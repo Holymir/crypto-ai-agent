@@ -8,6 +8,10 @@ const statsRouter = require('./routes/stats');
 
 const app = express();
 
+// Trust proxy - Required when behind reverse proxies (Railway, Heroku, nginx, etc.)
+// This allows express-rate-limit to correctly identify client IPs from X-Forwarded-For header
+app.set('trust proxy', true);
+
 // Middleware
 const allowedOrigins = [
   process.env.FRONTEND_URL,
