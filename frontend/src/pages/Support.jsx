@@ -20,7 +20,7 @@ export const Support = () => {
     },
     {
       question: 'How often is data updated?',
-      answer: 'We fetch and analyze new articles 12 times per day (every 2 hours). Our dashboard and API reflect the latest sentiment data in real-time.'
+      answer: 'We fetch and analyze new articles 24 times per day (every hour). Our dashboard and API reflect the latest sentiment data in real-time.'
     },
     {
       question: 'Is the API free to use?',

@@ -61,7 +61,7 @@ async function processNews() {
 
 /**
  * Start the cron job
- * Runs every 2 hours: 0 (star-slash)2 (star) (star) (star)
+ * Runs every hour: 0 (star) (star) (star) (star)
  * For testing every minute: (star) (star) (star) (star) (star)
  */
 function startCronJob() {
@@ -69,10 +69,10 @@ function startCronJob() {
   console.log('[CRON] Running initial news analysis...');
   processNews();
 
-  // Schedule to run every 2 hours
-  cron.schedule('0 */2 * * *', processNews);
+  // Schedule to run every hour
+  cron.schedule('0 * * * *', processNews);
 
-  console.log('[CRON] Scheduler started - runs every 2 hours');
+  console.log('[CRON] Scheduler started - runs every hour');
 }
 
 module.exports = { startCronJob, processNews };

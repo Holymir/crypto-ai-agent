@@ -17,7 +17,7 @@ export const About = () => {
     {
       icon: TrendingUp,
       title: 'Real-Time Tracking',
-      description: 'Continuous monitoring of hundreds of news sources with automated updates every 2 hours.',
+      description: 'Continuous monitoring of hundreds of news sources with automated updates every hour.',
       color: 'from-green-500 to-emerald-500'
     },
     {
@@ -37,7 +37,7 @@ export const About = () => {
   const stats = [
     { label: 'News Sources', value: '50+' },
     { label: 'Articles Analyzed', value: '10K+' },
-    { label: 'Daily Updates', value: '12x' },
+    { label: 'Daily Updates', value: '24x' },
     { label: 'Accuracy Rate', value: '95%' }
   ];
 

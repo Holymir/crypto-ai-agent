@@ -9,7 +9,7 @@ An advanced cryptocurrency intelligence platform that delivers real-time market 
 
 ## ✨ Features
 
-- 📰 **Automated News Fetching**: Pulls latest crypto news every 2 hours from RSS feeds
+- 📰 **Automated News Fetching**: Pulls latest crypto news every hour from RSS feeds
 - 🧠 **AI Sentiment Analysis**: Classifies articles as Bullish, Bearish, or Neutral using OpenAI
 - 📊 **Interactive Dashboard**: Real-time stats with charts and visualizations
 - 🔍 **Advanced Filtering**: Search and filter articles by sentiment, source, and date
@@ -233,14 +233,14 @@ const FEED_SOURCES = [
 Edit `backend/src/cron/newsAnalyzer.js`:
 
 ```javascript
-// Current: Every 2 hours
+// Current: Every hour
+cron.schedule('0 * * * *', processNews);
+
+// Every 2 hours
 cron.schedule('0 */2 * * *', processNews);
 
 // Daily at midnight
 cron.schedule('0 0 * * *', processNews);
-
-// Every hour
-cron.schedule('0 * * * *', processNews);
 ```
 
 ## 🔐 Security Notes
