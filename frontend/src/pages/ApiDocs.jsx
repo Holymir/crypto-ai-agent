@@ -148,7 +148,7 @@ export const ApiDocs = () => {
             source: 'CoinDesk',
             publishedAt: '2025-10-29T10:30:00Z',
             sentiment: 'BULLISH',
-            bullishValue: 85,
+            sentimentScore: 85,
             asset: 'BTC',
             category: 'PRICE_ANALYSIS',
             chain: 'BITCOIN',

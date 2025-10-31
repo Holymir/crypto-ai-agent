@@ -139,10 +139,10 @@ export const Articles = () => {
                 <div>
                   <div className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Bullish</div>
                   <div className="text-lg sm:text-2xl font-bold text-bullish-600 dark:text-bullish-400">
-                    {articles.filter(a => getSentimentFromValue(a.bullishValue) === 'BULLISH').length}
+                    {articles.filter(a => getSentimentFromValue(a.sentimentScore) === 'BULLISH').length}
                     {totalCount > articles.length && (
                       <span className="text-xs font-normal text-gray-500 dark:text-gray-400 ml-1">
-                        / {Math.round((articles.filter(a => getSentimentFromValue(a.bullishValue) === 'BULLISH').length / articles.length) * totalCount)}
+                        / {Math.round((articles.filter(a => getSentimentFromValue(a.sentimentScore) === 'BULLISH').length / articles.length) * totalCount)}
                       </span>
                     )}
                   </div>
@@ -162,10 +162,10 @@ export const Articles = () => {
                 <div>
                   <div className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Bearish</div>
                   <div className="text-lg sm:text-2xl font-bold text-bearish-600 dark:text-bearish-400">
-                    {articles.filter(a => getSentimentFromValue(a.bullishValue) === 'BEARISH').length}
+                    {articles.filter(a => getSentimentFromValue(a.sentimentScore) === 'BEARISH').length}
                     {totalCount > articles.length && (
                       <span className="text-xs font-normal text-gray-500 dark:text-gray-400 ml-1">
-                        / {Math.round((articles.filter(a => getSentimentFromValue(a.bullishValue) === 'BEARISH').length / articles.length) * totalCount)}
+                        / {Math.round((articles.filter(a => getSentimentFromValue(a.sentimentScore) === 'BEARISH').length / articles.length) * totalCount)}
                       </span>
                     )}
                   </div>
@@ -185,10 +185,10 @@ export const Articles = () => {
                 <div>
                   <div className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Neutral</div>
                   <div className="text-lg sm:text-2xl font-bold text-slate-600 dark:text-slate-400">
-                    {articles.filter(a => getSentimentFromValue(a.bullishValue) === 'NEUTRAL').length}
+                    {articles.filter(a => getSentimentFromValue(a.sentimentScore) === 'NEUTRAL').length}
                     {totalCount > articles.length && (
                       <span className="text-xs font-normal text-gray-500 dark:text-gray-400 ml-1">
-                        / {Math.round((articles.filter(a => getSentimentFromValue(a.bullishValue) === 'NEUTRAL').length / articles.length) * totalCount)}
+                        / {Math.round((articles.filter(a => getSentimentFromValue(a.sentimentScore) === 'NEUTRAL').length / articles.length) * totalCount)}
                       </span>
                     )}
                   </div>

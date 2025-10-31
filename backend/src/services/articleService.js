@@ -17,7 +17,7 @@ class ArticleService {
         asset: data.asset,
         category: data.category,
         chain: data.chain,
-        bullishValue: data.bullishValue || 50,
+        sentimentScore: data.sentimentScore || 50,
         keywords: data.keywords,
       },
     });
@@ -56,14 +56,14 @@ class ArticleService {
     const skip = (pageInt - 1) * limitInt;
     const where = {};
 
-    // Map sentiment categories to bullishValue ranges
+    // Map sentiment categories to sentimentScore ranges
     if (sentiment) {
       if (sentiment === 'BULLISH') {
-        where.bullishValue = { gte: 67 };
+        where.sentimentScore = { gte: 67 };
       } else if (sentiment === 'BEARISH') {
-        where.bullishValue = { lte: 33 };
+        where.sentimentScore = { lte: 33 };
       } else if (sentiment === 'NEUTRAL') {
-        where.bullishValue = { gte: 34, lte: 66 };
+        where.sentimentScore = { gte: 34, lte: 66 };
       }
     }
 
@@ -131,7 +131,7 @@ class ArticleService {
 
   /**
    * Get sentiment statistics for a date range
-   * Calculates stats from bullishValue ranges:
+   * Calculates stats from sentimentScore ranges:
    * - BEARISH: 0-33
    * - NEUTRAL: 34-66
    * - BULLISH: 67-100
@@ -145,7 +145,7 @@ class ArticleService {
         },
       },
       select: {
-        bullishValue: true,
+        sentimentScore: true,
       },
     });
 
@@ -157,7 +157,7 @@ class ArticleService {
     };
 
     articles.forEach((article) => {
-      const value = article.bullishValue || 50;
+      const value = article.sentimentScore || 50;
       if (value >= 67) {
         stats.BULLISH++;
       } else if (value <= 33) {
@@ -172,7 +172,7 @@ class ArticleService {
 
   /**
    * Get sentiment trend over time
-   * Calculates sentiment from bullishValue ranges
+   * Calculates sentiment from sentimentScore ranges
    * @param {number} hours - Number of hours to look back (if provided, overrides days)
    * @param {number} days - Number of days to look back
    * @param {string} granularity - 'hourly' or 'daily' (default: 'daily')
@@ -195,7 +195,7 @@ class ArticleService {
       },
       select: {
         publishedAt: true,
-        bullishValue: true,
+        sentimentScore: true,
       },
       orderBy: {
         publishedAt: 'asc',
@@ -231,8 +231,8 @@ class ArticleService {
         };
       }
 
-      // Categorize based on bullishValue
-      const value = article.bullishValue || 50;
+      // Categorize based on sentimentScore
+      const value = article.sentimentScore || 50;
       if (value >= 67) {
         trendMap[dateKey].BULLISH++;
       } else if (value <= 33) {
@@ -261,7 +261,7 @@ class ArticleService {
 
   /**
    * Get top news sources by article count
-   * Calculates average bullishValue per source
+   * Calculates average sentimentScore per source
    * @param {number} days - Number of days to look back
    * @param {number} limit - Number of sources to return
    */
@@ -278,11 +278,11 @@ class ArticleService {
       },
       select: {
         source: true,
-        bullishValue: true,
+        sentimentScore: true,
       },
     });
 
-    // Group by source and calculate average bullishValue
+    // Group by source and calculate average sentimentScore
     const sourceMap = {};
 
     articles.forEach((article) => {
@@ -290,26 +290,26 @@ class ArticleService {
         sourceMap[article.source] = {
           name: article.source,
           count: 0,
-          bullishValues: [],
+          sentimentScores: [],
         };
       }
 
       sourceMap[article.source].count++;
-      if (article.bullishValue !== null && article.bullishValue !== undefined) {
-        sourceMap[article.source].bullishValues.push(article.bullishValue);
+      if (article.sentimentScore !== null && article.sentimentScore !== undefined) {
+        sourceMap[article.source].sentimentScores.push(article.sentimentScore);
       }
     });
 
-    // Convert to array and calculate avgBullishValue
+    // Convert to array and calculate avgSentimentScore
     const sources = Object.values(sourceMap).map((source) => {
-      const avgBullishValue = source.bullishValues.length > 0
-        ? Math.round(source.bullishValues.reduce((a, b) => a + b, 0) / source.bullishValues.length)
+      const avgSentimentScore = source.sentimentScores.length > 0
+        ? Math.round(source.sentimentScores.reduce((a, b) => a + b, 0) / source.sentimentScores.length)
         : 50;
 
       return {
         name: source.name,
         count: source.count,
-        avgBullishValue,
+        avgSentimentScore,
       };
     });
 
@@ -335,7 +335,7 @@ class ArticleService {
       },
       select: {
         asset: true,
-        bullishValue: true,
+        sentimentScore: true,
       },
     });
 
@@ -346,26 +346,26 @@ class ArticleService {
         assetMap[article.asset] = {
           name: article.asset,
           count: 0,
-          bullishValues: [],
+          sentimentScores: [],
         };
       }
 
       assetMap[article.asset].count++;
-      if (article.bullishValue !== null && article.bullishValue !== undefined) {
-        assetMap[article.asset].bullishValues.push(article.bullishValue);
+      if (article.sentimentScore !== null && article.sentimentScore !== undefined) {
+        assetMap[article.asset].sentimentScores.push(article.sentimentScore);
       }
     });
 
     // Calculate average bullish value
     const assets = Object.values(assetMap).map((asset) => {
-      const avgBullishValue = asset.bullishValues.length > 0
-        ? Math.round(asset.bullishValues.reduce((a, b) => a + b, 0) / asset.bullishValues.length)
+      const avgSentimentScore = asset.sentimentScores.length > 0
+        ? Math.round(asset.sentimentScores.reduce((a, b) => a + b, 0) / asset.sentimentScores.length)
         : 50;
 
       return {
         name: asset.name,
         count: asset.count,
-        avgBullishValue,
+        avgSentimentScore,
       };
     });
 
@@ -388,7 +388,7 @@ class ArticleService {
       },
       select: {
         category: true,
-        bullishValue: true,
+        sentimentScore: true,
       },
     });
 
@@ -399,25 +399,25 @@ class ArticleService {
         categoryMap[article.category] = {
           name: article.category,
           count: 0,
-          bullishValues: [],
+          sentimentScores: [],
         };
       }
 
       categoryMap[article.category].count++;
-      if (article.bullishValue !== null && article.bullishValue !== undefined) {
-        categoryMap[article.category].bullishValues.push(article.bullishValue);
+      if (article.sentimentScore !== null && article.sentimentScore !== undefined) {
+        categoryMap[article.category].sentimentScores.push(article.sentimentScore);
       }
     });
 
     const categories = Object.values(categoryMap).map((category) => {
-      const avgBullishValue = category.bullishValues.length > 0
-        ? Math.round(category.bullishValues.reduce((a, b) => a + b, 0) / category.bullishValues.length)
+      const avgSentimentScore = category.sentimentScores.length > 0
+        ? Math.round(category.sentimentScores.reduce((a, b) => a + b, 0) / category.sentimentScores.length)
         : 50;
 
       return {
         name: category.name,
         count: category.count,
-        avgBullishValue,
+        avgSentimentScore,
       };
     });
 
@@ -440,7 +440,7 @@ class ArticleService {
       },
       select: {
         chain: true,
-        bullishValue: true,
+        sentimentScore: true,
       },
     });
 
@@ -451,25 +451,25 @@ class ArticleService {
         chainMap[article.chain] = {
           name: article.chain,
           count: 0,
-          bullishValues: [],
+          sentimentScores: [],
         };
       }
 
       chainMap[article.chain].count++;
-      if (article.bullishValue !== null && article.bullishValue !== undefined) {
-        chainMap[article.chain].bullishValues.push(article.bullishValue);
+      if (article.sentimentScore !== null && article.sentimentScore !== undefined) {
+        chainMap[article.chain].sentimentScores.push(article.sentimentScore);
       }
     });
 
     const chains = Object.values(chainMap).map((chain) => {
-      const avgBullishValue = chain.bullishValues.length > 0
-        ? Math.round(chain.bullishValues.reduce((a, b) => a + b, 0) / chain.bullishValues.length)
+      const avgSentimentScore = chain.sentimentScores.length > 0
+        ? Math.round(chain.sentimentScores.reduce((a, b) => a + b, 0) / chain.sentimentScores.length)
         : 50;
 
       return {
         name: chain.name,
         count: chain.count,
-        avgBullishValue,
+        avgSentimentScore,
       };
     });
 

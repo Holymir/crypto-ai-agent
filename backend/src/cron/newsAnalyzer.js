@@ -38,16 +38,16 @@ async function processNews() {
           asset: analysis.asset,
           category: analysis.category,
           chain: analysis.chain,
-          bullishValue: analysis.bullishValue,
+          sentimentScore: analysis.sentimentScore,
           keywords: analysis.keywords,
         });
 
-        // Determine sentiment label from bullishValue for logging
+        // Determine sentiment label from sentimentScore for logging
         let sentimentLabel = 'NEUTRAL';
-        if (analysis.bullishValue >= 67) sentimentLabel = 'BULLISH';
-        else if (analysis.bullishValue <= 33) sentimentLabel = 'BEARISH';
+        if (analysis.sentimentScore >= 67) sentimentLabel = 'BULLISH';
+        else if (analysis.sentimentScore <= 33) sentimentLabel = 'BEARISH';
 
-        console.log(`[NEWS] ${sentimentLabel.padEnd(8)} [${analysis.bullishValue}/100] ${analysis.asset} → ${item.title.substring(0, 60)}...`);
+        console.log(`[NEWS] ${sentimentLabel.padEnd(8)} [${analysis.sentimentScore}/100] ${analysis.asset} → ${item.title.substring(0, 60)}...`);
         newArticles++;
 
       } catch (err) {

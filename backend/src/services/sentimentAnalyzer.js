@@ -10,7 +10,7 @@ const openai = new OpenAI({
  * Returns structured data including sentiment score (0-100), asset, category, chain, and keywords
  *
  * @param {string} text - Article text to analyze
- * @returns {Promise<Object>} Analysis result with bullishValue (0-100), asset, category, chain, keywords
+ * @returns {Promise<Object>} Analysis result with sentimentScore (0-100), asset, category, chain, keywords
  */
 module.exports = async function analyzeSentiment(text) {
   const systemPrompt = `You are an expert cryptocurrency market analyst. Analyze the provided news article and return a comprehensive analysis in JSON format.
@@ -100,10 +100,7 @@ Return ONLY valid JSON in this exact format:
 
     // Validate and normalize the response
     const result = {
-      bullishValue: Math.max(
-        0,
-        Math.min(100, parseInt(analysis.sentimentScore) || 50)
-      ),
+      sentimentScore: parseInt(analysis.sentimentScore) || 50,
       asset: (analysis.asset || "GENERAL").toUpperCase().trim(),
       category: (analysis.category || "General").trim(),
       chain: (analysis.chain || "GENERAL").trim(),
@@ -111,7 +108,7 @@ Return ONLY valid JSON in this exact format:
     };
 
     console.log("[AI Analysis]", {
-      bullishValue: result.bullishValue,
+      sentimentScore: result.sentimentScore,
       asset: result.asset,
       category: result.category,
       chain: result.chain,
@@ -123,7 +120,7 @@ Return ONLY valid JSON in this exact format:
     console.error("[ERROR] OpenAI sentiment analysis:", err.message);
     // Return error fallback with default neutral value
     return {
-      bullishValue: 50,
+      sentimentScore: 50,
       asset: "GENERAL",
       category: "General",
       chain: "GENERAL",

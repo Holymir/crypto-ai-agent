@@ -25,13 +25,13 @@ model Article {
   createdAt    DateTime  @default(now())
 
   // AI analysis fields
-  asset        String?   // e.g., "BTC", "ETH", "SOL", "MULTIPLE", "GENERAL"
-  category     String?   // e.g., "DeFi", "NFT", "Regulation", "Price", "Technology"
-  chain        String?   // e.g., "Bitcoin", "Ethereum", "Solana", "MULTIPLE", "GENERAL"
-  bullishValue Int?      @default(50) // Range: 1-100 (1=most bearish, 100=most bullish)
-  keywords     String?   // Comma-separated crypto-related keywords (1-3 words)
+  asset          String?   // e.g., "BTC", "ETH", "SOL", "MULTIPLE", "GENERAL"
+  category       String?   // e.g., "DeFi", "NFT", "Regulation", "Price", "Technology"
+  chain          String?   // e.g., "Bitcoin", "Ethereum", "Solana", "MULTIPLE", "GENERAL"
+  sentimentScore Int?      @default(50) // Range: 0-100 (0=most bearish, 100=most bullish)
+  keywords       String?   // Comma-separated crypto-related keywords (1-3 words)
 
-  @@index([bullishValue])
+  @@index([sentimentScore])
   @@index([publishedAt])
   @@index([source])
   @@index([asset])

@@ -334,15 +334,15 @@ const StatItem = ({ item, icon: Icon, showBullishValue = true, index, filterType
                           <span className="text-xs text-gray-500 dark:text-gray-400">
                             {formatDate(article.publishedAt)}
                           </span>
-                          {article.bullishValue !== null && article.bullishValue !== undefined && (
+                          {article.sentimentScore !== null && article.sentimentScore !== undefined && (
                             <>
                               <span className="text-xs text-gray-300 dark:text-gray-600">•</span>
-                              <span className={`text-xs font-semibold ${getSentimentColorClass(getSentimentFromValue(article.bullishValue)).split(' ')[0]}`}>
-                                {getSentimentFromValue(article.bullishValue)}
+                              <span className={`text-xs font-semibold ${getSentimentColorClass(getSentimentFromValue(article.sentimentScore)).split(' ')[0]}`}>
+                                {getSentimentFromValue(article.sentimentScore)}
                               </span>
                               <span className="text-xs text-gray-300 dark:text-gray-600">•</span>
-                              <span className={`text-xs font-bold ${getBullishColor(article.bullishValue)}`}>
-                                {article.bullishValue}/100
+                              <span className={`text-xs font-bold ${getBullishColor(article.sentimentScore)}`}>
+                                {article.sentimentScore}/100
                               </span>
                             </>
                           )}

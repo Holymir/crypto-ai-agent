@@ -1,20 +1,20 @@
 /**
- * Utility functions for sentiment calculation based on bullishValue
+ * Utility functions for sentiment calculation based on sentimentScore
  */
 
 /**
- * Get sentiment category from bullishValue (0-100)
- * @param {number} bullishValue - Score from 0 (bearish) to 100 (bullish)
+ * Get sentiment category from sentimentScore (0-100)
+ * @param {number} sentimentScore - Score from 0 (bearish) to 100 (bullish)
  * @returns {'BULLISH' | 'BEARISH' | 'NEUTRAL'}
  */
-export function getSentimentFromValue(bullishValue) {
-  if (bullishValue === null || bullishValue === undefined) {
+export function getSentimentFromValue(sentimentScore) {
+  if (sentimentScore === null || sentimentScore === undefined) {
     return 'NEUTRAL';
   }
 
-  if (bullishValue >= 67) {
+  if (sentimentScore >= 67) {
     return 'BULLISH';
-  } else if (bullishValue <= 33) {
+  } else if (sentimentScore <= 33) {
     return 'BEARISH';
   } else {
     return 'NEUTRAL';
@@ -23,11 +23,11 @@ export function getSentimentFromValue(bullishValue) {
 
 /**
  * Get sentiment configuration for UI styling
- * @param {number} bullishValue - Score from 0 (bearish) to 100 (bullish)
+ * @param {number} sentimentScore - Score from 0 (bearish) to 100 (bullish)
  * @returns {Object} Configuration with label, color, icon, etc.
  */
-export function getSentimentConfig(bullishValue) {
-  const value = bullishValue || 50;
+export function getSentimentConfig(sentimentScore) {
+  const value = sentimentScore || 50;
 
   if (value >= 67) {
     return {
@@ -60,12 +60,12 @@ export function getSentimentConfig(bullishValue) {
 }
 
 /**
- * Get color based on bullishValue for charts
- * @param {number} bullishValue - Score from 0 (bearish) to 100 (bullish)
+ * Get color based on sentimentScore for charts
+ * @param {number} sentimentScore - Score from 0 (bearish) to 100 (bullish)
  * @returns {string} Hex color code
  */
-export function getSentimentColor(bullishValue) {
-  const value = bullishValue || 50;
+export function getSentimentColor(sentimentScore) {
+  const value = sentimentScore || 50;
 
   if (value >= 67) {
     return '#10b981'; // green
@@ -78,28 +78,28 @@ export function getSentimentColor(bullishValue) {
 
 /**
  * Get sentiment score label
- * @param {number} bullishValue - Score from 0 (bearish) to 100 (bullish)
+ * @param {number} sentimentScore - Score from 0 (bearish) to 100 (bullish)
  * @returns {string} Descriptive label
  */
-export function getSentimentScoreLabel(bullishValue) {
-  if (bullishValue === null || bullishValue === undefined) {
+export function getSentimentScoreLabel(sentimentScore) {
+  if (sentimentScore === null || sentimentScore === undefined) {
     return 'Unknown';
   }
 
-  if (bullishValue >= 90) return 'Extremely Bullish';
-  if (bullishValue >= 75) return 'Very Bullish';
-  if (bullishValue >= 67) return 'Bullish';
-  if (bullishValue >= 60) return 'Slightly Bullish';
-  if (bullishValue >= 41) return 'Neutral';
-  if (bullishValue >= 34) return 'Slightly Bearish';
-  if (bullishValue >= 26) return 'Bearish';
-  if (bullishValue >= 11) return 'Very Bearish';
+  if (sentimentScore >= 90) return 'Extremely Bullish';
+  if (sentimentScore >= 75) return 'Very Bullish';
+  if (sentimentScore >= 67) return 'Bullish';
+  if (sentimentScore >= 60) return 'Slightly Bullish';
+  if (sentimentScore >= 41) return 'Neutral';
+  if (sentimentScore >= 34) return 'Slightly Bearish';
+  if (sentimentScore >= 26) return 'Bearish';
+  if (sentimentScore >= 11) return 'Very Bearish';
   return 'Extremely Bearish';
 }
 
 /**
- * Calculate sentiment statistics from articles with bullishValue
- * @param {Array} articles - Array of articles with bullishValue property
+ * Calculate sentiment statistics from articles with sentimentScore
+ * @param {Array} articles - Array of articles with sentimentScore property
  * @returns {Object} Stats object with BULLISH, BEARISH, NEUTRAL counts
  */
 export function calculateSentimentStats(articles) {
@@ -111,7 +111,7 @@ export function calculateSentimentStats(articles) {
   };
 
   articles.forEach((article) => {
-    const sentiment = getSentimentFromValue(article.bullishValue);
+    const sentiment = getSentimentFromValue(article.sentimentScore);
     stats[sentiment]++;
   });
 
