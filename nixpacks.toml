@@ -4,8 +4,13 @@ nixPkgs = ["nodejs_20"]
 [phases.install]
 cmds = [
   "npm install",
-  "npx prisma generate",
-  "npx prisma db push --accept-data-loss"
+  "npx prisma generate"
+]
+
+[phases.setup_db]
+dependsOn = ["install"]
+cmds = [
+  "npx prisma migrate deploy || npx prisma db push --accept-data-loss"
 ]
 
 [start]
