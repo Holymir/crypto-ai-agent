@@ -102,8 +102,8 @@ const formatDate = (dateString) => {
 const StatItem = ({ item, icon: Icon, showBullishValue = true, index, filterType }) => {
   const navigate = useNavigate();
   const [isExpanded, setIsExpanded] = useState(false);
-  // Calculate sentiment from avgBullishValue
-  const sentiment = getSentimentFromValue(item.avgBullishValue);
+  // Calculate sentiment from avgSentimentScore
+  const sentiment = getSentimentFromValue(item.avgSentimentScore);
   const SentimentIcon = getSentimentIcon(sentiment);
   const isGeneralOrMultiple = item.name === 'GENERAL' || item.name === 'MULTIPLE';
 
@@ -235,12 +235,12 @@ const StatItem = ({ item, icon: Icon, showBullishValue = true, index, filterType
                 <>
                   <span className="text-xs text-gray-300 dark:text-gray-600">|</span>
                   <div className="flex items-center gap-1.5">
-                    <div className={`w-1.5 h-1.5 rounded-full ${getBullishColor(item.avgBullishValue).replace('text-', 'bg-')}`}></div>
-                    <span className={`text-xs font-bold ${getBullishColor(item.avgBullishValue)}`}>
-                      {item.avgBullishValue}/100
+                    <div className={`w-1.5 h-1.5 rounded-full ${getBullishColor(item.avgSentimentScore).replace('text-', 'bg-')}`}></div>
+                    <span className={`text-xs font-bold ${getBullishColor(item.avgSentimentScore)}`}>
+                      {item.avgSentimentScore}/100
                     </span>
                     <span className="text-xs text-gray-500 dark:text-gray-400">
-                      ({getScoreLabel(item.avgBullishValue)})
+                      ({getScoreLabel(item.avgSentimentScore)})
                     </span>
                   </div>
                 </>
@@ -254,9 +254,9 @@ const StatItem = ({ item, icon: Icon, showBullishValue = true, index, filterType
           <div className="flex-shrink-0 ml-3">
             <div className="w-16 h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
               <motion.div
-                className={`h-full rounded-full ${getBullishColor(item.avgBullishValue).replace('text-', 'bg-')}`}
+                className={`h-full rounded-full ${getBullishColor(item.avgSentimentScore).replace('text-', 'bg-')}`}
                 initial={{ width: 0 }}
-                animate={{ width: `${item.avgBullishValue}%` }}
+                animate={{ width: `${item.avgSentimentScore}%` }}
                 transition={{ duration: 0.8, delay: index * 0.05 }}
               />
             </div>
