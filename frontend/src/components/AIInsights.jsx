@@ -4,8 +4,9 @@ import { useNavigate } from 'react-router-dom';
 import { Sparkles, Coins, Layers, Network, Tag, TrendingUp, TrendingDown, Minus, BarChart3, Info, HelpCircle, ExternalLink, ArrowRight } from 'lucide-react';
 import { useAssetStats, useCategoryStats, useChainStats, useTrendingKeywords, useArticles } from '../hooks/useArticles';
 import { ScrollReveal } from './ScrollReveal';
+import { getSentimentFromValue, getSentimentConfig, getSentimentColor } from '../lib/sentiment';
 
-const getSentimentColor = (sentiment) => {
+const getSentimentColorClass = (sentiment) => {
   switch (sentiment) {
     case 'BULLISH':
       return 'text-bullish-600 dark:text-bullish-400 bg-bullish-100 dark:bg-bullish-900/30';
@@ -101,7 +102,9 @@ const formatDate = (dateString) => {
 const StatItem = ({ item, icon: Icon, showBullishValue = true, index, filterType }) => {
   const navigate = useNavigate();
   const [isExpanded, setIsExpanded] = useState(false);
-  const SentimentIcon = getSentimentIcon(item.sentiment);
+  // Calculate sentiment from avgBullishValue
+  const sentiment = getSentimentFromValue(item.avgBullishValue);
+  const SentimentIcon = getSentimentIcon(sentiment);
   const isGeneralOrMultiple = item.name === 'GENERAL' || item.name === 'MULTIPLE';
 
   // Build filter params
@@ -210,11 +213,11 @@ const StatItem = ({ item, icon: Icon, showBullishValue = true, index, filterType
               </div>
 
               <motion.span
-                className={`px-2.5 py-1 rounded-lg text-xs font-semibold flex items-center gap-1 flex-shrink-0 ${getSentimentColor(item.sentiment)}`}
+                className={`px-2.5 py-1 rounded-lg text-xs font-semibold flex items-center gap-1 flex-shrink-0 ${getSentimentColorClass(sentiment)}`}
                 whileHover={{ scale: 1.1 }}
               >
                 <SentimentIcon className="w-3.5 h-3.5" />
-                {item.sentiment}
+                {sentiment}
               </motion.span>
             </div>
 
@@ -331,16 +334,12 @@ const StatItem = ({ item, icon: Icon, showBullishValue = true, index, filterType
                           <span className="text-xs text-gray-500 dark:text-gray-400">
                             {formatDate(article.publishedAt)}
                           </span>
-                          {article.sentiment && (
-                            <>
-                              <span className="text-xs text-gray-300 dark:text-gray-600">•</span>
-                              <span className={`text-xs font-semibold ${getSentimentColor(article.sentiment).split(' ')[0]}`}>
-                                {article.sentiment}
-                              </span>
-                            </>
-                          )}
                           {article.bullishValue !== null && article.bullishValue !== undefined && (
                             <>
+                              <span className="text-xs text-gray-300 dark:text-gray-600">•</span>
+                              <span className={`text-xs font-semibold ${getSentimentColorClass(getSentimentFromValue(article.bullishValue)).split(' ')[0]}`}>
+                                {getSentimentFromValue(article.bullishValue)}
+                              </span>
                               <span className="text-xs text-gray-300 dark:text-gray-600">•</span>
                               <span className={`text-xs font-bold ${getBullishColor(article.bullishValue)}`}>
                                 {article.bullishValue}/100

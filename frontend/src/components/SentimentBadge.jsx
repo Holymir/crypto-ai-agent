@@ -1,12 +1,15 @@
 import { motion } from 'framer-motion';
-import { TrendingUp, TrendingDown, Minus, AlertCircle } from 'lucide-react';
+import { TrendingUp, TrendingDown, Minus } from 'lucide-react';
+import { getSentimentFromValue } from '../lib/sentiment';
 
-export const SentimentBadge = ({ sentiment, size = 'md' }) => {
+export const SentimentBadge = ({ bullishValue, size = 'md' }) => {
   const sizeClasses = {
     sm: 'px-2 py-1 text-xs',
     md: 'px-3 py-1.5 text-sm',
     lg: 'px-4 py-2 text-base',
   };
+
+  const sentiment = getSentimentFromValue(bullishValue);
 
   const config = {
     BULLISH: {
@@ -23,11 +26,6 @@ export const SentimentBadge = ({ sentiment, size = 'md' }) => {
       className: 'badge-neutral',
       icon: Minus,
       label: 'Neutral',
-    },
-    ERROR: {
-      className: 'badge-error',
-      icon: AlertCircle,
-      label: 'Error',
     },
   };
 

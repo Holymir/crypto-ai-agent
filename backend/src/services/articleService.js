@@ -10,15 +10,14 @@ class ArticleService {
         title: data.title,
         content: data.content,
         source: data.source,
-        sentiment: data.sentiment || 'NEUTRAL',
         url: data.url,
         publishedAt: data.publishedAt || new Date(),
         analyzedAt: new Date(),
-        // New AI analysis fields
+        // AI analysis fields
         asset: data.asset,
         category: data.category,
         chain: data.chain,
-        bullishValue: data.bullishValue,
+        bullishValue: data.bullishValue || 50,
         keywords: data.keywords,
       },
     });
@@ -57,8 +56,15 @@ class ArticleService {
     const skip = (pageInt - 1) * limitInt;
     const where = {};
 
+    // Map sentiment categories to bullishValue ranges
     if (sentiment) {
-      where.sentiment = sentiment;
+      if (sentiment === 'BULLISH') {
+        where.bullishValue = { gte: 67 };
+      } else if (sentiment === 'BEARISH') {
+        where.bullishValue = { lte: 33 };
+      } else if (sentiment === 'NEUTRAL') {
+        where.bullishValue = { gte: 34, lte: 66 };
+      }
     }
 
     if (source) {
@@ -125,6 +131,10 @@ class ArticleService {
 
   /**
    * Get sentiment statistics for a date range
+   * Calculates stats from bullishValue ranges:
+   * - BEARISH: 0-33
+   * - NEUTRAL: 34-66
+   * - BULLISH: 67-100
    */
   async getSentimentStats(startDate, endDate) {
     const articles = await prisma.article.findMany({
@@ -135,7 +145,7 @@ class ArticleService {
         },
       },
       select: {
-        sentiment: true,
+        bullishValue: true,
       },
     });
 
@@ -143,12 +153,18 @@ class ArticleService {
       BULLISH: 0,
       BEARISH: 0,
       NEUTRAL: 0,
-      ERROR: 0,
       total: articles.length,
     };
 
     articles.forEach((article) => {
-      stats[article.sentiment]++;
+      const value = article.bullishValue || 50;
+      if (value >= 67) {
+        stats.BULLISH++;
+      } else if (value <= 33) {
+        stats.BEARISH++;
+      } else {
+        stats.NEUTRAL++;
+      }
     });
 
     return stats;
@@ -156,6 +172,7 @@ class ArticleService {
 
   /**
    * Get sentiment trend over time
+   * Calculates sentiment from bullishValue ranges
    * @param {number} hours - Number of hours to look back (if provided, overrides days)
    * @param {number} days - Number of days to look back
    * @param {string} granularity - 'hourly' or 'daily' (default: 'daily')
@@ -178,7 +195,7 @@ class ArticleService {
       },
       select: {
         publishedAt: true,
-        sentiment: true,
+        bullishValue: true,
       },
       orderBy: {
         publishedAt: 'asc',
@@ -210,12 +227,20 @@ class ArticleService {
           BULLISH: 0,
           BEARISH: 0,
           NEUTRAL: 0,
-          ERROR: 0,
           total: 0,
         };
       }
 
-      trendMap[dateKey][article.sentiment]++;
+      // Categorize based on bullishValue
+      const value = article.bullishValue || 50;
+      if (value >= 67) {
+        trendMap[dateKey].BULLISH++;
+      } else if (value <= 33) {
+        trendMap[dateKey].BEARISH++;
+      } else {
+        trendMap[dateKey].NEUTRAL++;
+      }
+
       trendMap[dateKey].total++;
     });
 
@@ -236,6 +261,7 @@ class ArticleService {
 
   /**
    * Get top news sources by article count
+   * Calculates average bullishValue per source
    * @param {number} days - Number of days to look back
    * @param {number} limit - Number of sources to return
    */
@@ -252,11 +278,11 @@ class ArticleService {
       },
       select: {
         source: true,
-        sentiment: true,
+        bullishValue: true,
       },
     });
 
-    // Group by source and count
+    // Group by source and calculate average bullishValue
     const sourceMap = {};
 
     articles.forEach((article) => {
@@ -264,34 +290,26 @@ class ArticleService {
         sourceMap[article.source] = {
           name: article.source,
           count: 0,
-          sentiments: {
-            BULLISH: 0,
-            BEARISH: 0,
-            NEUTRAL: 0,
-            ERROR: 0,
-          },
+          bullishValues: [],
         };
       }
 
       sourceMap[article.source].count++;
-      sourceMap[article.source].sentiments[article.sentiment]++;
+      if (article.bullishValue !== null && article.bullishValue !== undefined) {
+        sourceMap[article.source].bullishValues.push(article.bullishValue);
+      }
     });
 
-    // Convert to array and calculate dominant sentiment
+    // Convert to array and calculate avgBullishValue
     const sources = Object.values(sourceMap).map((source) => {
-      const { BULLISH, BEARISH, NEUTRAL } = source.sentiments;
-      let dominantSentiment = 'NEUTRAL';
-
-      if (BULLISH > BEARISH && BULLISH > NEUTRAL) {
-        dominantSentiment = 'BULLISH';
-      } else if (BEARISH > BULLISH && BEARISH > NEUTRAL) {
-        dominantSentiment = 'BEARISH';
-      }
+      const avgBullishValue = source.bullishValues.length > 0
+        ? Math.round(source.bullishValues.reduce((a, b) => a + b, 0) / source.bullishValues.length)
+        : 50;
 
       return {
         name: source.name,
         count: source.count,
-        sentiment: dominantSentiment,
+        avgBullishValue,
       };
     });
 
@@ -317,7 +335,6 @@ class ArticleService {
       },
       select: {
         asset: true,
-        sentiment: true,
         bullishValue: true,
       },
     });
@@ -330,33 +347,25 @@ class ArticleService {
           name: article.asset,
           count: 0,
           bullishValues: [],
-          sentiments: { BULLISH: 0, BEARISH: 0, NEUTRAL: 0, ERROR: 0 },
         };
       }
 
       assetMap[article.asset].count++;
-      assetMap[article.asset].sentiments[article.sentiment]++;
-      if (article.bullishValue) {
+      if (article.bullishValue !== null && article.bullishValue !== undefined) {
         assetMap[article.asset].bullishValues.push(article.bullishValue);
       }
     });
 
-    // Calculate average bullish value and dominant sentiment
+    // Calculate average bullish value
     const assets = Object.values(assetMap).map((asset) => {
       const avgBullishValue = asset.bullishValues.length > 0
         ? Math.round(asset.bullishValues.reduce((a, b) => a + b, 0) / asset.bullishValues.length)
         : 50;
 
-      const { BULLISH, BEARISH, NEUTRAL } = asset.sentiments;
-      let dominantSentiment = 'NEUTRAL';
-      if (BULLISH > BEARISH && BULLISH > NEUTRAL) dominantSentiment = 'BULLISH';
-      else if (BEARISH > BULLISH && BEARISH > NEUTRAL) dominantSentiment = 'BEARISH';
-
       return {
         name: asset.name,
         count: asset.count,
         avgBullishValue,
-        sentiment: dominantSentiment,
       };
     });
 
@@ -379,7 +388,6 @@ class ArticleService {
       },
       select: {
         category: true,
-        sentiment: true,
         bullishValue: true,
       },
     });
@@ -392,13 +400,11 @@ class ArticleService {
           name: article.category,
           count: 0,
           bullishValues: [],
-          sentiments: { BULLISH: 0, BEARISH: 0, NEUTRAL: 0, ERROR: 0 },
         };
       }
 
       categoryMap[article.category].count++;
-      categoryMap[article.category].sentiments[article.sentiment]++;
-      if (article.bullishValue) {
+      if (article.bullishValue !== null && article.bullishValue !== undefined) {
         categoryMap[article.category].bullishValues.push(article.bullishValue);
       }
     });
@@ -408,16 +414,10 @@ class ArticleService {
         ? Math.round(category.bullishValues.reduce((a, b) => a + b, 0) / category.bullishValues.length)
         : 50;
 
-      const { BULLISH, BEARISH, NEUTRAL } = category.sentiments;
-      let dominantSentiment = 'NEUTRAL';
-      if (BULLISH > BEARISH && BULLISH > NEUTRAL) dominantSentiment = 'BULLISH';
-      else if (BEARISH > BULLISH && BEARISH > NEUTRAL) dominantSentiment = 'BEARISH';
-
       return {
         name: category.name,
         count: category.count,
         avgBullishValue,
-        sentiment: dominantSentiment,
       };
     });
 
@@ -440,7 +440,6 @@ class ArticleService {
       },
       select: {
         chain: true,
-        sentiment: true,
         bullishValue: true,
       },
     });
@@ -453,13 +452,11 @@ class ArticleService {
           name: article.chain,
           count: 0,
           bullishValues: [],
-          sentiments: { BULLISH: 0, BEARISH: 0, NEUTRAL: 0, ERROR: 0 },
         };
       }
 
       chainMap[article.chain].count++;
-      chainMap[article.chain].sentiments[article.sentiment]++;
-      if (article.bullishValue) {
+      if (article.bullishValue !== null && article.bullishValue !== undefined) {
         chainMap[article.chain].bullishValues.push(article.bullishValue);
       }
     });
@@ -469,16 +466,10 @@ class ArticleService {
         ? Math.round(chain.bullishValues.reduce((a, b) => a + b, 0) / chain.bullishValues.length)
         : 50;
 
-      const { BULLISH, BEARISH, NEUTRAL } = chain.sentiments;
-      let dominantSentiment = 'NEUTRAL';
-      if (BULLISH > BEARISH && BULLISH > NEUTRAL) dominantSentiment = 'BULLISH';
-      else if (BEARISH > BULLISH && BEARISH > NEUTRAL) dominantSentiment = 'BEARISH';
-
       return {
         name: chain.name,
         count: chain.count,
         avgBullishValue,
-        sentiment: dominantSentiment,
       };
     });
 

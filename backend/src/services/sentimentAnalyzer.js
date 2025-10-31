@@ -6,48 +6,32 @@ const openai = new OpenAI({
 });
 
 /**
- * Normalize sentiment output to match database enum
- */
-function normalizeSentiment(rawSentiment) {
-  const normalized = rawSentiment.toUpperCase().trim();
-
-  if (normalized.includes("BULL")) return "BULLISH";
-  if (normalized.includes("BEAR")) return "BEARISH";
-  if (normalized.includes("NEUTRAL")) return "NEUTRAL";
-
-  return "ERROR";
-}
-
-/**
  * Analyze cryptocurrency news article with comprehensive AI analysis
- * Returns structured data including sentiment, bullish value, asset, category, chain, and keywords
+ * Returns structured data including sentiment score (0-100), asset, category, chain, and keywords
  *
  * @param {string} text - Article text to analyze
- * @returns {Promise<Object>} Analysis result with sentiment, bullishValue, asset, category, chain, keywords
+ * @returns {Promise<Object>} Analysis result with bullishValue (0-100), asset, category, chain, keywords
  */
 module.exports = async function analyzeSentiment(text) {
   const systemPrompt = `You are an expert cryptocurrency market analyst. Analyze the provided news article and return a comprehensive analysis in JSON format.
 
 Your analysis must include:
 
-1. **sentiment**: Classify as "BULLISH", "BEARISH", or "NEUTRAL"
-   - BULLISH: Positive news, price increases, adoption, positive regulations, technological advances
-   - BEARISH: Negative news, price drops, bans, hacks, security issues, negative regulations
-   - NEUTRAL: Factual reporting, mixed signals, or unclear market impact
+1. **sentimentScore**: Rate from 0-100 (integer only) - This is the ONLY sentiment indicator
+   - 0-10: Extremely bearish (major crashes, bans, significant negative events, catastrophic failures)
+   - 11-25: Very bearish (severe price drops, major negative news, serious concerns)
+   - 26-40: Moderately bearish (price drops, negative news, warnings, declining adoption)
+   - 41-59: Neutral (mixed signals, factual reporting, unclear market impact, balanced news)
+   - 60-74: Moderately bullish (price gains, positive developments, growing adoption)
+   - 75-89: Very bullish (major positive news, significant gains, strong adoption signals)
+   - 90-100: Extremely bullish (groundbreaking adoption, massive positive events, revolutionary developments)
 
-2. **bullishValue**: Rate from 1-100 (integer only)
-   - 1-20: Extremely bearish (major crashes, bans, significant negative events)
-   - 21-40: Moderately bearish (price drops, negative news, concerns)
-   - 41-60: Neutral (mixed signals, factual reporting, unclear impact)
-   - 61-80: Moderately bullish (price gains, positive developments, adoption)
-   - 81-100: Extremely bullish (major adoption, significant positive events, breakthrough developments)
-
-3. **asset**: Primary cryptocurrency mentioned (if any)
+2. **asset**: Primary cryptocurrency mentioned (if any)
    - Use ticker symbols: "BTC", "ETH", "SOL", "BNB", "XRP", "ADA", "DOGE", "MATIC", "DOT", "AVAX", "USDC", "USDT", etc.
    - Use "GENERAL" if no specific cryptocurrency is the focus or if article covers several cryptocurrencies equally
    - Use "OTHER" for lesser-known altcoins not in major exchanges
 
-4. **category**: Main topic category
+3. **category**: Main topic category
    - "Price Movement": Price analysis, technical analysis, market trends
    - "Regulation": Government policies, legal issues, compliance
    - "Technology": Protocol upgrades, technical developments, innovations
@@ -65,11 +49,11 @@ Your analysis must include:
    - "Metaverse": Virtual worlds, metaverse projects
    - "General": Broad crypto news not fitting other categories
 
-5. **chain**: Blockchain ecosystem mentioned
+4. **chain**: Blockchain ecosystem mentioned
    - "Bitcoin", "Ethereum", "Solana", "BNB Chain", "Cardano", "Polygon", "Avalanche", "Polkadot", "Arbitrum", "Optimism", "Base", etc.
    - Use "GENERAL" if no specific blockchain is the focus or article discusses several chains
 
-6. **keywords**: Extract 1-3 most important crypto-related keywords/phrases from the article
+5. **keywords**: Extract 1-3 most important crypto-related keywords/phrases from the article
    - Focus on: specific protocols, technologies, events, or concepts mentioned
    - Format as comma-separated string (e.g., "ETF approval, spot trading, institutional adoption")
    - Be specific and relevant to crypto/blockchain (not generic news terms)
@@ -77,8 +61,7 @@ Your analysis must include:
 
 Return ONLY valid JSON in this exact format:
 {
-  "sentiment": "BULLISH" | "BEARISH" | "NEUTRAL",
-  "bullishValue": <1-100>,
+  "sentimentScore": <0-100>,
   "asset": "<TICKER or GENERAL or OTHER>",
   "category": "<category from list above>",
   "chain": "<blockchain name or GENERAL>",
@@ -87,7 +70,7 @@ Return ONLY valid JSON in this exact format:
 
   try {
     const res = await openai.chat.completions.create({
-      model: "gpt-5-nano",
+      model: "gpt-5-mini",
       messages: [
         {
           role: "system",
@@ -116,10 +99,9 @@ Return ONLY valid JSON in this exact format:
 
     // Validate and normalize the response
     const result = {
-      sentiment: normalizeSentiment(analysis.sentiment || "NEUTRAL"),
       bullishValue: Math.max(
-        1,
-        Math.min(100, parseInt(analysis.bullishValue) || 50)
+        0,
+        Math.min(100, parseInt(analysis.sentimentScore) || 50)
       ),
       asset: (analysis.asset || "GENERAL").toUpperCase().trim(),
       category: (analysis.category || "General").trim(),
@@ -128,7 +110,6 @@ Return ONLY valid JSON in this exact format:
     };
 
     console.log("[AI Analysis]", {
-      sentiment: result.sentiment,
       bullishValue: result.bullishValue,
       asset: result.asset,
       category: result.category,
@@ -139,9 +120,8 @@ Return ONLY valid JSON in this exact format:
     return result;
   } catch (err) {
     console.error("[ERROR] OpenAI sentiment analysis:", err.message);
-    // Return error fallback with default values
+    // Return error fallback with default neutral value
     return {
-      sentiment: "ERROR",
       bullishValue: 50,
       asset: "GENERAL",
       category: "General",

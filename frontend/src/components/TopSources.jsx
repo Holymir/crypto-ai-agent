@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { Newspaper } from 'lucide-react';
 import { useTopSources } from '../hooks/useArticles';
+import { getSentimentFromValue } from '../lib/sentiment';
 
 /**
  * Top Sources Widget
@@ -85,7 +86,7 @@ export const TopSources = ({ period = 7, className = '' }) => {
                 initial={{ width: 0 }}
                 animate={{ width: `${(source.count / maxCount) * 100}%` }}
                 transition={{ duration: 1, delay: index * 0.1 + 0.2, ease: 'easeOut' }}
-                className={`h-full ${getSentimentColor(source.sentiment)} rounded-full`}
+                className={`h-full ${getSentimentColor(getSentimentFromValue(source.avgBullishValue))} rounded-full`}
               />
             </div>
           </motion.div>

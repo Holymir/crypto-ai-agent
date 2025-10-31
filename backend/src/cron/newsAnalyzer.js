@@ -35,7 +35,6 @@ async function processNews() {
         // Save to database with all AI analysis fields
         await articleService.createArticle({
           ...item,
-          sentiment: analysis.sentiment,
           asset: analysis.asset,
           category: analysis.category,
           chain: analysis.chain,
@@ -43,7 +42,12 @@ async function processNews() {
           keywords: analysis.keywords,
         });
 
-        console.log(`[NEWS] ${analysis.sentiment.padEnd(8)} [${analysis.bullishValue}/100] ${analysis.asset} → ${item.title.substring(0, 60)}...`);
+        // Determine sentiment label from bullishValue for logging
+        let sentimentLabel = 'NEUTRAL';
+        if (analysis.bullishValue >= 67) sentimentLabel = 'BULLISH';
+        else if (analysis.bullishValue <= 33) sentimentLabel = 'BEARISH';
+
+        console.log(`[NEWS] ${sentimentLabel.padEnd(8)} [${analysis.bullishValue}/100] ${analysis.asset} → ${item.title.substring(0, 60)}...`);
         newArticles++;
 
       } catch (err) {
