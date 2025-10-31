@@ -81,7 +81,7 @@ Return ONLY valid JSON in this exact format:
           content: `Analyze this cryptocurrency news article:\n\n${text}`,
         },
       ],
-      max_completion_tokens: 300,
+      max_completion_tokens: 800, // Increased to allow for reasoning tokens + response
       response_format: { type: "json_object" },
     });
 
@@ -89,6 +89,7 @@ Return ONLY valid JSON in this exact format:
 
     // Validate response exists and is not empty
     if (!rawResponse) {
+      console.error("[ERROR] Empty OpenAI response - finish_reason:", res.choices?.[0]?.finish_reason);
       throw new Error("Empty response from OpenAI API");
     }
 
