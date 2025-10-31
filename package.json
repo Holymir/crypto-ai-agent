@@ -15,7 +15,7 @@
     "prisma:migrate:local": "prisma migrate dev --schema=prisma/schema.sqlite.prisma",
     "prisma:push:local": "prisma db push --schema=prisma/schema.sqlite.prisma",
     "prisma:deploy": "prisma migrate deploy",
-    "build": "npm install && npx prisma generate",
+    "build": "npm install && npx prisma migrate deploy && npx prisma generate",
     "postinstall": "prisma generate"
   },
   "repository": {
